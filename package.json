@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "android": "npm run build && cap copy android && cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.2",
@@ -17,17 +18,22 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "^4.5.7",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
+    "typescript": "~3.9.3",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
@@ -37,10 +43,11 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "@vue/typescript"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@typescript-eslint/parser"
     },
     "rules": {}
   },
