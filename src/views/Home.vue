@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <img alt="Vue logo" src="../assets/icon.svg" />
     <HelloWorld msg="Welcome to cloudr.app!" />
   </div>
 </template>
@@ -26,3 +26,8 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="stylus">
+.home > img
+  max-width: 200px
+</style>

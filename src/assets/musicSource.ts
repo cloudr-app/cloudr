@@ -1,9 +1,9 @@
-export interface MusicSource {
+export type MusicSource = {
   stream(source: string): Promise<string>
   user(source: string): Promise<User>
 }
 
-export interface User {
+export type User = {
   platform: string
   username: string
   id: number

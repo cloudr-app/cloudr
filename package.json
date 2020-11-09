@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "android": "npm run build && cap sync && cap open android",
-    "refresh": "npm run build && cap sync"
+    "refresh": "npm run build && cap sync",
+    "icons": "cordova-res --resources src/assets"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.2",
@@ -30,6 +31,7 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "babel-eslint": "^10.1.0",
+    "cordova-res": "^0.15.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",

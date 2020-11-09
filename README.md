@@ -1,4 +1,6 @@
-# cloudr
+[![time tracker](https://wakatime.com/badge/github/vaaski/cloudr.svg)](https://wakatime.com/badge/github/vaaski/cloudr)
+
+<!-- # cloudr
 
 ## Project setup
 ```
@@ -21,4 +23,4 @@ npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/). -->

@@ -1,4 +1,4 @@
-interface SoundcloudUser {
+type SoundcloudUser = {
   followers_count: number
   followings_count: number
   username: string
@@ -13,12 +13,14 @@ import { MusicSource, User } from "./musicSource"
 import axios from "axios"
 
 // cspell:ignore LRYFPM vixfph
+// streetsidesoftware/vscode-spell-checker/issues/573
+
 const base = "https://soundcloud.com"
 const baseApi = "https://api.soundcloud.com"
 const client_id = "z8LRYFPM4UK5MMLaBe9vixfph5kqNA25"
 const auth = `client_id=${client_id}`
 
-const isID = (input: string): boolean => Boolean(/\d+/.exec(input))
+const isID = (input: string) => Boolean(/\d+/.exec(input))
 
 const soundcloud: MusicSource = {
   async stream(source) {
