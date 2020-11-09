@@ -4,9 +4,11 @@
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",
+  "backgroundColor": "#222436",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 0
+      "launchShowDuration": 250,
+      "androidScaleType": "CENTER_CROP"
     }
   },
   "cordova": {}

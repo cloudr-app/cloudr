@@ -10,9 +10,13 @@ const routes = [
     component: require("./views/Home.vue").default,
   },
   {
-    path: "/about",
-    name: "About",
-    component: require("./views/About.vue").default,
+    path: "/playlist/:platform/:id",
+    name: "Playlist",
+    component: require("./views/Playlist.vue").default,
+  },
+  {
+    path: "*",
+    redirect: "/",
   },
   // {
   //   path: "/about",

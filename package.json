@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint",
     "android": "npm run build && cap sync && cap open android",
     "refresh": "npm run build && cap sync",
-    "icons": "cordova-res --resources src/assets"
+    "icons": "cordova-res android --skip-config --copy"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.2",

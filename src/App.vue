@@ -1,19 +1,69 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <top-nav />
+    <main class="rw">
+      <router-view />
+    </main>
   </div>
 </template>
 
+<script lang="ts">
+import Vue from "vue"
+import soundcloud from "./player/soundcloud"
+import topNav from "./components/TopNav.vue"
+
+declare global {
+  interface Window {
+    soundcloud: any
+    vue: any
+  }
+}
+
+window.soundcloud = soundcloud
+export default Vue.extend({
+  mounted() {
+    // for debugging
+    window.vue = this
+  },
+  components: { topNav },
+})
+</script>
+
 <style lang="stylus">
+@import "./assets/material-icons.css"
+
+:root
+  --bg: #222436
+  --bg-dark: #1E2030
+  --fg-white: #FFFFFF
+  --fg-light: #C8C8CD
+  --fg-x-light: #343644
+  --fg-trans-white: #FFFFFF
+  --ease: cubic-bezier(0.76, 0, 0.24, 1)
+  --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
+  --nav-height: 56px
+
+@font-face
+  font-family: "manrope"
+  src: url("./assets/manrope.ttf")
+
+html, body
+  margin: 0
+  background: var(--bg)
+  color: var(--fg-light)
+  font-family: "manrope"
+  height: 100%
+  width: 100%
+
 #app
-  font-family Avenir, Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
+  height: 100%
+  width: 100%
+
+  >main
+    height: calc(100% - var(--nav-height))
+    width: 100%
+
+    >.rw
+      height: 100%
+      width: 100%
 </style>
