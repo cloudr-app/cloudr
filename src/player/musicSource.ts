@@ -1,16 +1,52 @@
+export type Platform = "spotify" | "soundcloud" | "tidal" | "youtube"
+
 export type MusicSource = {
+  playlistInfo(source: string): Promise<Playlist>
+  playlistTracks?(source: string, limit: number): Promise<PlaylistTracks>
   stream(source: string): Promise<string>
   user(source: string): Promise<User>
+  track(source: string): Promise<Track>
 }
 
 export type User = {
-  platform: string
-  username: string
   id: number
-  likes_count?: number
-  track_count?: number
-  playlist_count?: number
-  followers_count?: number
-  follows_count?: number
+  platform: Platform
+  username: string
   description?: string
+  followerCount?: number
+  followsCount?: number
+  likesCount?: number
+  playlistCount?: number
+  trackCount?: number
+}
+
+export type Playlist = {
+  artwork: string
+  id: number
+  platform: Platform
+  title: string
+  trackCount: number
+  user: User
+  description?: string
+  duration?: number
+  lastModified?: Date
+}
+
+export type Track = {
+  platform: Platform
+  duration: number
+  id: number
+  createdAt: Date
+  title: string
+  description?: string
+  genre?: string
+  user: User
+  artwork: string
+  playbackCount?: number
+  likeCount?: number
+}
+
+export type PlaylistTracks = {
+  tracks: Array<Track>
+  next?(): PlaylistTracks
 }

@@ -55,6 +55,9 @@ html, body
   height: 100%
   width: 100%
 
+input, a, span, p
+  color: var(--fg-light)
+
 #app
   height: 100%
   width: 100%

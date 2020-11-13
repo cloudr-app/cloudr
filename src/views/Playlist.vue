@@ -1,5 +1,5 @@
 <template>
-  <span>playlist</span>
+  <span>{{ $route.params }}</span>
 </template>
 
 <script lang="ts">

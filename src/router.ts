@@ -1,7 +1,12 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
+import platformShortNames from "./player/platformShortNames"
 
 Vue.use(VueRouter)
+
+const platform = Object.entries(platformShortNames)
+  .map(plt => plt.join("|"))
+  .join("|")
 
 const routes = [
   {
@@ -10,7 +15,7 @@ const routes = [
     component: require("./views/Home.vue").default,
   },
   {
-    path: "/playlist/:platform/:id",
+    path: `/(playlist|pl)/:platform(${platform})/:user?/:id`,
     name: "Playlist",
     component: require("./views/Playlist.vue").default,
   },
