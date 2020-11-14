@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import artwork from "@/components/artwork.vue"
+import artwork from "@/components/Artwork.vue"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
