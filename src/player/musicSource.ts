@@ -46,7 +46,10 @@ export type Track = {
   likeCount?: number
 }
 
-export type PlaylistTracks = {
-  tracks: Array<Track>
-  next?(): PlaylistTracks
+export interface Pagination {
+  next?(): Promise<Pagination>
+}
+
+export interface PlaylistTracks extends Pagination {
+  tracks: Track[]
 }

@@ -92,6 +92,24 @@ const resolve = async (source: string) => {
   })
 }
 
+function paginateNext(
+  url: string,
+  key = "collection",
+  transform = (a: any) => a,
+  limit = 50
+) {
+  return async () => {
+    const { data } = await axios.get(url, {
+      params: { client_id, limit, linked_partitioning: true },
+    })
+    const ret = {
+      [key]: data.collection.map(transform),
+    }
+    if (data.next_href) ret.next = paginateNext(data.next_href, key, transform, limit)
+    return ret
+  }
+}
+
 const soundcloud: MusicSource = {
   async stream(source) {
     const idToStream = (id: string) => `${baseApi}/tracks/${id}/stream?${auth}`
@@ -139,29 +157,23 @@ const soundcloud: MusicSource = {
     }
   },
   async playlistTracks(source, limit = 50) {
-    if (isID(source)) {
-      const { data } = await axios.get(`${baseApi}/playlists/${source}/tracks`, {
-        params: { client_id, limit, linked_partitioning: true },
-      })
-      // todo implement next function
-      return {
-        tracks: data.collection.map((scTrack: SoundcloudTrack) => {
-          return transformTrack(scTrack)
-        }),
-      }
-    } else {
-      const {
-        data: { id },
-      } = await resolve(source)
-      const { data } = await axios.get(`${baseApi}/playlists/${id}/tracks`, {
-        params: { client_id, limit, linked_partitioning: true },
-      })
-      return {
-        tracks: data.collection.map((scTrack: SoundcloudTrack) => {
-          return transformTrack(scTrack)
-        }),
-      }
+    let id = source
+
+    if (!isID(source)) {
+      const { data } = await resolve(source)
+      id = data.id
     }
+
+    const { data } = await axios.get(`${baseApi}/playlists/${id}/tracks`, {
+      params: { client_id, limit, linked_partitioning: true },
+    })
+    const ret: PlaylistTracks = {
+      tracks: data.collection.map(transformTrack),
+    }
+    if (data.next_href)
+      ret.next = paginateNext(data.next_href, "tracks", transformTrack, limit)
+
+    return ret
   },
 }
 
