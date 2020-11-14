@@ -9,7 +9,7 @@
     "android": "npm run build && cap sync && cap open android",
     "refresh": "npm run build && cap sync",
     "icons": "cordova-res android --skip-config --copy --icon-background-source \"#222436\"",
-    "commit": "cz"
+    "commit": "cz -S"
   },
   "dependencies": {
     "@capacitor/android": "^2.4.2",
