@@ -42,6 +42,9 @@ export default Vue.extend({
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --nav-height: 56px
+  --border-radius: 5px
+  --border-radius-large: 15px
+  --artwork-gradient: rgba(34, 36, 54, 0.95)
 
 @font-face
   font-family: "manrope"
@@ -54,6 +57,7 @@ html, body
   font-family: "manrope"
   height: 100%
   width: 100%
+  user-select: none
 
 input, a, span, p
   color: var(--fg-light)
@@ -62,11 +66,11 @@ input, a, span, p
   height: 100%
   width: 100%
 
-  >main
+  > main
     height: calc(100% - var(--nav-height))
     width: 100%
 
-    >.rw
+    > .rw
       height: 100%
       width: 100%
 </style>

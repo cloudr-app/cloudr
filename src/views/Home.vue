@@ -2,8 +2,11 @@
   <div class="home">
     <img alt="cloudr.app logo" src="../assets/icon.svg" />
     <div class="examples">
-      <router-link to="playlist/soundcloud/vaaski/wanna-die-actually">
-        example soundcloud playlist
+      <router-link to="playlist/soundcloud/645355878">
+        example 1 soundcloud playlist
+      </router-link>
+      <router-link to="pl/sc/1162452736">
+        example 2 soundcloud playlist (short link)
       </router-link>
     </div>
   </div>
@@ -27,6 +30,9 @@ export default Vue.extend({
 
   .examples
     margin: 64px 0
+
+    a
+      display: block
 
   img
     max-width: 200px

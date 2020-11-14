@@ -1,6 +1,8 @@
 <template>
   <nav class="top">
-    <div class="left"><i class="mi">arrow_back</i></div>
+    <div class="left">
+      <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">arrow_back</i>
+    </div>
   </nav>
 </template>
 
@@ -15,8 +17,8 @@ export default Vue.extend({
 nav.top
   height: var(--nav-height)
 
-  >.left
-    >i.mi
-      font-size: 28px
-      margin: 14px
+  > .left > i.mi
+    font-size: 28px
+    margin: 14px
+    cursor: pointer
 </style>

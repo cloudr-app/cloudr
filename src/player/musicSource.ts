@@ -1,4 +1,4 @@
-export type Platform = "spotify" | "soundcloud" | "tidal" | "youtube"
+import { Platform } from "./platformShortNames"
 
 export type MusicSource = {
   playlistInfo(source: string): Promise<Playlist>
