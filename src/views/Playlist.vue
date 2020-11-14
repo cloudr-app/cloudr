@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-import artwork from "@/components/Artwork.vue"
+import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
 
 import player from "@/player"

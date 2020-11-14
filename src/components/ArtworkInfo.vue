@@ -32,8 +32,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .artwork
-  --title-offset: 15px
-  width: 85%
+  --title-offset: 20px
+  width: calc(100% - 20px)
   max-width: 360px
   display: flex
   border-radius: var(--border-radius-large)
@@ -58,7 +58,7 @@ export default Vue.extend({
         margin-right: var(--title-offset)
 
       .title
-        font-size: 24px
+        font-size: 26px
         font-weight: bold
         letter-spacing: 1px
         color: var(--fg-white)
@@ -69,7 +69,7 @@ export default Vue.extend({
         -webkit-box-orient: vertical
 
       .author
-        font-size: 14px
+        font-size: 16px
 
   img
     width: calc(100% - 2px)
