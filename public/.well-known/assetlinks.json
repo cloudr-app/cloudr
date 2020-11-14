@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.cloudr",
+      "sha256_cert_fingerprints": [
+        "52:23:AF:0E:5B:AC:4D:FB:55:AB:41:C2:DB:0C:EC:4B:D5:98:B6:16:17:07:A2:C7:6A:BA:AA:93:2B:51:A2:92"
+      ]
+    }
+  }
+]

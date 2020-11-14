@@ -2,6 +2,9 @@ import Vue from "vue"
 import VueRouter from "vue-router"
 import { platformShorts } from "./player/platformShortNames"
 
+import { Plugins } from "@capacitor/core"
+const { App } = Plugins
+
 Vue.use(VueRouter)
 
 const platform = Object.entries(platformShorts)
@@ -35,6 +38,17 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  mode: "history",
+})
+
+App.addListener("appUrlOpen", data => {
+  const slug = data.url.split(".app").pop()
+
+  // We only push to the route if there is a slug present
+  if (slug)
+    router.push({
+      path: slug,
+    })
 })
 
 export default router
