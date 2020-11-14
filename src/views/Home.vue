@@ -33,6 +33,8 @@ export default Vue.extend({
 
     a
       display: block
+      font-size: 1.2em
+      margin: 8px 0
 
   img
     max-width: 200px

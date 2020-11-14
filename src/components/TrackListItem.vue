@@ -35,7 +35,7 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .track
-  padding: 0 10px
+  padding: 0 12.5px
 
   .main
     height: 54px
@@ -56,7 +56,7 @@ export default Vue.extend({
           margin-left: 12px
 
     .info
-      max-width: calc(100% - 50px - 72px)
+      max-width: calc(100% - 50px - 36px)
 
       .title, .author
         overflow: hidden
