@@ -2,7 +2,7 @@ import { Platform } from "./platformShortNames"
 
 export type MusicSource = {
   playlistInfo(source: string): Promise<Playlist>
-  playlistTracks?(source: string, limit: number): Promise<PlaylistTracks>
+  playlistTracks(source: string, limit?: number): Promise<PlaylistTracks>
   stream(source: string): Promise<string>
   user(source: string): Promise<User>
   track(source: string): Promise<Track>

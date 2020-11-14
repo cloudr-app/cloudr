@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <top-nav />
-    <main class="rw">
+    <top-nav :scrolled="scrolled" />
+    <main ref="main" class="rw">
       <router-view />
     </main>
   </div>
@@ -21,9 +21,21 @@ declare global {
 
 window.soundcloud = soundcloud
 export default Vue.extend({
+  data: () => ({
+    scrolled: false,
+  }),
   mounted() {
+    const self = this
+
     // for debugging
-    window.vue = this
+    window.vue = self
+
+    // cspell:ignore onscroll
+    const { main } = self.$refs as any
+    main.onscroll = (e: any) => {
+      if (e.target.scrollTop > 0) self.scrolled = true
+      else self.scrolled = false
+    }
   },
   components: { topNav },
 })
@@ -45,6 +57,7 @@ export default Vue.extend({
   --border-radius: 5px
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)
+  --transition-short: 200ms
 
 @font-face
   font-family: "manrope"
@@ -58,17 +71,25 @@ html, body
   height: 100%
   width: 100%
   user-select: none
+  -webkit-tap-highlight-color: transparent
 
-input, a, span, p
+input, a, span, p, div
+  letter-spacing: 0.03em
   color: var(--fg-light)
 
 #app
   height: 100%
   width: 100%
 
+  > nav
+    position: fixed
+
   > main
+    position: fixed
     height: calc(100% - var(--nav-height))
+    top: var(--nav-height)
     width: 100%
+    overflow: auto
 
     > .rw
       height: 100%

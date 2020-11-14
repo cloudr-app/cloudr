@@ -7,12 +7,20 @@
         :title="playlistInfo.title"
       />
     </section>
+    <section class="tracks">
+      <track-list-item
+        v-for="track in playlistTracks"
+        :key="track.id"
+        :trackInfo="track"
+      />
+    </section>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue"
 import artwork from "@/components/Artwork.vue"
+import TrackListItem from "@/components/TrackListItem.vue"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
@@ -26,8 +34,8 @@ declare global {
 
 export default Vue.extend({
   name: "playlist",
-  components: { artwork },
-  data: (): { playlistInfo: Playlist } => ({
+  components: { artwork, TrackListItem },
+  data: (): { playlistInfo: Playlist; playlistTracks: any; playlistNext: any } => ({
     playlistInfo: {
       artwork: "/artwork-placeholder.svg",
       id: 0,
@@ -40,20 +48,32 @@ export default Vue.extend({
       },
       trackCount: 0,
     },
+    playlistTracks: [],
+    playlistNext: undefined,
   }),
   async created() {
     window.playlist = this
 
-    await this.loadPlaylistInfo(this.$route.params)
+    await this.loadPlaylist(this.$route.params)
   },
   async beforeRouteUpdate(to, from, next) {
-    await this.loadPlaylistInfo(to.params)
+    await this.loadPlaylist(to.params)
     next()
   },
   methods: {
+    loadPlaylist(params: Object) {
+      this.loadPlaylistInfo(params)
+      this.loadPlaylistTracks(params)
+    },
     async loadPlaylistInfo(params: Object) {
       const { platform, id }: any = params
       this.playlistInfo = await player(platform).playlistInfo(id)
+    },
+    async loadPlaylistTracks(params: Object) {
+      const { platform, id }: any = params
+      const playlist = await player(platform).playlistTracks(id)
+      this.playlistTracks = playlist.tracks
+      this.playlistNext = playlist.next
     },
   },
 })
@@ -61,9 +81,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .playlist
-  .playlist-info
+  section.playlist-info
     width: 100%
     display: flex
     justify-content: center
     align-items: center
+
+  section.tracks
+    margin-top: 10px
 </style>

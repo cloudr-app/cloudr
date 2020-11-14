@@ -33,7 +33,8 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .artwork
   --title-offset: 15px
-  max-width: 85%
+  width: 85%
+  max-width: 360px
   display: flex
   border-radius: var(--border-radius-large)
   overflow: hidden
@@ -72,7 +73,6 @@ export default Vue.extend({
 
   img
     width: calc(100% - 2px)
-    max-width: 360px
     border-radius: var(--border-radius-large)
     border: 1px solid var(--bg)
 </style>
