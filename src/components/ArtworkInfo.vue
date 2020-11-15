@@ -61,7 +61,7 @@ export default Vue.extend({
         font-size: 26px
         font-weight: bold
         letter-spacing: 1px
-        color: var(--fg-white)
+        color: var(--text-white)
         overflow: hidden
         text-overflow: ellipsis
         display: -webkit-box

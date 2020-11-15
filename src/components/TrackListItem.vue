@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue from "vue"
 export default Vue.extend({
-  data: () => ({}),
+  name: "track-list-item",
   props: {
     trackInfo: {
       type: Object,
@@ -66,7 +66,7 @@ export default Vue.extend({
         -webkit-box-orient: vertical
 
       .title
-        color: var(--fg-white)
+        color: var(--text-white)
         font-size: 14px
         font-weight: 700
         font-variation-settings: "wght" 350

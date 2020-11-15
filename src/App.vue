@@ -4,6 +4,7 @@
     <main ref="main" class="rw">
       <router-view />
     </main>
+    <bottom-nav />
   </div>
 </template>
 
@@ -11,6 +12,7 @@
 import Vue from "vue"
 import soundcloud from "./player/soundcloud"
 import topNav from "./components/TopNav.vue"
+import bottomNav from "./components/BottomNav.vue"
 
 declare global {
   interface Window {
@@ -21,6 +23,7 @@ declare global {
 
 window.soundcloud = soundcloud
 export default Vue.extend({
+  components: { topNav, bottomNav },
   data: () => ({
     scrolled: false,
   }),
@@ -37,7 +40,6 @@ export default Vue.extend({
       else self.scrolled = false
     }
   },
-  components: { topNav },
 })
 </script>
 
@@ -47,13 +49,14 @@ export default Vue.extend({
 :root
   --bg: #222436
   --bg-dark: #1E2030
-  --fg-white: #FFFFFF
-  --fg-light: #C8C8CD
-  --fg-x-light: #343644
-  --fg-trans-white: #FFFFFF
+  --text-white: #FFFFFF
+  --text-light: #C8C8CD
+  --text-x-light: #343644
+  --text-trans-white: #FFFFFF
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
-  --nav-height: 56px
+  --top-nav-height: 56px
+  --bottom-nav-height: 56px
   --border-radius: 5px
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)
@@ -66,16 +69,18 @@ export default Vue.extend({
 html, body
   margin: 0
   background: var(--bg)
-  color: var(--fg-light)
+  color: var(--text-light)
   font-family: "manrope"
   height: 100%
   width: 100%
   user-select: none
   -webkit-tap-highlight-color: transparent
 
-input, a, span, p, div
+*
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
   letter-spacing: 0.03em
-  color: var(--fg-light)
+  color: var(--text-light)
 
 #app
   height: 100%
@@ -84,10 +89,13 @@ input, a, span, p, div
   > nav
     position: fixed
 
+    &.bottom
+      bottom: 0
+
   > main
     position: fixed
-    height: calc(100% - var(--nav-height))
-    top: var(--nav-height)
+    height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height))
+    top: var(--top-nav-height)
     width: 100%
     overflow: auto
 
