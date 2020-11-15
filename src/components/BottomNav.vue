@@ -30,11 +30,12 @@ nav.bottom
   align-items: center
 
   > a
-    font-size: 28px
+    font-size: var(--icon-size)
     line-height: 1ch
+    cursor: pointer
+    padding: calc((var(--bottom-nav-height) - var(--icon-size)) / 2) var(--icon-size)
 
     > i.mi
-      cursor: pointer
       font-size: inherit
       color: var(--text-light)
       transition: var(--transition-short)

@@ -61,6 +61,7 @@ export default Vue.extend({
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)
   --transition-short: 200ms
+  --icon-size: 30px
 
 @font-face
   font-family: "manrope"
@@ -81,6 +82,27 @@ html, body
   -moz-osx-font-smoothing: grayscale
   letter-spacing: 0.03em
   color: var(--text-light)
+
+  @media screen and (min-width: 500px)
+    ::-webkit-scrollbar
+      width: 8px
+
+    ::-webkit-scrollbar-track
+      background: transparent
+
+    ::-webkit-scrollbar-thumb
+      background: var(--text-x-light)
+      background-clip: padding-box
+      border-radius: 4px
+      border: 2px solid transparent
+      width: 4px
+
+      &:hover
+        background: var(--text-light)
+        background-clip: padding-box
+        border-radius: 6px
+        border: 1px solid transparent
+        width: 4px
 
 #app
   height: 100%

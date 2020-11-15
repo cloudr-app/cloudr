@@ -35,7 +35,7 @@ nav.top
     flex-grow: 1
 
   > i.mi
-    font-size: 28px
+    font-size: var(--icon-size)
     margin: auto 14px
     cursor: pointer
 </style>
