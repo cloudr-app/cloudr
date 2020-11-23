@@ -4,6 +4,7 @@
     <main ref="main" class="rw">
       <router-view />
     </main>
+    <player />
     <bottom-nav />
   </div>
 </template>
@@ -13,6 +14,7 @@ import Vue from "vue"
 import soundcloud from "./player/soundcloud"
 import topNav from "./components/TopNav.vue"
 import bottomNav from "./components/BottomNav.vue"
+import player from "./components/Player.vue"
 
 declare global {
   interface Window {
@@ -23,7 +25,7 @@ declare global {
 
 window.soundcloud = soundcloud
 export default Vue.extend({
-  components: { topNav, bottomNav },
+  components: { topNav, bottomNav, player },
   data: () => ({
     scrolled: false,
   }),
@@ -57,6 +59,7 @@ export default Vue.extend({
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --top-nav-height: 56px
   --bottom-nav-height: 56px
+  --bottom-player-height: 64px
   --border-radius: 5px
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)
@@ -114,9 +117,14 @@ html, body
     &.bottom
       bottom: 0
 
-  > main
+  > .player
     position: fixed
-    height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height))
+    bottom: var(--bottom-nav-height)
+
+  > main
+    --navigation-size: calc(var(--top-nav-height) + var(--bottom-nav-height) + var(--bottom-player-height))
+    position: fixed
+    height: calc(100% - var(--navigation-size))
     top: var(--top-nav-height)
     width: 100%
     overflow: auto

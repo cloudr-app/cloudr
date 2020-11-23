@@ -68,11 +68,13 @@ export default Vue.extend({
       .title
         color: var(--text-white)
         font-size: 14px
-        font-weight: 700
-        font-variation-settings: "wght" 350
+        font-weight: 500
+        font-variation-settings: "wght" 500
 
       .author
         font-size: 12px
+        font-weight: 400
+        font-variation-settings: "wght" 400
 
     .artwork
       height: 40px
