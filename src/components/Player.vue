@@ -44,9 +44,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .player
-  --margins: 8px
+  --margins: 10px
   background: var(--bg-dark)
-  // background: #f0f
   width: 100%
   height: calc(var(--bottom-player-height) - var(--margins) * 2)
   display: flex
@@ -105,6 +104,7 @@ export default Vue.extend({
         align-items: center
         height: 100%
         position: relative
+        padding-bottom: 4px
 
         > *
           position: absolute
