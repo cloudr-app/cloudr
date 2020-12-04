@@ -59,7 +59,7 @@ export default Vue.extend({
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --top-nav-height: 56px
   --bottom-nav-height: 56px
-  --bottom-player-height: 64px
+  --bottom-player-height: 74px
   --border-radius: 5px
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)

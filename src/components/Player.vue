@@ -46,6 +46,7 @@ export default Vue.extend({
 .player
   --margins: 8px
   background: var(--bg-dark)
+  // background: #f0f
   width: 100%
   height: calc(var(--bottom-player-height) - var(--margins) * 2)
   display: flex
@@ -67,28 +68,32 @@ export default Vue.extend({
 
       .track-info
         margin-top: 4px
+        font-size: 15px
 
         .title
           line-height: 1em
-          font-size: 13px
+          font-size: 1em
           font-weight: 700
 
         .author
-          line-height: 1em
-          font-size: 11px
+          line-height: 1.25em
+          font-size: 0.85em
 
       .spacer
         flex-grow: 1
 
       .controls
-        --controls-size: 34px
+        --controls-size: 42px
         height: var(--controls-size)
         display: flex
         margin-right: calc(var(--margins) * 2)
 
-        i.mi
-          font-size: var(--controls-size)
-          line-height: 0.9em
+        > div
+          height: var(--controls-size)
+
+          i.mi
+            font-size: var(--controls-size)
+            line-height: 1ch
 
     .lower
       width: calc(100% - var(--margins) * 2)
