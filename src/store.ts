@@ -25,6 +25,9 @@ export default new Vuex.Store({
         ...info,
       }
     },
+    playState(state, playState) {
+      state.player.playing = playState
+    },
   },
   actions: {},
   modules: {},

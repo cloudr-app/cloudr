@@ -16,6 +16,7 @@
     "@capacitor/cli": "^2.4.2",
     "@capacitor/core": "^2.4.2",
     "axios": "^0.21.0",
+    "capacitor-music-controls-plugin": "^1.0.1",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
