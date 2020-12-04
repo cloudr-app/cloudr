@@ -6,6 +6,7 @@
     </main>
     <bottom-player />
     <bottom-nav />
+    <audio-player v-if="currentSrc" :src="currentSrc" />
   </div>
 </template>
 
@@ -14,6 +15,8 @@ import Vue from "vue"
 import topNav from "./components/TopNav.vue"
 import bottomNav from "./components/BottomNav.vue"
 import bottomPlayer from "./components/BottomPlayer.vue"
+
+import audioPlayer from "./components/AudioPlayer.vue"
 
 import soundcloud from "./player/soundcloud"
 import player from "./player"
@@ -28,11 +31,12 @@ declare global {
 
 window.soundcloud = soundcloud
 export default Vue.extend({
-  components: { topNav, bottomNav, bottomPlayer },
+  components: { topNav, bottomNav, bottomPlayer, audioPlayer },
   data: () => ({
     scrolled: false,
+    currentSrc: "",
   }),
-  mounted() {
+  async mounted() {
     const self = this
 
     // for debugging
@@ -45,6 +49,21 @@ export default Vue.extend({
       if (e.target.scrollTop > 0) self.scrolled = true
       else self.scrolled = false
     }
+
+    await self.resolveTrack()
+  },
+  methods: {
+    async resolveTrack() {
+      const [platform, id] = this.$store.state.currentTrack.id.split(":")
+      this.currentSrc = await player(platform).stream(id)
+
+      const { artwork, title, user } = await player(platform).track(id)
+      this.$store.commit("trackInfo", {
+        artwork,
+        title,
+        author: user.username,
+      })
+    },
   },
 })
 </script>
@@ -69,6 +88,7 @@ export default Vue.extend({
   --artwork-gradient: rgba(34, 36, 54, 0.95)
   --transition-short: 200ms
   --icon-size: 30px
+  --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
 
 @font-face
   font-family: "manrope"

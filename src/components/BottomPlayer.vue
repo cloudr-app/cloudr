@@ -1,23 +1,20 @@
 <template>
   <div class="player">
-    <img
-      src="https://i1.sndcdn.com/artworks-DDh4jzy9m6MApu7y-Nm7vWg-t500x500.jpg"
-      alt="track art"
-      class="artwork"
-    />
+    <img :src="$store.state.currentTrack.artwork" alt="track art" class="artwork" />
     <div class="right">
       <div class="upper">
         <div class="track-info">
-          <div class="title">Unspoken</div>
-          <div class="author">En:vy</div>
+          <div class="title">{{ $store.state.currentTrack.title }}</div>
+          <div class="author">{{ $store.state.currentTrack.author }}</div>
         </div>
         <div class="spacer"></div>
         <div class="controls">
           <div class="skip-previous">
             <i class="mi">skip_previous</i>
           </div>
-          <div class="play-pause">
-            <i class="mi">play_arrow</i>
+          <div class="play-pause" @click="playPause">
+            <i v-if="$store.state.player.playing" class="mi">pause</i>
+            <i v-else class="mi">play_arrow</i>
           </div>
           <div class="skip-next">
             <i class="mi">skip_next</i>
@@ -39,6 +36,11 @@
 import Vue from "vue"
 export default Vue.extend({
   name: "player",
+  methods: {
+    playPause() {
+      this.$store.state.player.playing = !this.$store.state.player.playing
+    },
+  },
 })
 </script>
 
@@ -56,6 +58,7 @@ export default Vue.extend({
     width: calc(var(--bottom-player-height) - var(--margins) * 2)
     border-radius: var(--border-radius)
     margin-right: var(--margins)
+    box-shadow: var(--small-artwork-shadow)
 
   .right
     flex-grow: 1
@@ -92,7 +95,8 @@ export default Vue.extend({
 
           i.mi
             font-size: var(--controls-size)
-            line-height: 1ch
+            height: var(--controls-size)
+            color: var(--text-white)
 
     .lower
       width: calc(100% - var(--margins) * 2)
