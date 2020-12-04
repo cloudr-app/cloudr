@@ -4,28 +4,31 @@
     <main ref="main" class="rw">
       <router-view />
     </main>
-    <player />
+    <bottom-player />
     <bottom-nav />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue"
-import soundcloud from "./player/soundcloud"
 import topNav from "./components/TopNav.vue"
 import bottomNav from "./components/BottomNav.vue"
-import player from "./components/Player.vue"
+import bottomPlayer from "./components/BottomPlayer.vue"
+
+import soundcloud from "./player/soundcloud"
+import player from "./player"
 
 declare global {
   interface Window {
     soundcloud: any
     vue: any
+    player: any
   }
 }
 
 window.soundcloud = soundcloud
 export default Vue.extend({
-  components: { topNav, bottomNav, player },
+  components: { topNav, bottomNav, bottomPlayer },
   data: () => ({
     scrolled: false,
   }),
@@ -34,6 +37,7 @@ export default Vue.extend({
 
     // for debugging
     window.vue = self
+    window.player = player
 
     // cspell:ignore onscroll
     const { main } = self.$refs as any

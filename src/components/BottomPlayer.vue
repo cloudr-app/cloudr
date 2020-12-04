@@ -1,15 +1,15 @@
 <template>
   <div class="player">
     <img
-      src="https://i1.sndcdn.com/artworks-SXuAzGg8DIR3cIUq-jxtEZQ-t500x500.jpg"
+      src="https://i1.sndcdn.com/artworks-DDh4jzy9m6MApu7y-Nm7vWg-t500x500.jpg"
       alt="track art"
       class="artwork"
     />
     <div class="right">
       <div class="upper">
         <div class="track-info">
-          <div class="title">BAD ACID</div>
-          <div class="author">GETTER</div>
+          <div class="title">Unspoken</div>
+          <div class="author">En:vy</div>
         </div>
         <div class="spacer"></div>
         <div class="controls">
