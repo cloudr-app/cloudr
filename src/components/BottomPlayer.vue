@@ -27,6 +27,7 @@
           <div class="progress"></div>
           <div class="handle"></div>
         </div>
+        <div class="duration">{{ formatTime(duration) }}</div>
       </div>
     </div>
   </div>
@@ -43,9 +44,22 @@ export default Vue.extend({
       const { commit, state } = this.$store
       commit("playState", !state.player.playing)
     },
+    formatTime(secs: number) {
+      const hours = Math.floor(secs / 3600)
+      const minutes = Math.floor(secs / 60 - hours * 60)
+      const seconds = Math.floor(secs - minutes * 60 - hours * 3600)
+
+      const pad = (n: number) => String(n).padStart(2, "0")
+      let ret = `${pad(minutes)}:${pad(seconds)}`
+
+      if (hours) ret = `${hours}:${ret}`
+
+      return ret
+    },
   },
   computed: mapState({
     progress: (state: any) => state.player.progress,
+    duration: (state: any) => state.player.duration,
   }),
 })
 </script>
@@ -79,6 +93,7 @@ export default Vue.extend({
         font-size: 15px
 
         .title, .artist
+          padding-left: 1px
           overflow: hidden
           text-overflow: ellipsis
           display: -webkit-box
@@ -86,21 +101,23 @@ export default Vue.extend({
           -webkit-box-orient: vertical
 
         .title
-          line-height: 1em
+          line-height: 1.333em
           font-size: 1em
           font-weight: 700
 
         .artist
-          line-height: 1.25em
+          line-height: 1.333em
           font-size: 0.85em
 
       .spacer
         flex-grow: 1
 
       .controls
-        --controls-size: 42px
-        height: var(--controls-size)
+        --controls-size: 38px
+        --playpause-size: 42px
+        height: var(--playpause-size)
         display: flex
+        align-items: center
         margin-right: calc(var(--margins) * 2)
 
         > div
@@ -110,10 +127,25 @@ export default Vue.extend({
             font-size: var(--controls-size)
             height: var(--controls-size)
             color: var(--text-white)
+            cursor: pointer
+
+        > .play-pause
+          height: var(--playpause-size)
+
+          i.mi
+            font-size: var(--playpause-size)
+            height: var(--playpause-size)
 
     .lower
       width: calc(100% - var(--margins) * 2)
       flex-grow: 1
+      display: flex
+      align-items: center
+      padding-bottom: 4px
+
+      .duration
+        font-size: 12px
+        margin-left: var(--margins)
 
       .scrubber
         --progress: 0
@@ -121,9 +153,9 @@ export default Vue.extend({
         align-items: center
         height: 100%
         position: relative
-        padding-bottom: 4px
+        flex-grow: 1
 
-        > *
+        > div
           position: absolute
 
         .bar, .progress

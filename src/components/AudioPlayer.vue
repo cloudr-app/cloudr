@@ -6,6 +6,19 @@
 import Vue from "vue"
 import notification from "@/player/notification"
 
+function throttle(func: Function, limit: number): Function {
+  let inThrottle: boolean
+  return function (this: any): any {
+    const args = arguments
+    const context = this
+    if (!inThrottle) {
+      inThrottle = true
+      func.apply(context, args)
+      setTimeout(() => (inThrottle = false), limit)
+    }
+  }
+}
+
 export default Vue.extend({
   data: () => ({
     autoplay: false,
@@ -56,13 +69,27 @@ export default Vue.extend({
       audio.onplay = () => commit("playState", true)
       audio.onpause = () => commit("playState", false)
     },
+    updateDuration: throttle(function () {
+      const { commit } = this.$store
+      const state = this.$store.state as State
+      const audio = this.$refs.audio as HTMLAudioElement
+
+      if (!isNaN(audio.duration) && state.player.duration !== audio.duration)
+        commit("duration", audio.duration)
+    }, 100),
     updateProgress() {
       const state = this.$store.state as State
       const { commit } = this.$store
       const audio = this.$refs.audio as HTMLAudioElement
 
-      const progress = audio.currentTime / audio.duration || 0
-      commit("progress", progress)
+      this.updateDuration()
+
+      try {
+        const progress = audio.currentTime / audio.duration || 0
+        commit("progress", progress)
+      } catch (err) {
+        return "ignore"
+      }
 
       if (state.player.playing) window.requestAnimationFrame(this.updateProgress)
     },

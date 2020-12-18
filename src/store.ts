@@ -22,6 +22,7 @@ declare global {
       playing: boolean
       volume: number
       progress: number
+      duration: number
     }
   }
 }
@@ -40,6 +41,7 @@ const defaultState: State = {
     playing: false,
     volume: 1,
     progress: 0,
+    duration: 0,
   },
 }
 
@@ -57,6 +59,9 @@ const store = new Vuex.Store({
     },
     progress(state: State, progress) {
       state.player.progress = progress
+    },
+    duration(state: State, duration) {
+      state.player.duration = duration
     },
   },
   actions: {
