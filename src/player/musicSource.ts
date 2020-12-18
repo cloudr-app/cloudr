@@ -1,6 +1,6 @@
 import { Platform } from "@/player/platformShortNames"
 
-export type MusicSource = {
+export interface MusicSource {
   playlistInfo(source: string): Promise<Playlist>
   playlistTracks(source: string, limit?: number): Promise<PlaylistTracks>
   stream(source: string): Promise<string>
@@ -8,7 +8,7 @@ export type MusicSource = {
   track(source: string): Promise<Track>
 }
 
-export type User = {
+export interface User {
   id: number
   platform: Platform
   username: string
@@ -20,7 +20,7 @@ export type User = {
   trackCount?: number
 }
 
-export type Playlist = {
+export interface Playlist {
   artwork: string
   id: number
   platform: Platform
@@ -32,7 +32,7 @@ export type Playlist = {
   lastModified?: Date
 }
 
-export type Track = {
+export interface Track {
   platform: Platform
   duration: number
   id: number

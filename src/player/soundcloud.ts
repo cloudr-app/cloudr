@@ -1,7 +1,7 @@
 import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
 import axios from "axios"
 
-type SoundcloudUser = {
+interface SoundcloudUser {
   followers_count: number
   followings_count: number
   username: string
@@ -23,7 +23,7 @@ const transformUser = (s: SoundcloudUser): User => ({
   likesCount: s.public_favorites_count,
 })
 
-type SoundcloudPlaylist = {
+interface SoundcloudPlaylist {
   user: {
     id: number
     username: string
@@ -49,7 +49,7 @@ const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
 })
 
 // cspell:ignore favoritings
-type SoundcloudTrack = {
+interface SoundcloudTrack {
   duration: number
   id: number
   created_at: string
