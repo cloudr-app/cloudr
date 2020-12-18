@@ -23,31 +23,6 @@ const transformUser = (s: SoundcloudUser): User => ({
   likesCount: s.public_favorites_count,
 })
 
-interface SoundcloudPlaylist {
-  user: {
-    id: number
-    username: string
-  }
-  track_count: number
-  id: number
-  title: string
-  duration: number
-  last_modified: string
-  artwork_url: string
-  description: string
-}
-const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
-  artwork: p.artwork_url.replace("large", "t500x500"),
-  description: p.description,
-  duration: p.duration,
-  id: p.id,
-  lastModified: new Date(p.last_modified),
-  platform: "soundcloud",
-  title: p.title,
-  trackCount: p.track_count,
-  user: { platform: "soundcloud", ...p.user },
-})
-
 // cspell:ignore favoritings
 interface SoundcloudTrack {
   duration: number
@@ -59,6 +34,7 @@ interface SoundcloudTrack {
   user: {
     id: number
     username: string
+    avatar_url?: string
   }
   artwork_url: string
   playback_count: number
@@ -73,9 +49,41 @@ const transformTrack = (t: SoundcloudTrack): Track => ({
   description: t.description,
   genre: t.genre,
   user: { platform: "soundcloud", ...t.user },
-  artwork: t.artwork_url?.replace("large", "t500x500") || "/artwork-placeholder.svg",
+  artwork:
+    t.artwork_url?.replace("large", "t500x500") ||
+    t.user.avatar_url?.replace("large", "t500x500") ||
+    "/artwork-placeholder.svg",
   playbackCount: t.playback_count,
   likeCount: t.favoritings_count,
+})
+
+interface SoundcloudPlaylist {
+  user: {
+    id: number
+    username: string
+  }
+  track_count: number
+  id: number
+  title: string
+  duration: number
+  last_modified: string
+  artwork_url: string
+  description: string
+  tracks: SoundcloudTrack[]
+}
+const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
+  artwork:
+    p.artwork_url?.replace("large", "t500x500") ||
+    p.tracks[0]?.artwork_url.replace("large", "t500x500") ||
+    "/artwork-placeholder.svg",
+  description: p.description,
+  duration: p.duration,
+  id: p.id,
+  lastModified: new Date(p.last_modified),
+  platform: "soundcloud",
+  title: p.title,
+  trackCount: p.track_count,
+  user: { platform: "soundcloud", ...p.user },
 })
 
 const base = "https://soundcloud.com"
@@ -84,7 +92,7 @@ const baseApi = "https://api.soundcloud.com"
 const client_id = "z8LRYFPM4UK5MMLaBe9vixfph5kqNA25"
 const auth = `client_id=${client_id}`
 
-const isID = (input: string) => Boolean(/\d+/.exec(input))
+const isID = (input: string) => Boolean(/^\d+$/.exec(input))
 const resolve = async (source: string) => {
   const url = new URL(source, base).toString()
   return await axios.get(`${baseApi}/resolve`, {
@@ -137,7 +145,7 @@ const soundcloud: MusicSource = {
   async playlistInfo(source) {
     if (isID(source)) {
       const { data } = await axios.get(`${baseApi}/playlists/${source}`, {
-        params: { client_id },
+        params: { client_id, linked_partitioning: true, limit: 1 },
       })
       return transformPlaylistInfo(data)
     } else {
