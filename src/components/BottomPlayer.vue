@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="lower">
-        <div class="scrubber">
+        <div class="scrubber" :style="{ '--progress': `${progress * 100}%` }">
           <div class="bar"></div>
           <div class="progress"></div>
           <div class="handle"></div>
@@ -34,6 +34,8 @@
 
 <script lang="ts">
 import Vue from "vue"
+import { mapState } from "vuex"
+
 export default Vue.extend({
   name: "player",
   methods: {
@@ -42,6 +44,9 @@ export default Vue.extend({
       commit("playState", !state.player.playing)
     },
   },
+  computed: mapState({
+    progress: (state: any) => state.player.progress,
+  }),
 })
 </script>
 
@@ -72,6 +77,13 @@ export default Vue.extend({
       .track-info
         margin-top: 4px
         font-size: 15px
+
+        .title, .artist
+          overflow: hidden
+          text-overflow: ellipsis
+          display: -webkit-box
+          -webkit-line-clamp: 1
+          -webkit-box-orient: vertical
 
         .title
           line-height: 1em
@@ -104,7 +116,7 @@ export default Vue.extend({
       flex-grow: 1
 
       .scrubber
-        --progress: 38%
+        --progress: 0
         display: flex
         align-items: center
         height: 100%

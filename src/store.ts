@@ -13,13 +13,16 @@ interface CurrentTrackInfo {
   stream?: string
 }
 
-interface State {
-  currentTrack: CurrentTrackInfo
-  queue: string[]
-  fromList: string
-  player: {
-    playing: boolean
-    volume: number
+declare global {
+  interface State {
+    currentTrack: CurrentTrackInfo
+    queue: string[]
+    fromList: string
+    player: {
+      playing: boolean
+      volume: number
+      progress: number
+    }
   }
 }
 
@@ -36,6 +39,7 @@ const defaultState: State = {
   player: {
     playing: false,
     volume: 1,
+    progress: 0,
   },
 }
 
@@ -50,6 +54,9 @@ const store = new Vuex.Store({
     },
     playState(state: State, playState) {
       state.player.playing = playState
+    },
+    progress(state: State, progress) {
+      state.player.progress = progress
     },
   },
   actions: {

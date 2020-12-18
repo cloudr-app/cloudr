@@ -1,5 +1,5 @@
 <template>
-  <audio ref="audio" :src="src" preload></audio>
+  <audio ref="audio" :src="src" preload :autoplay="autoplay"></audio>
 </template>
 
 <script lang="ts">
@@ -7,6 +7,10 @@ import Vue from "vue"
 import notification from "@/player/notification"
 
 export default Vue.extend({
+  data: () => ({
+    autoplay: false,
+    lastPlaybackState: false,
+  }),
   props: {
     src: {
       type: String,
@@ -14,22 +18,36 @@ export default Vue.extend({
     },
   },
   mounted() {
+    const state = this.$store.state as State
     const audio = this.$refs.audio as HTMLAudioElement
 
-    audio.volume = this.$store.state.player.volume
+    audio.volume = state.player.volume
     notification.init()
     this.initAudioEl()
-    this.onPlaybackStateChange(this.$store.state.player.playing)
+    this.onPlaybackStateChange()
   },
   watch: {
     "$store.state.player.playing": "onPlaybackStateChange",
+    src: "onPlaybackStateChange",
   },
   methods: {
-    onPlaybackStateChange(playing: boolean) {
+    onPlaybackStateChange() {
+      const state = this.$store.state as State
+      const { playing } = state.player
+
       const audio = this.$refs.audio as HTMLAudioElement
 
-      if (playing) audio.play()
-      else audio.pause()
+      if (this.lastPlaybackState === playing) return
+      this.lastPlaybackState = playing
+
+      if (playing) {
+        this.autoplay = true
+        audio.play()
+        this.updateProgress()
+      } else {
+        this.autoplay = false
+        audio.pause()
+      }
     },
     initAudioEl() {
       const audio = this.$refs.audio as HTMLAudioElement
@@ -37,6 +55,16 @@ export default Vue.extend({
 
       audio.onplay = () => commit("playState", true)
       audio.onpause = () => commit("playState", false)
+    },
+    updateProgress() {
+      const state = this.$store.state as State
+      const { commit } = this.$store
+      const audio = this.$refs.audio as HTMLAudioElement
+
+      const progress = audio.currentTime / audio.duration || 0
+      commit("progress", progress)
+
+      if (state.player.playing) window.requestAnimationFrame(this.updateProgress)
     },
   },
 })
