@@ -1,6 +1,6 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
-import { platformShorts } from "./player/platformShortNames"
+import { platformShorts } from "@/player/platformShortNames"
 
 import { Plugins } from "@capacitor/core"
 const { App } = Plugins

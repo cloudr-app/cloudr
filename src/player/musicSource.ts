@@ -1,4 +1,4 @@
-import { Platform } from "./platformShortNames"
+import { Platform } from "@/player/platformShortNames"
 
 export type MusicSource = {
   playlistInfo(source: string): Promise<Playlist>

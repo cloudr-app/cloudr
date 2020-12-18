@@ -1,6 +1,6 @@
-import { MusicSource } from "./musicSource"
-import { PlatformAccessor } from "./platformShortNames"
-import soundcloud from "./soundcloud"
+import { MusicSource } from "@/player/musicSource"
+import { PlatformAccessor } from "@/player/platformShortNames"
+import soundcloud from "@/player/soundcloud"
 
 const player = (platform: PlatformAccessor) => {
   /* eslint-disable indent */

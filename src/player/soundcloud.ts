@@ -1,4 +1,4 @@
-import { MusicSource, Playlist, PlaylistTracks, Track, User } from "./musicSource"
+import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
 import axios from "axios"
 
 type SoundcloudUser = {

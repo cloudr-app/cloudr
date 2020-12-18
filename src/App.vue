@@ -12,14 +12,14 @@
 
 <script lang="ts">
 import Vue from "vue"
-import topNav from "./components/TopNav.vue"
-import bottomNav from "./components/BottomNav.vue"
-import bottomPlayer from "./components/BottomPlayer.vue"
+import topNav from "@/components/TopNav.vue"
+import bottomNav from "@/components/BottomNav.vue"
+import bottomPlayer from "@/components/BottomPlayer.vue"
 
-import audioPlayer from "./components/AudioPlayer.vue"
+import audioPlayer from "@/components/AudioPlayer.vue"
 
-import soundcloud from "./player/soundcloud"
-import player from "./player"
+import soundcloud from "@/player/soundcloud"
+import player from "@/player"
 
 declare global {
   interface Window {
