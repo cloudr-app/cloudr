@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue"
-// import notification from "@/player/notification"
+import notification from "@/player/notification"
 
 export default Vue.extend({
   props: {
@@ -14,31 +14,29 @@ export default Vue.extend({
     },
   },
   mounted() {
-    const { audio } = this.$refs as any
+    const audio = this.$refs.audio as HTMLAudioElement
 
     audio.volume = this.$store.state.player.volume
+    notification.init()
+    this.initAudioEl()
+    this.onPlaybackStateChange(this.$store.state.player.playing)
   },
   watch: {
-    "$store.state.player.playing"(playing) {
-      const { audio } = this.$refs as any
-      this.initMediaNotification()
+    "$store.state.player.playing": "onPlaybackStateChange",
+  },
+  methods: {
+    onPlaybackStateChange(playing: boolean) {
+      const audio = this.$refs.audio as HTMLAudioElement
 
       if (playing) audio.play()
       else audio.pause()
     },
-  },
-  methods: {
-    notificationControlHandler(action: { message: string }) {
-      /* eslint-disable indent */
-      switch (action.message) {
-        case "music-controls-pause":
-          this.$store.commit("playState", false)
-          break
-        case "music-controls-play":
-          this.$store.commit("playState", true)
-          break
-      }
-      /* eslint-enable indent */
+    initAudioEl() {
+      const audio = this.$refs.audio as HTMLAudioElement
+      const { commit } = this.$store
+
+      audio.onplay = () => commit("playState", true)
+      audio.onpause = () => commit("playState", false)
     },
   },
 })

@@ -5,7 +5,7 @@
       <div class="upper">
         <div class="track-info">
           <div class="title">{{ $store.state.currentTrack.title }}</div>
-          <div class="author">{{ $store.state.currentTrack.author }}</div>
+          <div class="artist">{{ $store.state.currentTrack.artist }}</div>
         </div>
         <div class="spacer"></div>
         <div class="controls">
@@ -38,7 +38,8 @@ export default Vue.extend({
   name: "player",
   methods: {
     playPause() {
-      this.$store.state.player.playing = !this.$store.state.player.playing
+      const { commit, state } = this.$store
+      commit("playState", !state.player.playing)
     },
   },
 })
@@ -77,7 +78,7 @@ export default Vue.extend({
           font-size: 1em
           font-weight: 700
 
-        .author
+        .artist
           line-height: 1.25em
           font-size: 0.85em
 

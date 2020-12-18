@@ -1,34 +1,78 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import player from "@/player"
+import { PlatformAccessor } from "./player/platformShortNames"
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-    currentTrack: {
-      id: "sc:504843810",
-      title: "",
-      author: "",
-      artwork: "/artwork-placeholder.svg",
-    },
-    queue: ["sc:504843810", "sc:811306516", "sc:98893536"],
-    fromList: "sc:1162452736",
-    player: {
-      playing: false,
-      volume: 1,
-    },
+interface CurrentTrackInfo {
+  id: string
+  title?: string
+  artist?: string
+  artwork?: string
+  stream?: string
+}
+
+interface State {
+  currentTrack: CurrentTrackInfo
+  queue: string[]
+  fromList: string
+  player: {
+    playing: boolean
+    volume: number
+  }
+}
+
+const defaultState: State = {
+  currentTrack: {
+    id: "",
+    title: "",
+    artist: "",
+    artwork: "/artwork-placeholder.svg",
+    stream: "",
   },
+  queue: ["sc:504843810", "sc:811306516", "sc:98893536"],
+  fromList: "sc:1162452736",
+  player: {
+    playing: false,
+    volume: 1,
+  },
+}
+
+const store = new Vuex.Store({
+  state: defaultState,
   mutations: {
-    trackInfo(state, info = {}) {
-      state.currentTrack = {
-        id: state.currentTrack.id,
-        ...info,
-      }
+    currentTrack(state: State, info: CurrentTrackInfo) {
+      state.currentTrack = { ...state.currentTrack, ...info }
     },
-    playState(state, playState) {
+    trackStream(state: State, stream: string) {
+      state.currentTrack.stream = stream
+    },
+    playState(state: State, playState) {
       state.player.playing = playState
     },
   },
-  actions: {},
-  modules: {},
+  actions: {
+    async playTrack({ dispatch, commit }, id) {
+      commit("currentTrack", { id })
+      dispatch("resolveTrack")
+    },
+    async resolveTrack({ commit, state }) {
+      const [platform, id] = state.currentTrack.id.split(":") as [
+        PlatformAccessor,
+        string
+      ]
+
+      commit("trackStream", await player(platform).stream(id))
+
+      const { artwork, title, user } = await player(platform).track(id)
+      commit("currentTrack", {
+        artwork,
+        title,
+        artist: user.username,
+      })
+    },
+  },
 })
+
+export default store

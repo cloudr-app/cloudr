@@ -6,7 +6,10 @@
     </main>
     <bottom-player />
     <bottom-nav />
-    <audio-player v-if="currentSrc" :src="currentSrc" />
+    <audio-player
+      v-if="$store.state.currentTrack.stream"
+      :src="$store.state.currentTrack.stream"
+    />
   </div>
 </template>
 
@@ -34,7 +37,6 @@ export default Vue.extend({
   components: { topNav, bottomNav, bottomPlayer, audioPlayer },
   data: () => ({
     scrolled: false,
-    currentSrc: "",
   }),
   async mounted() {
     const self = this
@@ -49,21 +51,6 @@ export default Vue.extend({
       if (e.target.scrollTop > 0) self.scrolled = true
       else self.scrolled = false
     }
-
-    await self.resolveTrack()
-  },
-  methods: {
-    async resolveTrack() {
-      const [platform, id] = this.$store.state.currentTrack.id.split(":")
-      this.currentSrc = await player(platform).stream(id)
-
-      const { artwork, title, user } = await player(platform).track(id)
-      this.$store.commit("trackInfo", {
-        artwork,
-        title,
-        author: user.username,
-      })
-    },
   },
 })
 </script>
