@@ -1,5 +1,5 @@
 <template>
-  <div class="track">
+  <div class="track" @click="onClick">
     <div class="main">
       <div class="artwork">
         <img :src="trackInfo.artwork" alt="" />
@@ -30,12 +30,22 @@ export default Vue.extend({
       required: true,
     },
   },
+  methods: {
+    async onClick() {
+      const { dispatch, commit } = this.$store
+      const { platform, id } = this.trackInfo
+
+      await dispatch("playTrack", `${platform}:${id}`)
+      commit("playState", true)
+    },
+  },
 })
 </script>
 
 <style lang="stylus" scoped>
 .track
   padding: 0 12.5px
+  cursor: pointer
 
   .main
     height: 54px
