@@ -41,13 +41,18 @@ export default Vue.extend({
   },
   watch: {
     "$store.state.player.playing": "onPlaybackStateChange",
+    "$store.state.player.setPosition": "setPosition",
     src: "onPlaybackStateChange",
   },
   methods: {
+    setPosition() {
+      const audio = this.$refs.audio as HTMLAudioElement
+      const state = this.$store.state as State
+      audio.currentTime = state.player.setPosition * audio.duration
+    },
     onPlaybackStateChange() {
       const state = this.$store.state as State
       const { playing } = state.player
-
       const audio = this.$refs.audio as HTMLAudioElement
 
       if (this.lastPlaybackState === playing) return

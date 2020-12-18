@@ -4,8 +4,8 @@
     <div class="right">
       <div class="upper">
         <div class="track-info">
-          <div class="title">{{ $store.state.currentTrack.title }}</div>
-          <div class="artist">{{ $store.state.currentTrack.artist }}</div>
+          <div class="title" :title="title">{{ title }}</div>
+          <div class="artist" :title="artist">{{ artist }}</div>
         </div>
         <div class="spacer"></div>
         <div class="controls">
@@ -22,7 +22,17 @@
         </div>
       </div>
       <div class="lower">
-        <div class="scrubber" :style="{ '--progress': `${progress * 100}%` }">
+        <div class="current-time">{{ formatTime(progress * duration) }}</div>
+        <div
+          class="scrubber"
+          :style="{
+            '--progress': `${
+              (positionOverride !== false ? positionOverride : progress) * 100
+            }%`,
+          }"
+          @touchstart="scrubberTouchStart"
+          @mousedown="scrubberMouseDown"
+        >
           <div class="bar"></div>
           <div class="progress"></div>
           <div class="handle"></div>
@@ -36,31 +46,69 @@
 <script lang="ts">
 import Vue from "vue"
 import { mapState } from "vuex"
+import { touchEventOffset, formatTime } from "@/utils"
 
 export default Vue.extend({
-  name: "player",
-  methods: {
-    playPause() {
-      const { commit, state } = this.$store
-      commit("playState", !state.player.playing)
-    },
-    formatTime(secs: number) {
-      const hours = Math.floor(secs / 3600)
-      const minutes = Math.floor(secs / 60 - hours * 60)
-      const seconds = Math.floor(secs - minutes * 60 - hours * 3600)
-
-      const pad = (n: number) => String(n).padStart(2, "0")
-      let ret = `${pad(minutes)}:${pad(seconds)}`
-
-      if (hours) ret = `${hours}:${ret}`
-
-      return ret
-    },
-  },
+  name: "bottomPlayer",
+  data: () => ({
+    positionOverride: false,
+  }),
   computed: mapState({
     progress: (state: any) => state.player.progress,
     duration: (state: any) => state.player.duration,
+    title: (state: any) => state.currentTrack.title,
+    artist: (state: any) => state.currentTrack.artist,
   }),
+  methods: {
+    formatTime,
+    playPause() {
+      const { commit } = this.$store
+      const state = this.$store.state as State
+
+      commit("playState", !state.player.playing)
+    },
+    scrubberMouseDown(event: any) {
+      const self = this
+      const { commit } = this.$store
+
+      const position = event.offsetX / event.target.scrollWidth
+      this.positionOverride = position
+
+      event.target.onmousemove = (evt: any) => {
+        const pos = evt.offsetX / evt.target.scrollWidth
+        self.positionOverride = pos
+      }
+
+      event.target.onmouseup = (evt: any) => {
+        const pos = evt.offsetX / evt.target.scrollWidth
+        event.target.onmousemove = null
+        self.positionOverride = false
+        commit("setPosition", pos)
+      }
+    },
+    scrubberTouchStart(event: any) {
+      const self = this
+      const { commit } = this.$store
+
+      const [offsetX] = touchEventOffset(event.changedTouches[0], event.target)
+      const position = offsetX / event.target.scrollWidth
+      this.positionOverride = position
+
+      event.target.ontouchmove = (evt: any) => {
+        const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
+        const pos = offX / evt.target.scrollWidth
+        self.positionOverride = Math.min(Math.max(pos, 0), 1)
+      }
+
+      event.target.ontouchend = (evt: any) => {
+        const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
+        const pos = offX / evt.target.scrollWidth
+        event.target.ontouchmove = null
+        self.positionOverride = false
+        commit("setPosition", pos)
+      }
+    },
+  },
 })
 </script>
 
@@ -143,9 +191,13 @@ export default Vue.extend({
       align-items: center
       padding-bottom: 4px
 
-      .duration
+      .duration, .current-time
         font-size: 12px
         margin-left: var(--margins)
+
+      .current-time
+        margin-left: 0
+        margin-right: var(--margins)
 
       .scrubber
         --progress: 0
@@ -154,9 +206,12 @@ export default Vue.extend({
         height: 100%
         position: relative
         flex-grow: 1
+        padding: 4px 0
+        margin: -4px 0
 
         > div
           position: absolute
+          pointer-events: none
 
         .bar, .progress
           background: var(--text-x-light)
