@@ -73,7 +73,7 @@ const transformTrack = (t: SoundcloudTrack): Track => ({
   description: t.description,
   genre: t.genre,
   user: { platform: "soundcloud", ...t.user },
-  artwork: t.artwork_url.replace("large", "t500x500"),
+  artwork: t.artwork_url?.replace("large", "t500x500") || "/artwork-placeholder.svg",
   playbackCount: t.playback_count,
   likeCount: t.favoritings_count,
 })
