@@ -22,14 +22,10 @@
         </div>
       </div>
       <div class="lower">
-        <div class="current-time">{{ formatTime(progress * duration) }}</div>
+        <div class="current-time">{{ formatTime(position * duration) }}</div>
         <div
           class="scrubber"
-          :style="{
-            '--progress': `${
-              (positionOverride !== false ? positionOverride : progress) * 100
-            }%`,
-          }"
+          :style="{ '--progress': `${position * 100}%` }"
           @touchstart="scrubberTouchStart"
           @mousedown="scrubberMouseDown"
         >
@@ -53,12 +49,17 @@ export default Vue.extend({
   data: () => ({
     positionOverride: false,
   }),
-  computed: mapState({
-    progress: (state: any) => state.player.progress,
-    duration: (state: any) => state.player.duration,
-    title: (state: any) => state.currentTrack.title,
-    artist: (state: any) => state.currentTrack.artist,
-  }),
+  computed: {
+    position() {
+      return this.positionOverride !== false ? this.positionOverride : this.progress
+    },
+    ...mapState({
+      progress: (state: any) => state.player.progress,
+      duration: (state: any) => state.player.duration,
+      title: (state: any) => state.currentTrack.title,
+      artist: (state: any) => state.currentTrack.artist,
+    }),
+  },
   methods: {
     formatTime,
     playPause() {
@@ -192,8 +193,9 @@ export default Vue.extend({
       padding-bottom: 4px
 
       .duration, .current-time
-        font-size: 12px
+        font-size: 11px
         margin-left: var(--margins)
+        font-family: "Roboto Mono", monospace
 
       .current-time
         margin-left: 0

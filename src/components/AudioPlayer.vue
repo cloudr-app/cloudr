@@ -48,7 +48,16 @@ export default Vue.extend({
     setPosition() {
       const audio = this.$refs.audio as HTMLAudioElement
       const state = this.$store.state as State
-      audio.currentTime = state.player.setPosition * audio.duration
+
+      const currentTime = state.player.setPosition * audio.duration
+
+      if (!isNaN(currentTime)) audio.currentTime = currentTime
+      else
+        audio.oncanplay = () => {
+          audio.oncanplay = null
+          audio.currentTime = state.player.setPosition * audio.duration
+        }
+      this.updateProgress(true)
     },
     onPlaybackStateChange() {
       const state = this.$store.state as State
@@ -82,7 +91,7 @@ export default Vue.extend({
       if (!isNaN(audio.duration) && state.player.duration !== audio.duration)
         commit("duration", audio.duration)
     }, 100),
-    updateProgress() {
+    updateProgress(single: boolean) {
       const state = this.$store.state as State
       const { commit } = this.$store
       const audio = this.$refs.audio as HTMLAudioElement
@@ -96,7 +105,8 @@ export default Vue.extend({
         return "ignore"
       }
 
-      if (state.player.playing) window.requestAnimationFrame(this.updateProgress)
+      if (state.player.playing && !single)
+        window.requestAnimationFrame(() => this.updateProgress())
     },
   },
 })
