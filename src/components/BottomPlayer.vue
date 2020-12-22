@@ -91,10 +91,6 @@ export default Vue.extend({
       const self = this
       const { commit } = this.$store
 
-      const [offsetX] = touchEventOffset(event.changedTouches[0], event.target)
-      const position = offsetX / event.target.scrollWidth
-      this.positionOverride = position
-
       event.target.ontouchmove = (evt: any) => {
         const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
         const pos = offX / evt.target.scrollWidth

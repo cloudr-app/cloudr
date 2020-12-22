@@ -1,8 +1,8 @@
 <template>
-  <div class="track" @click="onClick">
+  <div class="track" @click="$emit('playTrack')">
     <div class="main">
       <div class="artwork">
-        <img :src="trackInfo.artwork" alt="" />
+        <img :src="trackInfo.artwork" alt="track artwork" />
       </div>
       <div class="info">
         <div class="title">{{ trackInfo.title }}</div>
@@ -28,15 +28,6 @@ export default Vue.extend({
     trackInfo: {
       type: Object,
       required: true,
-    },
-  },
-  methods: {
-    async onClick() {
-      const { dispatch, commit } = this.$store
-      const { platform, id } = this.trackInfo
-
-      await dispatch("playTrack", `${platform}:${id}`)
-      commit("playState", true)
     },
   },
 })

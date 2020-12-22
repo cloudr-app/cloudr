@@ -16,8 +16,10 @@ interface CurrentTrackInfo {
 declare global {
   interface State {
     currentTrack: CurrentTrackInfo
+    queued: string[]
     queue: string[]
-    fromList: string
+    queuePrev: string[]
+    playingList: string
     player: {
       playing: boolean
       volume: number
@@ -36,8 +38,10 @@ const defaultState: State = {
     artwork: "/artwork-placeholder.svg",
     stream: "",
   },
-  queue: ["sc:504843810", "sc:811306516", "sc:98893536"],
-  fromList: "sc:1162452736",
+  queuePrev: [],
+  queued: [],
+  queue: [],
+  playingList: "",
   player: {
     playing: false,
     volume: 1,
@@ -47,14 +51,25 @@ const defaultState: State = {
   },
 }
 
+// queuePrev are the tracks that have already been played.
+// queued is the list of tracks the user added to the queue.
+// queue is the tracks playing from the current playlist.
+
 const store = new Vuex.Store({
   state: defaultState,
+  getters: {
+    futureQueue: state => [...state.queued, ...state.queue],
+  },
   mutations: {
     currentTrack(state: State, info: CurrentTrackInfo) {
       state.currentTrack = { ...state.currentTrack, ...info }
     },
     trackStream(state: State, stream: string) {
       state.currentTrack.stream = stream
+    },
+    setPlayer(state: any, [prop, value]) {
+      console.log("setPlayer", prop, value)
+      state.player[prop] = value
     },
     playState(state: State, playState) {
       state.player.playing = playState
@@ -67,6 +82,15 @@ const store = new Vuex.Store({
     },
     setPosition(state: State, position) {
       state.player.setPosition = position
+    },
+    setQueue(state: State, queue) {
+      state.queue = queue
+    },
+    setQueuePrev(state: State, queuePrev) {
+      state.queuePrev = queuePrev
+    },
+    setPlayingList(state: State, playingList) {
+      state.playingList = playingList
     },
   },
   actions: {

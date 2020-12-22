@@ -9,9 +9,10 @@
     </section>
     <section class="tracks">
       <track-list-item
-        v-for="track in playlistTracks"
+        v-for="(track, index) in playlistTracks"
         :key="track.id"
-        :trackInfo="track"
+        :track-info="track"
+        @playTrack="playTrack(track, index)"
       />
     </section>
   </div>
@@ -24,7 +25,7 @@ import TrackListItem from "@/components/TrackListItem.vue"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
-import type { Playlist } from "@/player/musicSource"
+import type { Playlist, Track } from "@/player/musicSource"
 
 declare global {
   interface Window {
@@ -74,6 +75,17 @@ export default Vue.extend({
       const playlist = await player(platform).playlistTracks(id)
       this.playlistTracks = playlist.tracks
       this.playlistNext = playlist.next
+    },
+    async playTrack(track: Track, index: number) {
+      const { dispatch, commit } = this.$store
+      const { playlistTracks } = this
+      const { platform, id }: any = this.$route.params
+
+      await dispatch("playTrack", `${track.platform}:${track.id}`)
+      commit("setPlayer", ["playing", true])
+      commit("setQueuePrev", playlistTracks.slice(0, index))
+      commit("setQueue", playlistTracks.slice(index))
+      commit("setPlayingList", `${platform}:${id}`)
     },
   },
 })
