@@ -1,6 +1,6 @@
 <template>
-  <div class="artwork">
-    <img :src="artwork" alt="artwork not found" />
+  <div class="artwork" :class="{ expanded }" @click="expand">
+    <img :src="artwork" alt="artwork not found" draggable="false" />
     <div class="overlay">
       <div class="info">
         <div class="title">{{ title }}</div>
@@ -13,6 +13,23 @@
 <script lang="ts">
 import Vue from "vue"
 export default Vue.extend({
+  data: () => ({
+    expanded: false,
+  }),
+  methods: {
+    async expand() {
+      this.expanded = !this.expanded
+
+      if (this.expanded) window.addEventListener("pointerdown", this.outsideClick, false)
+      else window.removeEventListener("pointerdown", this.outsideClick)
+    },
+    outsideClick(event: any) {
+      if (event.target.closest(".artwork")) return
+      this.expanded = false
+
+      window.removeEventListener("pointerdown", this.outsideClick)
+    },
+  },
   props: {
     artwork: {
       required: true,
@@ -33,13 +50,14 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .artwork
   --title-offset: 20px
-  width: calc(100% - 20px)
-  max-width: 360px
+  width: calc(100% - 60px)
+  max-width: 40vh
   display: flex
   border-radius: var(--border-radius-large)
   overflow: hidden
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25)
   position: relative
+  transition: var(--transition-short) var(--ease)
 
   .overlay
     height: 50%
@@ -48,6 +66,8 @@ export default Vue.extend({
     position: absolute
     bottom: 0
     left: 0
+    transition: var(--transition-short) var(--ease)
+    pointer-events: none
 
     .info
       position: absolute
@@ -75,4 +95,16 @@ export default Vue.extend({
     width: calc(100% - 2px)
     border-radius: var(--border-radius-large)
     border: 1px solid var(--bg)
+    transition: var(--transition-short) var(--ease)
+
+  &.expanded
+    width: calc(100% - 20px)
+    max-width: 50vh
+    border-radius: 0
+
+    img
+      border-radius: 0
+
+    .overlay
+      transform: translateY(100%)
 </style>

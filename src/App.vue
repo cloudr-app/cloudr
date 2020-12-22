@@ -67,13 +67,13 @@ export default Vue.extend({
   --text-trans-white: #FFFFFF
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
+  --transition-short: 200ms
   --top-nav-height: 56px
   --bottom-nav-height: 56px
   --bottom-player-height: 74px
   --border-radius: 5px
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)
-  --transition-short: 200ms
   --icon-size: 30px
   --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
 

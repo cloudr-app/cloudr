@@ -1,6 +1,6 @@
 <template>
   <nav class="top" :class="{ scrolled }">
-    <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">arrow_back</i>
+    <!-- <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">arrow_back</i> -->
     <div class="spacer"></div>
     <!-- <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">sort</i> -->
   </nav>
