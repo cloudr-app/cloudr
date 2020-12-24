@@ -82,6 +82,14 @@ export default Vue.extend({
 
       audio.onplay = () => commit("setPlayer", ["playing", true])
       audio.onpause = () => commit("setPlayer", ["playing", false])
+      audio.onended = this.onended
+    },
+    async onended() {
+      // TODO implement repeating tracks
+      const { commit } = this.$store
+
+      await this.$store.dispatch("nextTrack")
+      commit("setPlayer", ["playing", true])
     },
     updateDuration: throttle(function () {
       const { commit } = this.$store

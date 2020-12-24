@@ -2,6 +2,7 @@ import Vue from "vue"
 import Vuex from "vuex"
 import player from "@/player"
 import { PlatformAccessor } from "./player/platformShortNames"
+import { Track } from "./player/musicSource"
 
 Vue.use(Vuex)
 
@@ -16,9 +17,9 @@ interface CurrentTrackInfo {
 declare global {
   interface State {
     currentTrack: CurrentTrackInfo
-    queued: string[]
-    queue: string[]
-    queuePrev: string[]
+    queued: Track[]
+    queue: Track[]
+    queuePrev: Track[]
     playingList: string
     player: {
       playing: boolean
@@ -81,6 +82,15 @@ const store = new Vuex.Store({
     },
   },
   actions: {
+    async nextTrack({ state, dispatch }: { state: State; dispatch: Function }) {
+      const currentTrack = state.queued.shift() || state.queue.shift()
+      if (currentTrack) state.queuePrev.push(currentTrack)
+
+      const nextTrack = state.queue[0]
+      if (!nextTrack) return console.log("end of playlist.")
+
+      await dispatch("playTrack", `${nextTrack.platform}:${nextTrack.id}`)
+    },
     async playTrack({ dispatch, commit }, id) {
       commit("currentTrack", { id })
       dispatch("resolveTrack")
