@@ -68,20 +68,7 @@ const store = new Vuex.Store({
       state.currentTrack.stream = stream
     },
     setPlayer(state: any, [prop, value]) {
-      console.log("setPlayer", prop, value)
       state.player[prop] = value
-    },
-    playState(state: State, playState) {
-      state.player.playing = playState
-    },
-    progress(state: State, progress) {
-      state.player.progress = progress
-    },
-    duration(state: State, duration) {
-      state.player.duration = duration
-    },
-    setPosition(state: State, position) {
-      state.player.setPosition = position
     },
     setQueue(state: State, queue) {
       state.queue = queue

@@ -80,8 +80,8 @@ export default Vue.extend({
       const audio = this.$refs.audio as HTMLAudioElement
       const { commit } = this.$store
 
-      audio.onplay = () => commit("playState", true)
-      audio.onpause = () => commit("playState", false)
+      audio.onplay = () => commit("setPlayer", ["playing", true])
+      audio.onpause = () => commit("setPlayer", ["playing", false])
     },
     updateDuration: throttle(function () {
       const { commit } = this.$store
@@ -89,7 +89,7 @@ export default Vue.extend({
       const audio = this.$refs.audio as HTMLAudioElement
 
       if (!isNaN(audio.duration) && state.player.duration !== audio.duration)
-        commit("duration", audio.duration)
+        commit("setPlayer", ["duration", audio.duration])
     }, 100),
     updateProgress(single: boolean) {
       const state = this.$store.state as State
@@ -100,7 +100,7 @@ export default Vue.extend({
 
       try {
         const progress = audio.currentTime / audio.duration || 0
-        commit("progress", progress)
+        commit("setPlayer", ["progress", progress])
       } catch (err) {
         return "ignore"
       }

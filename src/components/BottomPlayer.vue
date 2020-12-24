@@ -66,7 +66,7 @@ export default Vue.extend({
       const { commit } = this.$store
       const state = this.$store.state as State
 
-      commit("playState", !state.player.playing)
+      commit("setPlayer", ["playing", !state.player.playing])
     },
     scrubberMouseDown(event: any) {
       const self = this
@@ -84,7 +84,7 @@ export default Vue.extend({
         const pos = evt.offsetX / evt.target.scrollWidth
         event.target.onmousemove = null
         self.positionOverride = false
-        commit("setPosition", pos)
+        commit("setPlayer", ["setPosition", pos])
       }
     },
     scrubberTouchStart(event: any) {
@@ -102,7 +102,7 @@ export default Vue.extend({
         const pos = offX / evt.target.scrollWidth
         event.target.ontouchmove = null
         self.positionOverride = false
-        commit("setPosition", pos)
+        commit("setPlayer", ["setPosition", pos])
       }
     },
   },
