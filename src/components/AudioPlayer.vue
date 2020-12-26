@@ -59,7 +59,7 @@ export default Vue.extend({
         }
       this.updateProgress(true)
     },
-    onPlaybackStateChange() {
+    async onPlaybackStateChange() {
       const state = this.$store.state as State
       const { playing } = state.player
       const audio = this.$refs.audio as HTMLAudioElement
@@ -69,7 +69,7 @@ export default Vue.extend({
 
       if (playing) {
         this.autoplay = true
-        audio.play()
+        await audio.play()
         this.updateProgress()
       } else {
         this.autoplay = false

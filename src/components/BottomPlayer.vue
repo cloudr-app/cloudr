@@ -9,14 +9,14 @@
         </div>
         <div class="spacer"></div>
         <div class="controls">
-          <div class="skip-previous">
+          <div class="skip-previous" @click="$store.dispatch('prevTrack')">
             <i class="mi">skip_previous</i>
           </div>
           <div class="play-pause" @click="playPause">
             <i v-if="$store.state.player.playing" class="mi">pause</i>
             <i v-else class="mi">play_arrow</i>
           </div>
-          <div class="skip-next">
+          <div class="skip-next" @click="$store.dispatch('nextTrack')">
             <i class="mi">skip_next</i>
           </div>
         </div>

@@ -82,7 +82,7 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    async nextTrack({ state, dispatch }: { state: State; dispatch: Function }) {
+    async nextTrack({ state, dispatch }) {
       const currentTrack = state.queued.shift() || state.queue.shift()
       if (currentTrack) state.queuePrev.push(currentTrack)
 
@@ -90,6 +90,20 @@ const store = new Vuex.Store({
       if (!nextTrack) return console.log("end of playlist.")
 
       await dispatch("playTrack", `${nextTrack.platform}:${nextTrack.id}`)
+    },
+    async prevTrack({ state, dispatch, commit }) {
+      const progressSeconds = state.player.progress * state.player.duration
+      if (progressSeconds > 3) return commit("setPlayer", ["setPosition", 0])
+
+      const queuePrevLastIndex = state.queuePrev.length - 1
+      const previousTrack = state.queuePrev[queuePrevLastIndex]
+
+      if (!previousTrack) return
+
+      state.queuePrev = state.queuePrev.slice(0, queuePrevLastIndex)
+      state.queue.unshift(previousTrack)
+
+      await dispatch("playTrack", `${previousTrack.platform}:${previousTrack.id}`)
     },
     async playTrack({ dispatch, commit }, id) {
       commit("currentTrack", { id })
