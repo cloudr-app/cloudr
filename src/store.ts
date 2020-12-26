@@ -3,14 +3,15 @@ import Vuex from "vuex"
 import player from "@/player"
 import { PlatformAccessor } from "./player/platformShortNames"
 import { Track } from "./player/musicSource"
+import notification from "@/player/notification"
 
 Vue.use(Vuex)
 
 interface CurrentTrackInfo {
   id: string
-  title?: string
-  artist?: string
-  artwork?: string
+  title: string
+  artist: string
+  artwork: string
   stream?: string
 }
 
@@ -52,6 +53,13 @@ const defaultState: State = {
   },
 }
 
+interface ActionArgs {
+  state: State
+  commit: Function
+  dispatch: Function
+  [key: string]: any
+}
+
 // queuePrev are the tracks that have already been played.
 // queued is the list of tracks the user added to the queue.
 // queue is the tracks playing from the current playlist.
@@ -82,7 +90,31 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    async nextTrack({ state, dispatch }) {
+    async currentTrack({ dispatch, commit }: ActionArgs, info: CurrentTrackInfo) {
+      commit("currentTrack", info)
+      dispatch("updateNotification")
+    },
+    async updateNotification({ state, dispatch, commit }: ActionArgs) {
+      const { title, artist, artwork } = state.currentTrack
+
+      const seeker = (skipBy: number) => () => {
+        const { duration, progress } = state.player
+        const currentTime = progress * duration
+        commit("setPlayer", ["setPosition", (currentTime + skipBy) / duration])
+      }
+
+      const handlers = {
+        nexttrack: () => dispatch("nextTrack"),
+        previoustrack: () => dispatch("prevTrack"),
+        seekforward: seeker(10),
+        seekbackward: seeker(-10),
+        play: () => commit("setPlayer", ["playing", true]),
+        pause: () => commit("setPlayer", ["playing", false]),
+      }
+
+      notification.update({ title, artist, artwork, album: "cloudr.app", handlers })
+    },
+    async nextTrack({ state, dispatch }: ActionArgs) {
       const currentTrack = state.queued.shift() || state.queue.shift()
       if (currentTrack) state.queuePrev.push(currentTrack)
 
@@ -91,7 +123,7 @@ const store = new Vuex.Store({
 
       await dispatch("playTrack", `${nextTrack.platform}:${nextTrack.id}`)
     },
-    async prevTrack({ state, dispatch, commit }) {
+    async prevTrack({ state, dispatch, commit }: ActionArgs) {
       const progressSeconds = state.player.progress * state.player.duration
       if (progressSeconds > 3) return commit("setPlayer", ["setPosition", 0])
 
@@ -105,11 +137,11 @@ const store = new Vuex.Store({
 
       await dispatch("playTrack", `${previousTrack.platform}:${previousTrack.id}`)
     },
-    async playTrack({ dispatch, commit }, id) {
-      commit("currentTrack", { id })
+    async playTrack({ dispatch }: ActionArgs, id) {
+      dispatch("currentTrack", { id })
       dispatch("resolveTrack")
     },
-    async resolveTrack({ commit, state }) {
+    async resolveTrack({ commit, state, dispatch }: ActionArgs) {
       const [platform, id] = state.currentTrack.id.split(":") as [
         PlatformAccessor,
         string
@@ -118,7 +150,7 @@ const store = new Vuex.Store({
       commit("trackStream", await player(platform).stream(id))
 
       const { artwork, title, user } = await player(platform).track(id)
-      commit("currentTrack", {
+      dispatch("currentTrack", {
         artwork,
         title,
         artist: user.username,
