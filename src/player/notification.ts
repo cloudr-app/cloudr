@@ -22,6 +22,12 @@ type MediaHandler =
   | "previoustrack"
   | "nexttrack"
 
+interface PositionState {
+  duration: number
+  playbackRate: number
+  currentTime: number
+}
+
 declare global {
   interface Navigator {
     mediaSession: any
@@ -38,21 +44,31 @@ const notification = {
   },
   update({ title, artist, album, artwork, handlers = {} }: NotificationUpdate) {
     if (isNative) return
-    else if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new window.MediaMetadata({
-        title,
-        artist,
-        album,
-        artwork: [{ src: artwork, sizes: "500x500", type: "image/jpg" }],
-      })
+    if (!("mediaSession" in navigator)) return
 
-      for (const [action, handler] of Object.entries(handlers))
-        try {
-          navigator.mediaSession.setActionHandler(action, handler)
-        } catch (error) {
-          return "ignore"
-        }
-    }
+    navigator.mediaSession.metadata = new window.MediaMetadata({
+      title,
+      artist,
+      album,
+      artwork: [{ src: artwork, sizes: "500x500", type: "image/jpg" }],
+    })
+
+    for (const [action, handler] of Object.entries(handlers))
+      try {
+        navigator.mediaSession.setActionHandler(action, handler)
+      } catch (error) {
+        return "ignore"
+      }
+  },
+  setPositionState({ duration, playbackRate, currentTime: position }: PositionState) {
+    if (isNative) return
+    if (!("mediaSession" in navigator)) return
+
+    navigator.mediaSession.setPositionState({
+      duration,
+      playbackRate,
+      position,
+    })
   },
 }
 

@@ -110,6 +110,10 @@ const store = new Vuex.Store({
         seekbackward: seeker(-10),
         play: () => commit("setPlayer", ["playing", true]),
         pause: () => commit("setPlayer", ["playing", false]),
+        seekto: (details: any) => {
+          const { duration } = state.player
+          commit("setPlayer", ["setPosition", details.seekTime / duration])
+        },
       }
 
       notification.update({ title, artist, artwork, album: "cloudr.app", handlers })

@@ -67,6 +67,8 @@ export default Vue.extend({
       if (this.lastPlaybackState === playing) return
       this.lastPlaybackState = playing
 
+      this.updateNotificationPositionState()
+
       if (playing) {
         this.autoplay = true
         await audio.play()
@@ -99,6 +101,15 @@ export default Vue.extend({
       if (!isNaN(audio.duration) && state.player.duration !== audio.duration)
         commit("setPlayer", ["duration", audio.duration])
     }, 100),
+    updateNotificationPositionState: throttle(function () {
+      const audio = this.$refs.audio as HTMLAudioElement
+      const { duration, playbackRate, currentTime } = audio
+      const isAnyNaN = (numbers: number[]) =>
+        Boolean(numbers.filter(n => isNaN(n)).length)
+
+      if (!isAnyNaN([duration, playbackRate, currentTime]))
+        notification.setPositionState({ duration, playbackRate, currentTime })
+    }, 500),
     updateProgress(single: boolean) {
       const state = this.$store.state as State
       const { commit } = this.$store
