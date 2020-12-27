@@ -32,6 +32,13 @@ declare global {
   }
 }
 
+interface ActionArg {
+  state: State
+  commit: Function
+  dispatch: Function
+  [key: string]: any
+}
+
 const defaultState: State = {
   currentTrack: {
     id: "",
@@ -51,13 +58,6 @@ const defaultState: State = {
     duration: 0,
     setPosition: 0,
   },
-}
-
-interface ActionArg {
-  state: State
-  commit: Function
-  dispatch: Function
-  [key: string]: any
 }
 
 // queuePrev are the tracks that have already been played.
