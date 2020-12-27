@@ -53,7 +53,7 @@ const defaultState: State = {
   },
 }
 
-interface ActionArgs {
+interface ActionArg {
   state: State
   commit: Function
   dispatch: Function
@@ -90,11 +90,12 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    async currentTrack({ dispatch, commit }: ActionArgs, info: CurrentTrackInfo) {
+    async addQueued(ctx: ActionArg) {},
+    async currentTrack({ dispatch, commit }: ActionArg, info: CurrentTrackInfo) {
       commit("currentTrack", info)
-      dispatch("updateNotification")
+      await dispatch("updateNotification")
     },
-    async updateNotification({ state, dispatch, commit }: ActionArgs) {
+    async updateNotification({ state, dispatch, commit }: ActionArg) {
       const { title, artist, artwork } = state.currentTrack
 
       const seeker = (skipBy: number) => () => {
@@ -118,7 +119,7 @@ const store = new Vuex.Store({
 
       notification.update({ title, artist, artwork, album: "cloudr.app", handlers })
     },
-    async nextTrack({ state, dispatch }: ActionArgs) {
+    async nextTrack({ state, dispatch }: ActionArg) {
       const currentTrack = state.queued.shift() || state.queue.shift()
       if (currentTrack) state.queuePrev.push(currentTrack)
 
@@ -127,7 +128,7 @@ const store = new Vuex.Store({
 
       await dispatch("playTrack", `${nextTrack.platform}:${nextTrack.id}`)
     },
-    async prevTrack({ state, dispatch, commit }: ActionArgs) {
+    async prevTrack({ state, dispatch, commit }: ActionArg) {
       const progressSeconds = state.player.progress * state.player.duration
       if (progressSeconds > 3) return commit("setPlayer", ["setPosition", 0])
 
@@ -141,24 +142,23 @@ const store = new Vuex.Store({
 
       await dispatch("playTrack", `${previousTrack.platform}:${previousTrack.id}`)
     },
-    async playTrack({ dispatch }: ActionArgs, id) {
-      dispatch("currentTrack", { id })
-      dispatch("resolveTrack")
-    },
-    async resolveTrack({ commit, state, dispatch }: ActionArgs) {
-      const [platform, id] = state.currentTrack.id.split(":") as [
-        PlatformAccessor,
-        string
-      ]
+    async playTrack({ dispatch, commit }: ActionArg, track) {
+      const [platform, id] = track.split(":") as [PlatformAccessor, string]
 
+      dispatch("currentTrack", { id: track })
       commit("trackStream", await player(platform).stream(id))
 
-      const { artwork, title, user } = await player(platform).track(id)
+      const { artwork, title, user } = await dispatch("resolveTrackInfo", track)
       dispatch("currentTrack", {
         artwork,
         title,
         artist: user.username,
       })
+    },
+    async resolveTrackInfo(_, track: string) {
+      const [platform, id] = track.split(":") as [PlatformAccessor, string]
+
+      return await player(platform).track(id)
     },
   },
 })
