@@ -119,6 +119,13 @@ export default Vue.extend({
   padding: var(--margins)
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.5)
 
+  &.bottom-player-enter-active, &.bottom-player-leave-active
+    transition: var(--transition-medium) var(--ease)
+
+  &.bottom-player-enter, &.bottom-player-leave-to
+    height: 0
+    padding: 0 var(--margins)
+
   img.artwork
     width: calc(var(--bottom-player-height) - var(--margins) * 2)
     border-radius: var(--border-radius)

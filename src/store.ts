@@ -12,7 +12,7 @@ interface CurrentTrackInfo {
   title: string
   artist: string
   artwork: string
-  stream?: string
+  stream: string
 }
 
 declare global {

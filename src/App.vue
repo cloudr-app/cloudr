@@ -1,10 +1,12 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ noTrack }">
     <top-nav :scrolled="scrolled" />
     <main ref="main" class="rw">
       <router-view />
     </main>
-    <bottom-player />
+    <transition name="bottom-player">
+      <bottom-player v-if="!noTrack" />
+    </transition>
     <bottom-nav />
     <audio-player
       v-if="$store.state.currentTrack.stream"
@@ -38,6 +40,15 @@ export default Vue.extend({
   data: () => ({
     scrolled: false,
   }),
+  computed: {
+    noTrack() {
+      const allEmpty = (arr: string[]) => !arr.filter(s => s.length).length
+
+      const { currentTrack } = this.$store.state as State
+      const { artist, id, stream, title } = currentTrack
+      return allEmpty([artist, id, stream, title])
+    },
+  },
   async mounted() {
     const self = this
 
@@ -68,6 +79,7 @@ export default Vue.extend({
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --transition-short: 200ms
+  --transition-medium: 500ms
   --top-nav-height: 56px
   --bottom-nav-height: 56px
   --bottom-player-height: 74px
@@ -146,8 +158,13 @@ html, body
     top: var(--top-nav-height)
     width: 100%
     overflow: auto
+    transition: var(--transition-medium) var(--ease)
 
     > .rw
       height: 100%
       width: 100%
+
+  &.noTrack
+    > main
+      --navigation-size: calc(var(--top-nav-height) + var(--bottom-nav-height))
 </style>
