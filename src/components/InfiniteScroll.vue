@@ -37,7 +37,7 @@ export default Vue.extend({
 
       const children = this.$refs.wrap.children
       observed = children[children.length - 11]
-      observer.observe(observed)
+      if (observed) observer.observe(observed)
     },
   },
   methods: {
