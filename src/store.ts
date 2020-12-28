@@ -146,7 +146,7 @@ const store = new Vuex.Store({
       const [platform, id] = track.split(":") as [PlatformAccessor, string]
 
       dispatch("currentTrack", { id: track })
-      commit("trackStream", await player(platform).stream(id))
+      commit("trackStream", await player(platform).stream(Number(id)))
 
       const { artwork, title, user } = await dispatch("resolveTrackInfo", track)
       dispatch("currentTrack", {
@@ -158,7 +158,7 @@ const store = new Vuex.Store({
     async resolveTrackInfo(_, track: string) {
       const [platform, id] = track.split(":") as [PlatformAccessor, string]
 
-      return await player(platform).track(id)
+      return await player(platform).track(Number(id))
     },
   },
 })

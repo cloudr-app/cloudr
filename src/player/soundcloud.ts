@@ -92,14 +92,6 @@ const baseApi = "https://api.soundcloud.com"
 const client_id = "z8LRYFPM4UK5MMLaBe9vixfph5kqNA25"
 const auth = `client_id=${client_id}`
 
-const isID = (input: string) => Boolean(/^\d+$/.exec(input))
-const resolve = async (source: string) => {
-  const url = new URL(source, base).toString()
-  return await axios.get(`${baseApi}/resolve`, {
-    params: { url, client_id },
-  })
-}
-
 function paginateNext(
   url: string,
   key = "collection",
@@ -119,60 +111,34 @@ function paginateNext(
 }
 
 const soundcloud: MusicSource = {
-  async stream(source) {
-    const idToStream = (id: string) => `${baseApi}/tracks/${id}/stream?${auth}`
-
-    if (isID(source)) return idToStream(source)
-    else {
-      const url = new URL(source, base).toString()
-      const { data } = await axios.get(`${baseApi}/resolve`, {
-        params: { url, client_id },
-      })
-      return idToStream(data.id)
-    }
+  resolve: async source => {
+    const url = new URL(source, base).toString()
+    const { data } = await axios.get(`${baseApi}/resolve`, {
+      params: { url, client_id },
+    })
+    return data
   },
+  stream: source => Promise.resolve(`${baseApi}/tracks/${source}/stream?${auth}`),
   async user(source) {
-    if (isID(source)) {
-      const { data } = await axios.get(`${baseApi}/users/${source}`, {
-        params: { client_id },
-      })
-      return transformUser(data)
-    } else {
-      const { data } = await resolve(source)
-      return transformUser(data)
-    }
+    const { data } = await axios.get(`${baseApi}/users/${source}`, {
+      params: { client_id },
+    })
+    return transformUser(data)
   },
   async playlistInfo(source) {
-    if (isID(source)) {
-      const { data } = await axios.get(`${baseApi}/playlists/${source}`, {
-        params: { client_id, linked_partitioning: true, limit: 1 },
-      })
-      return transformPlaylistInfo(data)
-    } else {
-      const { data } = await resolve(source)
-      return transformPlaylistInfo(data)
-    }
+    const { data } = await axios.get(`${baseApi}/playlists/${source}`, {
+      params: { client_id, linked_partitioning: true, limit: 1 },
+    })
+    return transformPlaylistInfo(data)
   },
   async track(source) {
-    if (isID(source)) {
-      const { data } = await axios.get(`${baseApi}/tracks/${source}`, {
-        params: { client_id },
-      })
-      return transformTrack(data)
-    } else {
-      const { data } = await resolve(source)
-      return transformTrack(data)
-    }
+    const { data } = await axios.get(`${baseApi}/tracks/${source}`, {
+      params: { client_id },
+    })
+    return transformTrack(data)
   },
   async playlistTracks(source, limit = 50) {
-    let id = source
-
-    if (!isID(source)) {
-      const { data } = await resolve(source)
-      id = data.id
-    }
-
-    const { data } = await axios.get(`${baseApi}/playlists/${id}/tracks`, {
+    const { data } = await axios.get(`${baseApi}/playlists/${source}/tracks`, {
       params: { client_id, limit, linked_partitioning: true },
     })
     const ret: PlaylistTracks = {

@@ -1,11 +1,15 @@
 import { Platform } from "@/player/platformShortNames"
 
+type URL = string
+type Source = number
+
 export interface MusicSource {
-  playlistInfo(source: string): Promise<Playlist>
-  playlistTracks(source: string, limit?: number): Promise<PlaylistTracks>
-  stream(source: string): Promise<string>
-  user(source: string): Promise<User>
-  track(source: string): Promise<Track>
+  playlistInfo(source: Source): Promise<Playlist>
+  playlistTracks(source: Source, limit?: number): Promise<PlaylistTracks>
+  stream(source: Source): Promise<URL>
+  user(source: Source): Promise<User>
+  track(source: Source): Promise<Track>
+  resolve?(source: URL): Promise<any>
 }
 
 export interface User {
