@@ -1,6 +1,11 @@
 <template>
-  <div class="track" @click="$emit('playTrack')">
-    <div class="main">
+  <div
+    class="track"
+    @click="$emit('playTrack')"
+    ref="main"
+    :style="{ height: height > 0 ? `${height}px` : null }"
+  >
+    <div class="main" v-if="!hide">
       <div class="artwork">
         <img :src="trackInfo.artwork" alt="track artwork" />
       </div>
@@ -28,6 +33,16 @@ export default Vue.extend({
     trackInfo: {
       type: Object,
       required: true,
+    },
+  },
+  data: () => ({
+    hide: false,
+    height: 0,
+  }),
+  watch: {
+    hide(n) {
+      if (n) this.height = this.$refs.main.scrollHeight
+      else this.height = 0
     },
   },
 })
