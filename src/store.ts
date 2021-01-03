@@ -70,9 +70,6 @@ const store = new Vuex.Store({
     futureQueue: state => [...state.queued, ...state.queue],
   },
   mutations: {
-    currentTrack(state: State, info: CurrentTrackInfo) {
-      state.currentTrack = { ...state.currentTrack, ...info }
-    },
     trackStream(state: State, stream: string) {
       state.currentTrack.stream = stream
     },
@@ -91,8 +88,8 @@ const store = new Vuex.Store({
   },
   actions: {
     async addQueued(ctx: ActionArg) {},
-    async currentTrack({ dispatch, commit }: ActionArg, info: CurrentTrackInfo) {
-      commit("currentTrack", info)
+    async currentTrack({ dispatch, state }: ActionArg, info: CurrentTrackInfo) {
+      state.currentTrack = { ...state.currentTrack, ...info }
       await dispatch("updateNotification")
     },
     async updateNotification({ state, dispatch, commit }: ActionArg) {
