@@ -65,7 +65,6 @@ export default Vue.extend({
       children.forEach((child: HTMLElement, index: number) => {
         if (hideObserved[index]) return
 
-        // console.log("observing", index, child)
         hideObserver.observe(child)
         hideObserved[index] = true
       })

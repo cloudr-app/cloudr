@@ -11,7 +11,7 @@
       <infinite-scroll :list="playlistTracks" root="main" @end="loadNext()">
         <track-list-item
           v-for="(track, index) in playlistTracks"
-          :key="track.id"
+          :key="track.platform + track.id"
           :track-info="track"
           @playTrack="playTrack(track, index)"
         />

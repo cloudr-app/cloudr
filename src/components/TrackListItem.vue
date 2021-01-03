@@ -4,6 +4,7 @@
     @click="$emit('playTrack')"
     ref="main"
     :style="{ height: height > 0 ? `${height}px` : null }"
+    :class="{ 'is-playing': isPlaying }"
   >
     <div class="main" v-if="!hide">
       <div class="artwork">
@@ -27,6 +28,7 @@
 
 <script lang="ts">
 import Vue from "vue"
+
 export default Vue.extend({
   name: "track-list-item",
   props: {
@@ -39,6 +41,12 @@ export default Vue.extend({
     hide: false,
     height: 0,
   }),
+  computed: {
+    isPlaying() {
+      const { platform, id } = this.trackInfo
+      return `${platform}:${id}` === this.$store.state.currentTrack.id
+    },
+  },
   watch: {
     hide(n) {
       if (n) this.height = this.$refs.main.scrollHeight
@@ -99,7 +107,20 @@ export default Vue.extend({
       border-radius: var(--border-radius)
       box-shadow: var(--small-artwork-shadow)
       margin-right: 10px
+      transition: var(--transition-short)
 
       img
         height: 100%
+
+  &.is-playing
+    .main
+      .info
+        .title
+          color: var(--text-highlight)
+
+        .author
+          color: var(--text-light-highlight)
+
+    .artwork
+      box-shadow: var(--small-artwork-highlight)
 </style>

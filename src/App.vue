@@ -76,6 +76,8 @@ export default Vue.extend({
   --text-light: #C8C8CD
   --text-x-light: #343644
   --text-trans-white: #FFFFFF
+  --text-highlight: #cec2ff
+  --text-light-highlight: #aeaed5
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --transition-short: 200ms
@@ -88,6 +90,7 @@ export default Vue.extend({
   --artwork-gradient: rgba(34, 36, 54, 0.95)
   --icon-size: 30px
   --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
+  --small-artwork-highlight: 0 0 0 1px var(--text-white)
 
 @font-face
   font-family: "manrope"
