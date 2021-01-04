@@ -28,6 +28,7 @@
 
 <script lang="ts">
 import Vue from "vue"
+import { toCloudrID } from "@/utils"
 
 export default Vue.extend({
   name: "track-list-item",
@@ -44,7 +45,7 @@ export default Vue.extend({
   computed: {
     isPlaying() {
       const { platform, id } = this.trackInfo
-      return `${platform}:${id}` === this.$store.state.currentTrack.id
+      return toCloudrID(platform, id) === this.$store.state.currentTrack.id
     },
   },
   watch: {

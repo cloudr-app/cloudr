@@ -25,13 +25,38 @@ export type Platform = "spotify" | "soundcloud" | "tidal" | "youtube"
 export type ShortPlatform = "sp" | "sc" | "td" | "yt"
 export type PlatformAccessor = Platform | ShortPlatform
 
-export const platformShorts = {
+export const platformsShort = {
   sc: "soundcloud",
   sp: "spotify",
   td: "tidal",
   yt: "youtube",
+}
+
+export const platformsLong = {
   soundcloud: "sc",
   spotify: "sp",
   tidal: "td",
   youtube: "yt",
+}
+
+type CloudrID = string
+
+/**
+ * convert a given platform and an ID to the cloudrID format
+ * @param platform the platform identifier, can be both long or short
+ * @param id number
+ * @example toCloudrID("soundcloud", 16514846) // "sc:16514846"
+ */
+export const toCloudrID = (platform: Platform, id: number): CloudrID =>
+  `${platformsLong[platform] || platform}:${id}`
+
+/**
+ * convert the cloudrID format to an array containing the platform and id
+ * @param cloudrID
+ * @example fromCloudrID("soundcloud:16514846") // ["sc", "16514846"]
+ */
+export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => {
+  const [platform, id] = cloudrID.split(":") as [Platform, number]
+  const pl = (platformsLong[platform] || platform) as PlatformAccessor
+  return [pl, id]
 }

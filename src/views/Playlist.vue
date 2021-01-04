@@ -26,6 +26,8 @@ import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
 import InfiniteScroll from "@/components/InfiniteScroll.vue"
 
+import { toCloudrID } from "@/utils"
+
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
 import type { Playlist, Track } from "@/player/musicSource"
@@ -90,7 +92,7 @@ export default Vue.extend({
       this.playlistNext = next
 
       const { platform, id }: any = this.$route.params
-      if (state.playingList === `${platform}:${id}`)
+      if (state.playingList === toCloudrID(platform, id))
         commit("setQueue", [...state.queue, ...tracks])
     },
     async playTrack(track: Track, index: number) {
@@ -98,11 +100,10 @@ export default Vue.extend({
       const { playlistTracks } = this
       const { platform, id }: any = this.$route.params
 
-      await dispatch("playTrack", `${track.platform}:${track.id}`)
-      commit("setPlayer", ["playing", true])
+      await dispatch("playTrack", toCloudrID(track.platform, track.id))
       commit("setQueuePrev", playlistTracks.slice(0, index))
       commit("setQueue", playlistTracks.slice(index))
-      commit("setPlayingList", `${platform}:${id}`)
+      commit("setPlayingList", toCloudrID(platform, id))
     },
   },
 })

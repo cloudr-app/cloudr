@@ -1,13 +1,13 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
-import { platformShorts } from "@/utils"
+import { platformsShort } from "@/utils"
 
 import { Plugins } from "@capacitor/core"
 const { App } = Plugins
 
 Vue.use(VueRouter)
 
-const platform = Object.entries(platformShorts)
+const platform = Object.entries(platformsShort)
   .map(plt => plt.join("|"))
   .join("|")
 

@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import player from "@/player"
-import { PlatformAccessor } from "@/utils"
+import { toCloudrID, fromCloudrID } from "@/utils"
 import { Track } from "./player/musicSource"
 import notification from "@/player/notification"
 
@@ -126,7 +126,7 @@ const store = new Vuex.Store({
       const nextTrack = state.queue[0]
       if (!nextTrack) return console.log("end of playlist.")
 
-      await dispatch("playTrack", `${nextTrack.platform}:${nextTrack.id}`)
+      await dispatch("playTrack", toCloudrID(nextTrack.platform, nextTrack.id))
     },
     async prevTrack({ state, dispatch, commit }: ActionArg) {
       const progressSeconds = state.player.progress * state.player.duration
@@ -140,16 +140,16 @@ const store = new Vuex.Store({
       state.queuePrev = state.queuePrev.slice(0, queuePrevLastIndex)
       state.queue.unshift(previousTrack)
 
-      await dispatch("playTrack", `${previousTrack.platform}:${previousTrack.id}`)
+      await dispatch("playTrack", toCloudrID(previousTrack.platform, previousTrack.id))
     },
     async playTrack({ dispatch, commit, state }: ActionArg, track) {
-      const [platform, id] = track.split(":") as [PlatformAccessor, string]
+      const [platform, id] = fromCloudrID(track)
 
       if (state.currentTrack.id === track) return commit("setPlayer", ["setPosition", 0])
-      console.log(state.currentTrack.id, track)
 
       dispatch("currentTrack", { id: track })
       commit("trackStream", await player(platform).stream(Number(id)))
+      commit("setPlayer", ["playing", true])
 
       const { artwork, title, user } = await dispatch("resolveTrackInfo", track)
       dispatch("currentTrack", {
@@ -159,7 +159,7 @@ const store = new Vuex.Store({
       })
     },
     async resolveTrackInfo(_, track: string) {
-      const [platform, id] = track.split(":") as [PlatformAccessor, string]
+      const [platform, id] = fromCloudrID(track)
 
       return await player(platform).track(Number(id))
     },
