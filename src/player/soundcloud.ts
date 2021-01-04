@@ -1,5 +1,5 @@
 import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
-import axios from "axios"
+import ky from "ky"
 
 interface SoundcloudUser {
   followers_count: number
@@ -86,6 +86,11 @@ const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
   user: { platform: "soundcloud", ...p.user },
 })
 
+interface SoundcloudPlaylistTracks {
+  collection: SoundcloudTrack[]
+  next_href: string | null
+}
+
 const base = "https://soundcloud.com"
 const baseApi = "https://api.soundcloud.com"
 // cspell:disable-next-line
@@ -99,9 +104,13 @@ function paginateNext(
   limit = 50
 ) {
   return async () => {
-    const { data } = await axios.get(url, {
-      params: { client_id, limit, linked_partitioning: true },
-    })
+    const { searchParams } = new URL(url)
+    searchParams.set("client_id", client_id)
+    searchParams.set("limit", String(limit))
+    searchParams.set("linked_partitioning", String(true))
+
+    const data = (await ky.get(url, { searchParams }).json()) as any
+
     const ret = {
       [key]: data.collection.map(transform),
     }
@@ -113,34 +122,47 @@ function paginateNext(
 const soundcloud: MusicSource = {
   resolve: async source => {
     const url = new URL(source, base).toString()
-    const { data } = await axios.get(`${baseApi}/resolve`, {
-      params: { url, client_id },
-    })
-    return data
+    return await ky
+      .get(`${baseApi}/resolve`, {
+        searchParams: { url, client_id },
+      })
+      .json()
   },
   stream: source => Promise.resolve(`${baseApi}/tracks/${source}/stream?${auth}`),
   async user(source) {
-    const { data } = await axios.get(`${baseApi}/users/${source}`, {
-      params: { client_id },
-    })
+    const data = (await ky
+      .get(`${baseApi}/users/${source}`, {
+        searchParams: { client_id },
+      })
+      .json()) as SoundcloudUser
+
     return transformUser(data)
   },
   async playlistInfo(source) {
-    const { data } = await axios.get(`${baseApi}/playlists/${source}`, {
-      params: { client_id, linked_partitioning: true, limit: 1 },
-    })
+    const data = (await ky
+      .get(`${baseApi}/playlists/${source}`, {
+        searchParams: { client_id, linked_partitioning: true, limit: 1 },
+      })
+      .json()) as SoundcloudPlaylist
+
     return transformPlaylistInfo(data)
   },
   async track(source) {
-    const { data } = await axios.get(`${baseApi}/tracks/${source}`, {
-      params: { client_id },
-    })
+    const data = (await ky
+      .get(`${baseApi}/tracks/${source}`, {
+        searchParams: { client_id },
+      })
+      .json()) as SoundcloudTrack
+
     return transformTrack(data)
   },
   async playlistTracks(source, limit = 50) {
-    const { data } = await axios.get(`${baseApi}/playlists/${source}/tracks`, {
-      params: { client_id, limit, linked_partitioning: true },
-    })
+    const data = (await ky
+      .get(`${baseApi}/playlists/${source}/tracks`, {
+        searchParams: { client_id, limit, linked_partitioning: true },
+      })
+      .json()) as SoundcloudPlaylistTracks
+
     const ret: PlaylistTracks = {
       tracks: data.collection.map(transformTrack),
     }

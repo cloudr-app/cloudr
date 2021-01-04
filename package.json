@@ -15,8 +15,8 @@
     "@capacitor/android": "^2.4.2",
     "@capacitor/cli": "^2.4.2",
     "@capacitor/core": "^2.4.2",
-    "axios": "^0.21.0",
     "core-js": "^3.6.5",
+    "ky": "^0.25.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
