@@ -1,4 +1,4 @@
-import { Platform } from "@/player/platformShortNames"
+import { Platform } from "@/utils"
 
 type URL = string
 type Source = number

@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import player from "@/player"
-import { PlatformAccessor } from "./player/platformShortNames"
+import { PlatformAccessor } from "@/utils"
 import { Track } from "./player/musicSource"
 import notification from "@/player/notification"
 
@@ -66,9 +66,6 @@ const defaultState: State = {
 
 const store = new Vuex.Store({
   state: defaultState,
-  getters: {
-    futureQueue: state => [...state.queued, ...state.queue],
-  },
   mutations: {
     trackStream(state: State, stream: string) {
       state.currentTrack.stream = stream
@@ -87,7 +84,10 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    async addQueued(ctx: ActionArg) {},
+    async addQueued({ dispatch, state }: ActionArg, track: string) {
+      const trackInfo = await dispatch("resolveTrackInfo", track)
+      state.queued.push(trackInfo)
+    },
     async currentTrack({ dispatch, state }: ActionArg, info: CurrentTrackInfo) {
       state.currentTrack = { ...state.currentTrack, ...info }
       await dispatch("updateNotification")
@@ -117,8 +117,11 @@ const store = new Vuex.Store({
       notification.update({ title, artist, artwork, album: "cloudr.app", handlers })
     },
     async nextTrack({ state, dispatch }: ActionArg) {
-      const currentTrack = state.queued.shift() || state.queue.shift()
+      const currentTrack = state.queue.shift()
       if (currentTrack) state.queuePrev.push(currentTrack)
+
+      const queued = state.queued.shift()
+      if (queued) state.queue.unshift(queued)
 
       const nextTrack = state.queue[0]
       if (!nextTrack) return console.log("end of playlist.")
@@ -139,8 +142,11 @@ const store = new Vuex.Store({
 
       await dispatch("playTrack", `${previousTrack.platform}:${previousTrack.id}`)
     },
-    async playTrack({ dispatch, commit }: ActionArg, track) {
+    async playTrack({ dispatch, commit, state }: ActionArg, track) {
       const [platform, id] = track.split(":") as [PlatformAccessor, string]
+
+      if (state.currentTrack.id === track) return commit("setPlayer", ["setPosition", 0])
+      console.log(state.currentTrack.id, track)
 
       dispatch("currentTrack", { id: track })
       commit("trackStream", await player(platform).stream(Number(id)))

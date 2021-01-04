@@ -1,4 +1,4 @@
-import { PlatformAccessor } from "@/player/platformShortNames"
+import { PlatformAccessor } from "@/utils"
 import soundcloud from "@/player/soundcloud"
 
 const player = (platform: PlatformAccessor) => {
