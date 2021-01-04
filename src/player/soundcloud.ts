@@ -1,11 +1,7 @@
 import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
-import { default as _ky } from "ky"
 import { kyCache } from "@/utils"
 
-let ky = _ky
-!(async () => {
-  ky = await kyCache("soundcloud")
-})()
+const ky = kyCache("soundcloud")
 
 interface SoundcloudUser {
   followers_count: number

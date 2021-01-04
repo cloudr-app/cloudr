@@ -63,23 +63,25 @@ export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => 
   return [pl, id]
 }
 
-export const kyCache = async (cacheName: string) => {
-  if (!("caches" in self)) return ky
-  const cache = await caches.open(cacheName)
+export const kyCache = (cacheName: string) => {
+  if ("caches" in self)
+    return ky.extend({
+      hooks: {
+        beforeRequest: [
+          async req => {
+            const cache = await caches.open(cacheName)
+            const cached = await cache.match(req)
+            if (cached) return cached
+          },
+        ],
+        afterResponse: [
+          async (req, _, res) => {
+            const cache = await caches.open(cacheName)
+            await cache.put(req, res)
+          },
+        ],
+      },
+    })
 
-  return ky.extend({
-    hooks: {
-      beforeRequest: [
-        async req => {
-          const cached = await cache.match(req)
-          if (cached) return cached
-        },
-      ],
-      afterResponse: [
-        async (req, _, res) => {
-          await cache.put(req, res)
-        },
-      ],
-    },
-  })
+  return ky
 }
