@@ -48,6 +48,9 @@ export default Vue.extend({
     setPosition() {
       const audio = this.$refs.audio as HTMLAudioElement
       const state = this.$store.state as State
+      const { commit } = this.$store
+
+      if (state.player.setPosition === false) return
 
       const currentTime = state.player.setPosition * audio.duration
 
@@ -55,8 +58,10 @@ export default Vue.extend({
       else
         audio.oncanplay = () => {
           audio.oncanplay = null
+          if (state.player.setPosition === false) return
           audio.currentTime = state.player.setPosition * audio.duration
         }
+      commit("setPlayer", ["setPosition", false])
       this.updateProgress(true)
     },
     async onPlaybackStateChange() {

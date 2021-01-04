@@ -27,7 +27,7 @@ declare global {
       volume: number
       progress: number
       duration: number
-      setPosition: number
+      setPosition: number | false
     }
   }
 }
@@ -56,7 +56,7 @@ const defaultState: State = {
     volume: 1,
     progress: 0,
     duration: 0,
-    setPosition: 0,
+    setPosition: false,
   },
 }
 
