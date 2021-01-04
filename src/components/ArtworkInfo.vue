@@ -78,7 +78,7 @@ export default Vue.extend({
         margin-right: var(--title-offset)
 
       .title
-        font-size: 26px
+        font-size: 1.625rem
         font-weight: bold
         letter-spacing: 1px
         color: var(--text-white)
@@ -89,7 +89,7 @@ export default Vue.extend({
         -webkit-box-orient: vertical
 
       .author
-        font-size: 16px
+        font-size: 1rem
 
   img
     width: calc(100% - 2px)

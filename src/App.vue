@@ -78,13 +78,15 @@ export default Vue.extend({
   --text-trans-white: #FFFFFF
   --text-highlight: #cec2ff
   --text-light-highlight: #aeaed5
+  // should be between .75 and 1.333
+  --global-font-size: 1em
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --transition-short: 200ms
   --transition-medium: 500ms
   --top-nav-height: 56px
   --bottom-nav-height: 56px
-  --bottom-player-height: 74px
+  --bottom-player-height: 4.625rem
   --border-radius: 5px
   --border-radius-large: 15px
   --artwork-gradient: rgba(34, 36, 54, 0.95)
@@ -108,6 +110,7 @@ html, body
   background: var(--bg)
   color: var(--text-light)
   font-family: "manrope"
+  font-size: var(--global-font-size)
   height: 100%
   width: 100%
   user-select: none

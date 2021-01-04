@@ -142,7 +142,7 @@ export default Vue.extend({
 
       .track-info
         margin-top: 4px
-        font-size: 15px
+        font-size: 0.9375rem
 
         .title, .artist
           padding-left: 1px
@@ -165,8 +165,8 @@ export default Vue.extend({
         flex-grow: 1
 
       .controls
-        --controls-size: 38px
-        --playpause-size: 42px
+        --controls-size: clamp(30px, 2.375rem, 45px)
+        --playpause-size: calc(var(--controls-size) * 1.105)
         height: var(--playpause-size)
         display: flex
         align-items: center
@@ -196,7 +196,7 @@ export default Vue.extend({
       padding-bottom: 4px
 
       .duration, .current-time
-        font-size: 11px
+        font-size: 0.6875rem
         margin-left: var(--margins)
         font-family: "Roboto Mono", monospace
 

@@ -33,7 +33,7 @@ export default Vue.extend({
 
     a
       display: block
-      font-size: 1.2em
+      font-size: 1rem
       margin: 8px 0
 
   img
