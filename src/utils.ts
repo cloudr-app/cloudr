@@ -71,7 +71,12 @@ export const kyCache = (cacheName: string) => {
           async req => {
             const cache = await caches.open(cacheName)
             const cached = await cache.match(req)
-            if (cached) return cached
+
+            if (cached) {
+              // refresh cache
+              cache.add(req)
+              return cached
+            }
           },
         ],
         afterResponse: [
