@@ -1,3 +1,5 @@
+import ky from "ky"
+
 export const touchEventOffset = (event: any, target?: any) => {
   target = target || event.currentTarget
 
@@ -59,4 +61,25 @@ export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => 
   const [platform, id] = cloudrID.split(":") as [Platform, number]
   const pl = (platformsLong[platform] || platform) as PlatformAccessor
   return [pl, id]
+}
+
+export const kyCache = async (cacheName: string) => {
+  if (!("caches" in self)) return ky
+  const cache = await caches.open(cacheName)
+
+  return ky.extend({
+    hooks: {
+      beforeRequest: [
+        async req => {
+          const cached = await cache.match(req)
+          if (cached) return cached
+        },
+      ],
+      afterResponse: [
+        async (req, _, res) => {
+          await cache.put(req, res)
+        },
+      ],
+    },
+  })
 }
