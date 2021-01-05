@@ -11,3 +11,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: html
+          message: |
+            ⚡ ${{ github.event.push.pusher.name }} just pushed a <a href="https://github.com/cloudr-app/cloudr/commit/${{ github.event.push.after }}">commit</a>.
+            message: ${{ github.event.head_commit.message }}
