@@ -13,5 +13,5 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: html
           message: |
-            ⚡ ${{ github.event.pusher.name }} just pushed a <a href="https://github.com/cloudr-app/cloudr/commit/${{ github.event.after }}">commit</a>.
-            message: ${{ github.event.head_commit.message }}
+            ⚙ ${{ github.event.pusher.name }} just pushed a <a href="https://github.com/cloudr-app/cloudr/commit/${{ github.event.after }}">commit</a>.
+            ${{ github.event.head_commit.message }}

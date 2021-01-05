@@ -1,5 +1,9 @@
 import ky from "ky"
+import { MediaImage } from "./player/musicSource"
 
+/**
+ * util for getting the movement of touch events
+ */
 export const touchEventOffset = (event: any, target?: any) => {
   target = target || event.currentTarget
 
@@ -10,6 +14,10 @@ export const touchEventOffset = (event: any, target?: any) => {
   return [cx - rect.left, cy - rect.top]
 }
 
+/**
+ * Returns a player-friendly display of the time in seconds
+ * @param secs seconds
+ */
 export const formatTime = (secs: number) => {
   const hours = Math.floor(secs / 3600)
   const minutes = Math.floor(secs / 60 - hours * 60)
@@ -63,6 +71,10 @@ export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => 
   return [pl, id]
 }
 
+/**
+ * Returns an instance of ky with automatic cache-first cache
+ * @param cacheName a name for the cache
+ */
 export const kyCache = (cacheName: string) => {
   if ("caches" in self)
     return ky.extend({
@@ -89,4 +101,36 @@ export const kyCache = (cacheName: string) => {
     })
 
   return ky
+}
+
+/**
+ * Returns a Function that can be used to get blobs via cacheKy a instance
+ * @param cacheKy a kyCache instance
+ */
+export const getCacheBlob = (cacheKy: Function) => async (url: string) =>
+  URL.createObjectURL(await cacheKy(url).blob())
+
+/**
+ * Converts a MediaImage sizes property to width
+ * @param sizes MediaImage sizes
+ */
+export const getWidth = (sizes: string) => Number(sizes.split("x")[0])
+
+/**
+ * Returns an image as large or larger than specified. Falls back to the largest available.
+ * @param images MediaImage array
+ * @param size number
+ */
+export const getImageLargerThan = (images: MediaImage[], size: number) => {
+  const sorted = images.sort((a, b) => getWidth(a.sizes) - getWidth(b.sizes))
+  const largest = sorted.filter(s => getWidth(s.sizes) >= size)[0]
+
+  if (largest) return largest
+  return sorted[sorted.length - 1]
+}
+
+export const defaultImage: MediaImage = {
+  src: "/artwork-placeholder.svg",
+  sizes: "512x512",
+  type: "image/svg+xml",
 }

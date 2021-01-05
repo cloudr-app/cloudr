@@ -1,8 +1,8 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import player from "@/player"
-import { toCloudrID, fromCloudrID } from "@/utils"
-import { Track } from "./player/musicSource"
+import { toCloudrID, fromCloudrID, defaultImage } from "@/utils"
+import { MediaImage, Track } from "./player/musicSource"
 import notification from "@/player/notification"
 
 Vue.use(Vuex)
@@ -11,7 +11,7 @@ interface CurrentTrackInfo {
   id: string
   title: string
   artist: string
-  artwork: string
+  artwork: MediaImage[]
   stream: string
 }
 
@@ -44,7 +44,7 @@ const defaultState: State = {
     id: "",
     title: "",
     artist: "",
-    artwork: "/artwork-placeholder.svg",
+    artwork: [defaultImage],
     stream: "",
   },
   queuePrev: [],

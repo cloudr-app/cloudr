@@ -2,7 +2,7 @@
   <div class="playlist">
     <section class="playlist-info">
       <artwork
-        :artwork="playlistInfo.artwork"
+        :artwork="imgSrc"
         :author="playlistInfo.user.username"
         :title="playlistInfo.title"
       />
@@ -26,11 +26,11 @@ import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
 import InfiniteScroll from "@/components/InfiniteScroll.vue"
 
-import { toCloudrID } from "@/utils"
+import { getImageLargerThan, toCloudrID } from "@/utils"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
-import type { Playlist, Track } from "@/player/musicSource"
+import type { MediaImage, Playlist, Track } from "@/player/musicSource"
 
 declare global {
   interface Window {
@@ -41,9 +41,9 @@ declare global {
 export default Vue.extend({
   name: "playlist",
   components: { artwork, TrackListItem, InfiniteScroll },
-  data: (): { playlistInfo: Playlist; playlistTracks: any; playlistNext: any } => ({
+  data: () => ({
     playlistInfo: {
-      artwork: "/artwork-placeholder.svg",
+      artwork: [],
       id: 0,
       platform: "soundcloud",
       title: "loading",
@@ -57,6 +57,14 @@ export default Vue.extend({
     playlistTracks: [],
     playlistNext: undefined,
   }),
+  computed: {
+    imgSrc() {
+      const images = this.playlistInfo.artwork as MediaImage[]
+      if (!images.length) return "/artwork-placeholder.svg"
+
+      return getImageLargerThan(images, 500).src
+    },
+  },
   async created() {
     window.playlist = this
 

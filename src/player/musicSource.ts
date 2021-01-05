@@ -25,7 +25,7 @@ export interface User {
 }
 
 export interface Playlist {
-  artwork: string
+  artwork: MediaImage[]
   id: number
   platform: Platform
   title: string
@@ -45,9 +45,14 @@ export interface Track {
   description?: string
   genre?: string
   user: User
-  artwork: string
+  artwork: MediaImage[]
   playbackCount?: number
   likeCount?: number
+}
+export interface MediaImage {
+  src: string
+  sizes: string
+  type: string
 }
 
 export interface Pagination {

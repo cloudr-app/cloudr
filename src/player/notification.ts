@@ -1,4 +1,5 @@
 import { Capacitor } from "@capacitor/core"
+import { MediaImage } from "./musicSource"
 
 const { isNative } = Capacitor
 
@@ -6,7 +7,7 @@ interface NotificationUpdate {
   title?: string
   artist?: string
   album?: string
-  artwork?: string
+  artwork?: MediaImage[]
   handlers?: {
     [key in MediaHandler]?: Function
   }
@@ -50,7 +51,7 @@ const notification = {
       title,
       artist,
       album,
-      artwork: [{ src: artwork, sizes: "500x500", type: "image/jpg" }],
+      artwork,
     })
 
     for (const [action, handler] of Object.entries(handlers))

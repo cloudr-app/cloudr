@@ -1,6 +1,6 @@
 <template>
   <div class="player">
-    <img :src="$store.state.currentTrack.artwork" alt="track art" class="artwork" />
+    <img :src="imgSrc" alt="track art" class="artwork" />
     <div class="right">
       <div class="upper">
         <div class="track-info">
@@ -42,7 +42,10 @@
 <script lang="ts">
 import Vue from "vue"
 import { mapState } from "vuex"
-import { touchEventOffset, formatTime } from "@/utils"
+import { touchEventOffset, formatTime, getImageLargerThan } from "@/utils"
+
+// eslint-disable-next-line no-unused-vars
+import type { MediaImage } from "@/player/musicSource"
 
 export default Vue.extend({
   name: "bottomPlayer",
@@ -59,6 +62,12 @@ export default Vue.extend({
       title: (state: any) => state.currentTrack.title,
       artist: (state: any) => state.currentTrack.artist,
     }),
+    imgSrc() {
+      const images = this.$store.state.currentTrack.artwork as MediaImage[]
+      if (!images.length) return
+
+      return getImageLargerThan(images, 55).src
+    },
   },
   methods: {
     formatTime,

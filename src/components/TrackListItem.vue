@@ -8,7 +8,7 @@
   >
     <div class="main" v-if="!hide">
       <div class="artwork">
-        <img :src="trackInfo.artwork" alt="track artwork" />
+        <img :src="imgSrc" alt="track artwork" />
       </div>
       <div class="info">
         <div class="title">{{ trackInfo.title }}</div>
@@ -28,7 +28,9 @@
 
 <script lang="ts">
 import Vue from "vue"
-import { toCloudrID } from "@/utils"
+import { toCloudrID, getImageLargerThan } from "@/utils"
+// eslint-disable-next-line no-unused-vars
+import type { MediaImage } from "@/player/musicSource"
 
 export default Vue.extend({
   name: "track-list-item",
@@ -46,6 +48,12 @@ export default Vue.extend({
     isPlaying() {
       const { platform, id } = this.trackInfo
       return toCloudrID(platform, id) === this.$store.state.currentTrack.id
+    },
+    imgSrc() {
+      const images = this.trackInfo.artwork as MediaImage[]
+      if (!images.length) return
+
+      return getImageLargerThan(images, 40).src
     },
   },
   watch: {

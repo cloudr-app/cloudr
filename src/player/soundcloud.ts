@@ -1,7 +1,44 @@
-import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
-import { kyCache } from "@/utils"
+import {
+  MusicSource,
+  Playlist,
+  PlaylistTracks,
+  Track,
+  User,
+  MediaImage,
+} from "@/player/musicSource"
+import { defaultImage, kyCache } from "@/utils"
 
 const ky = kyCache("soundcloud")
+
+type SoundcloudImageType = ".png" | ".jpg" | ".gif"
+
+const soundcloudImageSizes = {
+  mini: "16x16",
+  small: "32x32",
+  badge: "47x47",
+  large: "100x100",
+  t300x300: "300x300",
+  crop: "400x400",
+  t500x500: "500x500",
+}
+const soundcloudImageTypes = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".gif": "image/gif",
+}
+const getURLFileName = (url: string) => /(\.(?:jpg|png|gif))$/im.exec(url)?.[1]
+const soundcloudImage = (url?: string): MediaImage[] | undefined => {
+  if (!url) return
+  const ret = []
+  const file = (getURLFileName(url) || ".png").toLowerCase() as SoundcloudImageType
+  const type = soundcloudImageTypes[file]
+
+  for (const [name, sizes] of Object.entries(soundcloudImageSizes)) {
+    const src = url.replace("large", name)
+    ret.push({ src, sizes, type })
+  }
+  return ret
+}
 
 interface SoundcloudUser {
   followers_count: number
@@ -51,10 +88,7 @@ const transformTrack = (t: SoundcloudTrack): Track => ({
   description: t.description,
   genre: t.genre,
   user: { platform: "soundcloud", ...t.user },
-  artwork:
-    t.artwork_url?.replace("large", "t500x500") ||
-    t.user.avatar_url?.replace("large", "t500x500") ||
-    "/artwork-placeholder.svg",
+  artwork: soundcloudImage(t.artwork_url || t.user.avatar_url) || [defaultImage],
   playbackCount: t.playback_count,
   likeCount: t.favoritings_count,
 })
@@ -74,10 +108,7 @@ interface SoundcloudPlaylist {
   tracks: SoundcloudTrack[]
 }
 const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
-  artwork:
-    p.artwork_url?.replace("large", "t500x500") ||
-    p.tracks[0]?.artwork_url.replace("large", "t500x500") ||
-    "/artwork-placeholder.svg",
+  artwork: soundcloudImage(p.artwork_url || p.tracks[0]?.artwork_url) || [defaultImage],
   description: p.description,
   duration: p.duration,
   id: p.id,
