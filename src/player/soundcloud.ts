@@ -41,14 +41,15 @@ const soundcloudImage = (url?: string): MediaImage[] | undefined => {
 }
 
 interface SoundcloudUser {
-  followers_count: number
-  followings_count: number
+  followers_count?: number
+  followings_count?: number
   username: string
   id: number
-  description: string
-  track_count: number
-  playlist_count: number
-  public_favorites_count: number
+  description?: string
+  track_count?: number
+  playlist_count?: number
+  public_favorites_count?: number
+  avatar_url: string
 }
 const transformUser = (s: SoundcloudUser): User => ({
   platform: "soundcloud",
@@ -60,6 +61,7 @@ const transformUser = (s: SoundcloudUser): User => ({
   trackCount: s.track_count,
   playlistCount: s.playlist_count,
   likesCount: s.public_favorites_count,
+  avatar: soundcloudImage(s.avatar_url) || [defaultImage],
 })
 
 // cspell:ignore favoritings
@@ -70,11 +72,7 @@ interface SoundcloudTrack {
   title: string
   description?: string
   genre?: string
-  user: {
-    id: number
-    username: string
-    avatar_url?: string
-  }
+  user: SoundcloudUser
   artwork_url: string
   playback_count: number
   favoritings_count: number
@@ -87,17 +85,14 @@ const transformTrack = (t: SoundcloudTrack): Track => ({
   title: t.title,
   description: t.description,
   genre: t.genre,
-  user: { platform: "soundcloud", ...t.user },
+  user: transformUser(t.user),
   artwork: soundcloudImage(t.artwork_url || t.user.avatar_url) || [defaultImage],
   playbackCount: t.playback_count,
   likeCount: t.favoritings_count,
 })
 
 interface SoundcloudPlaylist {
-  user: {
-    id: number
-    username: string
-  }
+  user: SoundcloudUser
   track_count: number
   id: number
   title: string
@@ -116,7 +111,7 @@ const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
   platform: "soundcloud",
   title: p.title,
   trackCount: p.track_count,
-  user: { platform: "soundcloud", ...p.user },
+  user: transformUser(p.user),
 })
 
 interface SoundcloudPlaylistTracks {
@@ -161,37 +156,37 @@ const soundcloud: MusicSource = {
       })
       .json()
   },
-  stream: source => Promise.resolve(`${baseApi}/tracks/${source}/stream?${auth}`),
-  async user(source) {
+  stream: id => Promise.resolve(`${baseApi}/tracks/${id}/stream?${auth}`),
+  async user(id) {
     const data = (await ky
-      .get(`${baseApi}/users/${source}`, {
+      .get(`${baseApi}/users/${id}`, {
         searchParams: { client_id },
       })
       .json()) as SoundcloudUser
 
     return transformUser(data)
   },
-  async playlistInfo(source) {
+  async playlistInfo(id) {
     const data = (await ky
-      .get(`${baseApi}/playlists/${source}`, {
+      .get(`${baseApi}/playlists/${id}`, {
         searchParams: { client_id, linked_partitioning: true, limit: 1 },
       })
       .json()) as SoundcloudPlaylist
 
     return transformPlaylistInfo(data)
   },
-  async track(source) {
+  async track(id) {
     const data = (await ky
-      .get(`${baseApi}/tracks/${source}`, {
+      .get(`${baseApi}/tracks/${id}`, {
         searchParams: { client_id },
       })
       .json()) as SoundcloudTrack
 
     return transformTrack(data)
   },
-  async playlistTracks(source, limit = 50) {
+  async playlistTracks(id, limit = 50) {
     const data = (await ky
-      .get(`${baseApi}/playlists/${source}/tracks`, {
+      .get(`${baseApi}/playlists/${id}/tracks`, {
         searchParams: { client_id, limit, linked_partitioning: true },
       })
       .json()) as SoundcloudPlaylistTracks

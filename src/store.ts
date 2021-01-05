@@ -124,7 +124,7 @@ const store = new Vuex.Store({
       if (queued) state.queue.unshift(queued)
 
       const nextTrack = state.queue[0]
-      if (!nextTrack) return console.log("end of playlist.")
+      if (!nextTrack) return
 
       await dispatch("playTrack", toCloudrID(nextTrack.platform, nextTrack.id))
     },

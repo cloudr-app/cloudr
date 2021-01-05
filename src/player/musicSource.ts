@@ -22,6 +22,7 @@ export interface User {
   likesCount?: number
   playlistCount?: number
   trackCount?: number
+  avatar: MediaImage[]
 }
 
 export interface Playlist {
