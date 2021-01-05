@@ -1,0 +1,13 @@
+name: telegram message
+on: push
+jobs:
+  telegram:
+    name: notify about commit on telegram
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: notify
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
