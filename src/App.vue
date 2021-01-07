@@ -97,6 +97,7 @@ export default Vue.extend({
 @font-face
   font-family: "manrope"
   src: url("./assets/manrope.ttf")
+  font-display: swap
 
 @font-face
   font-family: "Roboto Mono"
