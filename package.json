@@ -16,6 +16,7 @@
     "@capacitor/cli": "^2.4.5",
     "@capacitor/core": "^2.4.5",
     "@material/notched-outline": "^9.0.0",
+    "@material/switch": "^9.0.0",
     "@material/textfield": "^9.0.0",
     "core-js": "^3.8.2",
     "ky": "^0.25.1",

@@ -72,6 +72,7 @@ export default Vue.extend({
 :root
   --bg: #222436
   --bg-dark: #1E2030
+  --accent: #7981c4
   --text-white: #FFFFFF
   --text-light: #C8C8CD
   --text-m-light: #4e505d

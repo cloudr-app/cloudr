@@ -9,18 +9,20 @@
         example 2 soundcloud playlist (short link)
       </router-link>
     </div>
-    <text-field label="test" v-model="text"></text-field>
+    <text-field label="test" v-model="text" />
     <span>{{ text }}</span>
+    <mdc-switch v-model="checked" />
   </div>
 </template>
 
 <script lang="ts">
 import TextField from "@/components/mwc/TextField.vue"
+import MdcSwitch from "@/components/mwc/Switch.vue"
 import Vue from "vue"
 
 export default Vue.extend({
-  components: { TextField },
-  data: () => ({ text: "" }),
+  components: { TextField, MdcSwitch },
+  data: () => ({ text: "", checked: true }),
   name: "Home",
 })
 </script>
