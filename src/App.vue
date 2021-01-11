@@ -74,6 +74,7 @@ export default Vue.extend({
   --bg-dark: #1E2030
   --text-white: #FFFFFF
   --text-light: #C8C8CD
+  --text-m-light: #4e505d
   --text-x-light: #343644
   --text-trans-white: #FFFFFF
   --text-highlight: #cec2ff
@@ -93,6 +94,8 @@ export default Vue.extend({
   --icon-size: 30px
   --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
   --small-artwork-highlight: 0 0 0 1px var(--text-white)
+
+@import "./components/mwc/theme.css"
 
 @font-face
   font-family: "manrope"

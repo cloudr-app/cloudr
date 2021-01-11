@@ -1,0 +1,6 @@
+:root {
+  --mdc-theme-primary: var(--text-light);
+  --mdc-text-field: var(--text-m-light);
+  --mdc-text-field-hover: var(--text-m-light);
+  --mdc-text-field-fill: var(--text-x-light);
+}

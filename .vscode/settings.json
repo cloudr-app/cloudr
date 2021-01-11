@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "cloudr",
+    "labelledby",
     "oncanplay",
     "onmousemove",
     "onmouseup",
@@ -8,6 +9,7 @@
     "onplay",
     "onpointermove",
     "onpointerup",
+    "resizer",
     "seekto",
     "spotify",
     "unobserve",

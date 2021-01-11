@@ -9,13 +9,18 @@
         example 2 soundcloud playlist (short link)
       </router-link>
     </div>
+    <text-field label="test" v-model="text"></text-field>
+    <span>{{ text }}</span>
   </div>
 </template>
 
 <script lang="ts">
+import TextField from "@/components/mwc/TextField.vue"
 import Vue from "vue"
 
 export default Vue.extend({
+  components: { TextField },
+  data: () => ({ text: "" }),
   name: "Home",
 })
 </script>
