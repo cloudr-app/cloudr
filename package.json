@@ -22,6 +22,7 @@
     "@material/textfield": "^9.0.0",
     "core-js": "^3.8.2",
     "ky": "^0.25.1",
+    "localforage": "^1.9.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.9",
     "vuex": "^3.6.0"

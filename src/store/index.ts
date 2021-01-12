@@ -2,35 +2,11 @@ import Vue from "vue"
 import Vuex from "vuex"
 import player from "@/player"
 import { toCloudrID, fromCloudrID, defaultImage } from "@/utils"
-import { MediaImage, Track } from "./player/musicSource"
 import notification from "@/player/notification"
 
+import preferences from "./preferences"
+
 Vue.use(Vuex)
-
-interface CurrentTrackInfo {
-  id: string
-  title: string
-  artist: string
-  artwork: MediaImage[]
-  stream: string
-}
-
-declare global {
-  interface State {
-    currentTrack: CurrentTrackInfo
-    queued: Track[]
-    queue: Track[]
-    queuePrev: Track[]
-    playingList: string
-    player: {
-      playing: boolean
-      volume: number
-      progress: number
-      duration: number
-      setPosition: number | false
-    }
-  }
-}
 
 interface ActionArg {
   state: State
@@ -66,6 +42,7 @@ const defaultState: State = {
 
 const store = new Vuex.Store({
   state: defaultState,
+  modules: { preferences },
   mutations: {
     trackStream(state: State, stream: string) {
       state.currentTrack.stream = stream

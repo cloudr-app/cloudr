@@ -6,10 +6,11 @@ import store from "@/store"
 import { Plugins, Capacitor } from "@capacitor/core"
 const { StatusBar } = Plugins
 
-if (Capacitor.isPluginAvailable("StatusBar"))
+if (Capacitor.isPluginAvailable("StatusBar")) {
   StatusBar.setBackgroundColor({
     color: "#222436",
   })
+}
 
 Vue.config.productionTip = false
 

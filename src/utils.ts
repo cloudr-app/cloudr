@@ -76,7 +76,7 @@ export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => 
  * @param cacheName a name for the cache
  */
 export const kyCache = (cacheName: string) => {
-  if ("caches" in self)
+  if ("caches" in self) {
     return ky.extend({
       hooks: {
         beforeRequest: [
@@ -99,6 +99,7 @@ export const kyCache = (cacheName: string) => {
         ],
       },
     })
+  }
 
   return ky
 }
@@ -134,3 +135,32 @@ export const defaultImage: MediaImage = {
   sizes: "512x512",
   type: "image/svg+xml",
 }
+
+export const isObject = (item: any) => {
+  return item && typeof item === "object" && !Array.isArray(item)
+}
+
+type Obj = { [key: string]: any }
+export const mergeDeep = (target: Obj, source: Obj) => {
+  const output = Object.assign({}, target)
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key])) {
+        if (!(key in target)) Object.assign(output, { [key]: source[key] })
+        else output[key] = mergeDeep(target[key], source[key])
+      } else Object.assign(output, { [key]: source[key] })
+    })
+  }
+  return output
+}
+
+/**
+ * include a value to write, exclude it to read a localStorage value.
+ * stringifies and parses every input.
+ * @param key
+ * @param value
+ */
+export const ls = (key: string, value?: any) =>
+  void 0 !== value
+    ? localStorage.setItem(key, JSON.stringify(value))
+    : JSON.parse(localStorage.getItem(key) as string)

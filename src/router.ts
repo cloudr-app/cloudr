@@ -18,6 +18,11 @@ const routes = [
     component: require("./views/Home.vue").default,
   },
   {
+    path: "/preferences",
+    name: "Preferences",
+    component: require("./views/Preferences.vue").default,
+  },
+  {
     path: `/(playlist|pl)/:platform(${platform})/:id`,
     name: "Playlist",
     component: require("./views/Playlist.vue").default,
@@ -45,10 +50,11 @@ App.addListener("appUrlOpen", data => {
   const slug = data.url.split(".app").pop()
 
   // We only push to the route if there is a slug present
-  if (slug)
+  if (slug) {
     router.push({
       path: slug,
     })
+  }
 })
 
 export default router
