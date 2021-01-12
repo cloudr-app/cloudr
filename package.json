@@ -15,6 +15,8 @@
     "@capacitor/android": "^2.4.5",
     "@capacitor/cli": "^2.4.5",
     "@capacitor/core": "^2.4.5",
+    "@material/checkbox": "^9.0.0",
+    "@material/form-field": "^9.0.0",
     "@material/notched-outline": "^9.0.0",
     "@material/switch": "^9.0.0",
     "@material/textfield": "^9.0.0",

@@ -101,4 +101,8 @@ span.mdc-notched-outline > span {
 .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input {
   color: var(--mdc-theme-primary);
 }
+
+input.mdc-text-field__input {
+  font-family: var(--mdc-typography-font-family);
+}
 </style>

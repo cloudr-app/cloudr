@@ -82,6 +82,7 @@ export default Vue.extend({
   --text-light-highlight: #aeaed5
   // should be between .75 and 1.333
   --global-font-size: 1em
+  --font: "manrope"
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --transition-short: 200ms
@@ -114,7 +115,7 @@ html, body
   margin: 0
   background: var(--bg)
   color: var(--text-light)
-  font-family: "manrope"
+  font-family: var(--font)
   font-size: var(--global-font-size)
   height: 100%
   width: 100%
