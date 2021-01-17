@@ -2,7 +2,12 @@
   <nav class="top" :class="{ scrolled }">
     <!-- <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">arrow_back</i> -->
     <div class="spacer"></div>
-    <!-- <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">sort</i> -->
+    <i
+      class="mi"
+      @click="$router.push('/preferences')"
+      v-if="$route.fullPath !== '/preferences'"
+      >settings</i
+    >
   </nav>
 </template>
 
@@ -35,7 +40,8 @@ nav.top
     flex-grow: 1
 
   > i.mi
-    font-size: var(--icon-size)
+    font-size: calc(var(--icon-size) * 0.75)
     margin: auto 14px
     cursor: pointer
+    opacity: 0.5
 </style>

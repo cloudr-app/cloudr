@@ -55,12 +55,14 @@ export default Vue.extend({
       const currentTime = state.player.setPosition * audio.duration
 
       if (!isNaN(currentTime)) audio.currentTime = currentTime
-      else
+      else {
         audio.oncanplay = () => {
           audio.oncanplay = null
           if (state.player.setPosition === false) return
           audio.currentTime = state.player.setPosition * audio.duration
         }
+      }
+
       commit("setPlayer", ["setPosition", false])
       this.updateProgress(true)
     },

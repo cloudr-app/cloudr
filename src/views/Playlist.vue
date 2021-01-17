@@ -119,6 +119,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .playlist
+  padding-top: 10px
+
   section.playlist-info
     width: 100%
     display: flex

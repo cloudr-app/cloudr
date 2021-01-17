@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{ noTrack }">
+  <global-styles id="app" :class="{ noTrack }">
     <top-nav :scrolled="scrolled" />
     <main ref="main" class="rw">
       <router-view />
@@ -12,7 +12,7 @@
       v-if="$store.state.currentTrack.stream"
       :src="$store.state.currentTrack.stream"
     />
-  </div>
+  </global-styles>
 </template>
 
 <script lang="ts">
@@ -20,6 +20,7 @@ import Vue from "vue"
 import topNav from "@/components/TopNav.vue"
 import bottomNav from "@/components/BottomNav.vue"
 import bottomPlayer from "@/components/BottomPlayer.vue"
+import globalStyles from "@/components/GlobalStyles.vue"
 
 import audioPlayer from "@/components/AudioPlayer.vue"
 
@@ -36,7 +37,7 @@ declare global {
 
 window.soundcloud = soundcloud
 export default Vue.extend({
-  components: { topNav, bottomNav, bottomPlayer, audioPlayer },
+  components: { topNav, bottomNav, bottomPlayer, audioPlayer, globalStyles },
   data: () => ({
     scrolled: false,
   }),
@@ -80,6 +81,9 @@ export default Vue.extend({
   --text-trans-white: #FFFFFF
   --text-highlight: #cec2ff
   --text-light-highlight: #aeaed5
+  --small-artwork-highlight: 0 0 0 1px var(--text-white)
+  --artwork-render-correction: 1px
+  --artwork-gradient: rgba(34, 36, 54, 0.95)
   // should be between .75 and 1.333
   --global-font-size: 1em
   --font: "manrope"
@@ -92,10 +96,8 @@ export default Vue.extend({
   --bottom-player-height: 4.625rem
   --border-radius: 5px
   --border-radius-large: 15px
-  --artwork-gradient: rgba(34, 36, 54, 0.95)
   --icon-size: 30px
   --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
-  --small-artwork-highlight: 0 0 0 1px var(--text-white)
 
 @import "./components/mwc/theme.css"
 
@@ -152,6 +154,7 @@ html, body
 #app
   height: 100%
   width: 100%
+  background: var(--bg)
 
   > nav
     position: fixed
@@ -171,10 +174,6 @@ html, body
     width: 100%
     overflow: auto
     transition: var(--transition-medium) var(--ease)
-
-    > .rw
-      height: 100%
-      width: 100%
 
   &.noTrack
     > main

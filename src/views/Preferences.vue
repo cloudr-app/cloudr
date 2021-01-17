@@ -31,10 +31,6 @@ import { isObject } from "@/utils"
 export default Vue.extend({
   name: "preferences",
   components: { Preference },
-  mounted() {
-    const pref = JSON.parse(JSON.stringify(this.$store.state.preferences))
-    console.log(pref)
-  },
   computed: {
     preferences() {
       return this.$store.state.preferences

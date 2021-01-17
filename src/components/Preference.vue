@@ -64,10 +64,11 @@ export default Vue.extend({
   justify-content: space-between
   align-items: center
   padding-left: 5px
+  min-height: 50px
 
   .left
     .name
-      font-size: 1.1rem
+      font-size: 1rem
 
     .description
       font-size: 0.75rem

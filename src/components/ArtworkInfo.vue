@@ -92,10 +92,10 @@ export default Vue.extend({
         font-size: 1rem
 
   img
-    width: calc(100% - 2px)
+    width: calc(100% - var(--artwork-render-correction) * 2)
     border-radius: var(--border-radius-large)
-    border: 1px solid var(--bg)
-    transition: var(--transition-short) var(--ease)
+    border: var(--artwork-render-correction) solid var(--bg)
+    transition: 0 var(--transition-short) var(--ease)
 
   &.expanded
     width: calc(100% - 20px)
@@ -104,6 +104,8 @@ export default Vue.extend({
 
     img
       border-radius: 0
+      width: 100%
+      border: none
 
     .overlay
       transform: translateY(100%)

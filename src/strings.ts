@@ -15,6 +15,16 @@ export const pref: TextString = {
   },
   darkTheme: {
     name: "Enable Dark Theme",
-    desc: "Disable to increase visibility in bright environments",
+    desc: {
+      true: "Easy on the eyes in dim environments",
+      false: "Increased contrast in bright environments",
+    },
+  },
+  roundBorders: {
+    name: "Round Borders",
+    desc: {
+      true: "Images get a modern rounded border",
+      false: "Images keep the original square shape",
+    },
   },
 }

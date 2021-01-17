@@ -6,6 +6,7 @@ interface Preferences {
   // theme: "dark" | "light" | "custom" // todo import menu
   // fontSize: number // todo import slider
   darkTheme: boolean
+  roundBorders: boolean
   network: {
     metadataCacheFirst: boolean
   }
@@ -18,6 +19,7 @@ const defaultPreferences: Preferences = {
   // theme: "dark",
   // fontSize: 1,
   darkTheme: true,
+  roundBorders: true,
   network: {
     metadataCacheFirst: true,
   },
