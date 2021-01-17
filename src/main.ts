@@ -4,6 +4,7 @@ import router from "@/router"
 import store from "@/store"
 
 import { Plugins, Capacitor } from "@capacitor/core"
+import "./registerServiceWorker"
 const { StatusBar } = Plugins
 
 if (Capacitor.isPluginAvailable("StatusBar")) {
