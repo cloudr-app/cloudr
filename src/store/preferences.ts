@@ -54,7 +54,7 @@ export default {
       const storedPreferences = ls(preferenceLocation) || {}
       const applyPreference: any = { [pref]: val }
 
-      if (sub) applyPreference.pref = { [sub]: val }
+      if (sub) applyPreference[pref] = { [sub]: val }
 
       ls(preferenceLocation, mergeDeep(storedPreferences, applyPreference))
     },
