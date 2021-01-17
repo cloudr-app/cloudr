@@ -20,6 +20,8 @@
     "@material/notched-outline": "^9.0.0",
     "@material/switch": "^9.0.0",
     "@material/textfield": "^9.0.0",
+    "@sentry/tracing": "^5.30.0",
+    "@sentry/vue": "^5.30.0",
     "core-js": "^3.8.2",
     "ky": "^0.25.1",
     "localforage": "^1.9.0",
