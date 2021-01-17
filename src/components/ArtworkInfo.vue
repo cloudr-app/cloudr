@@ -95,7 +95,7 @@ export default Vue.extend({
     width: calc(100% - var(--artwork-render-correction) * 2)
     border-radius: var(--border-radius-large)
     border: var(--artwork-render-correction) solid var(--bg)
-    transition: 0 var(--transition-short) var(--ease)
+    transition: var(--transition-short) var(--ease)
 
   &.expanded
     width: calc(100% - 20px)

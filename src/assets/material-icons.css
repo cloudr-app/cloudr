@@ -2,7 +2,7 @@
   font-family: "Material Icons Round";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url("material-icons-round.woff2") format("woff2"); /* https://fonts.gstatic.com/s/materialiconsround/v26/LDItaoyNOAY6Uewc665JcIzCKsKc_M9flwmP.woff2 */
 }
 .material-icons,

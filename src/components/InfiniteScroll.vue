@@ -62,7 +62,8 @@ export default Vue.extend({
       if (children.length !== slotChildren.length)
         throw new Error("children length and slot content length are not the same.")
 
-      children.forEach((child: HTMLElement, index: number) => {
+      const childArray = [...children]
+      childArray.forEach((child: HTMLElement, index: number) => {
         if (hideObserved[index]) return
 
         hideObserver.observe(child)
