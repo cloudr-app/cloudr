@@ -1,44 +1,60 @@
 import { ls, mergeDeep } from "@/utils"
+import { ActionArg } from "./"
 
 // ! only nest this one-deep
 interface Preferences {
-  // theme: "dark" | "light" | "custom"
-  // fontSize: number
-  test: boolean
+  // theme: "dark" | "light" | "custom" // todo import menu
+  // fontSize: number // todo import slider
+  darkTheme: boolean
   network: {
     metadataCacheFirst: boolean
   }
-  soundcloud: {
-    enabled: boolean
-    // defaultVolume: number
-  }
+  // soundcloud: {
+  //   platformEnabled: boolean
+  //   defaultVolume: number
+  // }
 }
 const defaultPreferences: Preferences = {
-  // theme: "dark", // todo import menu
-  // fontSize: 1, // todo import slider
-  test: false,
+  // theme: "dark",
+  // fontSize: 1,
+  darkTheme: true,
   network: {
     metadataCacheFirst: true,
   },
-  soundcloud: {
-    enabled: true,
-    // defaultVolume: 1,
-  },
+  // soundcloud: {
+  //   platformEnabled: true,
+  //   defaultVolume: 1,
+  // },
 }
+
+type ValPrefSub = [SettingsValue, string, string?]
+const preferenceLocation = "cloudr-preferences"
 
 export default {
   state: () => {
-    const storedPreferences = ls("cloudr-preferences")
+    const storedPreferences = ls(preferenceLocation)
     if (storedPreferences) return mergeDeep(defaultPreferences, storedPreferences)
 
     return defaultPreferences
   },
-  mutations: {
-    changePref(state: any, [pref, val]: [string, SettingsValue]) {
-      if (pref in state) state[pref] = val
+  actions: {
+    pref({ commit }: ActionArg, pref: ValPrefSub) {
+      commit("changePref", pref)
+      commit("savePref", pref)
     },
-    changeSubPref(state: any, [pref, sub, val]: [string, string, SettingsValue]) {
-      if (pref in state && sub in state[pref]) state[pref][sub] = val
+  },
+  mutations: {
+    changePref(state: any, [val, pref, sub]: ValPrefSub) {
+      if (sub && pref in state && sub in state[pref]) state[pref][sub] = val
+      else if (pref in state) state[pref] = val
+    },
+    savePref(_: any, [val, pref, sub]: ValPrefSub) {
+      const storedPreferences = ls(preferenceLocation) || {}
+      const applyPreference: any = { [pref]: val }
+
+      if (sub) applyPreference.pref = { [sub]: val }
+
+      ls(preferenceLocation, mergeDeep(storedPreferences, applyPreference))
     },
   },
 }

@@ -6,11 +6,15 @@ export const pref: TextString = {
       false: "Always get fresh metadata",
     },
   },
-  enabled: {
+  platformEnabled: {
     name: "Enable platform",
     desc: {
       true: "Platform enabled",
       false: "Platform disabled",
     },
+  },
+  darkTheme: {
+    name: "Enable Dark Theme",
+    desc: "Disable to increase visibility in bright environments",
   },
 }

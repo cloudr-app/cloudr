@@ -8,7 +8,7 @@ import preferences from "./preferences"
 
 Vue.use(Vuex)
 
-interface ActionArg {
+export interface ActionArg {
   state: State
   commit: Function
   dispatch: Function

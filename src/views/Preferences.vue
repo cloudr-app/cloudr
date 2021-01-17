@@ -43,10 +43,9 @@ export default Vue.extend({
   methods: {
     isObject,
     handleChange(value: SettingsValue, pref: string, sub: string) {
-      const { commit } = this.$store
+      const { dispatch } = this.$store
 
-      if (sub) commit("changeSubPref", [pref, sub, value])
-      else commit("changePref", [pref, value])
+      dispatch("pref", [value, pref, sub])
     },
   },
 })
@@ -57,7 +56,7 @@ export default Vue.extend({
   padding: 0 15px
 
   .category
-    margin: 5px 0
+    margin: 10px 0
 
     > span
       font-size: 0.75rem
