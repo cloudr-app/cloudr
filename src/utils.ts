@@ -1,5 +1,6 @@
 import ky from "ky"
 import { MediaImage } from "./player/musicSource"
+import { preferenceLocation } from "./strings"
 
 /**
  * util for getting the movement of touch events
@@ -72,6 +73,17 @@ export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => 
 }
 
 /**
+ * include a value to write, exclude it to read a localStorage value.
+ * stringifies and parses every input.
+ * @param key
+ * @param value
+ */
+export const ls = (key: string, value?: any) =>
+  void 0 !== value
+    ? localStorage.setItem(key, JSON.stringify(value))
+    : JSON.parse(localStorage.getItem(key) as string)
+
+/**
  * Returns an instance of ky with automatic cache-first cache
  * @param cacheName a name for the cache
  */
@@ -81,6 +93,9 @@ export const kyCache = (cacheName: string) => {
       hooks: {
         beforeRequest: [
           async req => {
+            if (!window[preferenceLocation].network.metadataCacheFirst)
+              return console.log("not cached")
+
             const cache = await caches.open(cacheName)
             const cached = await cache.match(req)
 
@@ -145,29 +160,18 @@ export const isObject = (item: any) => {
 }
 
 type Obj = { [key: string]: any }
-export const mergeDeep = (target: Obj, source: Obj) => {
-  const output = Object.assign({}, target)
-  if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach(key => {
-      if (isObject(source[key])) {
-        if (!(key in target)) Object.assign(output, { [key]: source[key] })
-        else output[key] = mergeDeep(target[key], source[key])
-      } else Object.assign(output, { [key]: source[key] })
-    })
-  }
+export const updateDeep = (source: Obj, updater: Obj) => {
+  const output = { ...source }
+  if (!isObject(source) || !isObject(updater)) return output
+
+  Object.keys(source).forEach(key => {
+    if (isObject(source[key])) {
+      if (key in updater) output[key] = updateDeep(source[key], updater[key])
+    } else if (key in updater) output[key] = updater[key]
+  })
+
   return output
 }
-
-/**
- * include a value to write, exclude it to read a localStorage value.
- * stringifies and parses every input.
- * @param key
- * @param value
- */
-export const ls = (key: string, value?: any) =>
-  void 0 !== value
-    ? localStorage.setItem(key, JSON.stringify(value))
-    : JSON.parse(localStorage.getItem(key) as string)
 
 export type imageType = ".png" | ".jpg" | ".gif"
 export const imageTypes = {

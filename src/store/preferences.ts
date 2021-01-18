@@ -1,12 +1,16 @@
-import { ls, mergeDeep } from "@/utils"
+import { preferenceLocation } from "@/strings"
+import { ls, updateDeep } from "@/utils"
 import { ActionArg } from "./"
 
 // ! only nest this one-deep
-interface Preferences {
+export interface Preferences {
   // theme: "dark" | "light" | "custom" // todo import menu
   // fontSize: number // todo import slider
-  darkTheme: boolean
-  roundBorders: boolean
+  theme: {
+    darkTheme: boolean
+    monochromeTheme: boolean
+    roundBorders: boolean
+  }
   network: {
     metadataCacheFirst: boolean
   }
@@ -18,8 +22,11 @@ interface Preferences {
 const defaultPreferences: Preferences = {
   // theme: "dark",
   // fontSize: 1,
-  darkTheme: true,
-  roundBorders: true,
+  theme: {
+    darkTheme: true,
+    monochromeTheme: false,
+    roundBorders: true,
+  },
   network: {
     metadataCacheFirst: true,
   },
@@ -30,15 +37,23 @@ const defaultPreferences: Preferences = {
 }
 
 type ValPrefSub = [SettingsValue, string, string?]
-const preferenceLocation = "cloudr-preferences"
+
+const initialState = (() => {
+  const storedPreferences = ls(preferenceLocation)
+  if (storedPreferences) return updateDeep(defaultPreferences, storedPreferences)
+
+  return defaultPreferences
+})() as Preferences
+
+declare global {
+  interface Window {
+    [preferenceLocation]: Preferences
+  }
+}
+window[preferenceLocation] = initialState
 
 export default {
-  state: () => {
-    const storedPreferences = ls(preferenceLocation)
-    if (storedPreferences) return mergeDeep(defaultPreferences, storedPreferences)
-
-    return defaultPreferences
-  },
+  state: initialState,
   actions: {
     pref({ commit }: ActionArg, pref: ValPrefSub) {
       commit("changePref", pref)
@@ -56,7 +71,9 @@ export default {
 
       if (sub) applyPreference[pref] = { [sub]: val }
 
-      ls(preferenceLocation, mergeDeep(storedPreferences, applyPreference))
+      const preferences = updateDeep(defaultPreferences, storedPreferences)
+
+      ls(preferenceLocation, updateDeep(preferences, applyPreference))
     },
   },
 }

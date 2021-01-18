@@ -1,4 +1,4 @@
-:root {
+#app {
   --mdc-theme-primary: var(--text-light);
   --mdc-theme-secondary: var(--accent);
   --mdc-text-field: var(--text-m-light);

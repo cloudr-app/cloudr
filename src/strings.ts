@@ -1,9 +1,9 @@
 export const pref: TextString = {
   metadataCacheFirst: {
-    name: "Metadata Cache-First",
+    name: "Metadata caching",
     desc: {
       true: "Use cached metadata before fetching new",
-      false: "Always get fresh metadata",
+      false: "Always get fresh metadata (slower)",
     },
   },
   platformEnabled: {
@@ -27,4 +27,10 @@ export const pref: TextString = {
       false: "Images keep the original square shape",
     },
   },
+  monochromeTheme: {
+    name: "Monochrome Theme",
+    desc: "Remove all colors from the UI",
+  },
 }
+
+export const preferenceLocation = "cloudr-preferences"
