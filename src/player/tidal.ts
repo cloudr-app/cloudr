@@ -161,7 +161,7 @@ const tidal: MusicSource = {
 
     const { access_token } = login
     const stream = await track.stream({ id, access_token })
-    return stream.urls[0]
+    return stream.urls[0].replace("http://", "https://")
   },
   async track(id) {
     const data = await track.get({ client_id, id })
