@@ -6,11 +6,9 @@ import {
   User,
   MediaImage,
 } from "@/player/musicSource"
-import { defaultImage, kyCache } from "@/utils"
+import { defaultImage, imageType, imageTypes, kyCache } from "@/utils"
 
 const ky = kyCache("soundcloud")
-
-type SoundcloudImageType = ".png" | ".jpg" | ".gif"
 
 const soundcloudImageSizes = {
   mini: "16x16",
@@ -21,17 +19,12 @@ const soundcloudImageSizes = {
   crop: "400x400",
   t500x500: "500x500",
 }
-const soundcloudImageTypes = {
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".gif": "image/gif",
-}
 const getURLFileName = (url: string) => /(\.(?:jpg|png|gif))$/im.exec(url)?.[1]
-const soundcloudImage = (url?: string): MediaImage[] | undefined => {
-  if (!url) return
+const soundcloudImage = (url?: string) => {
+  if (!url) return [defaultImage]
   const ret = []
-  const file = (getURLFileName(url) || ".png").toLowerCase() as SoundcloudImageType
-  const type = soundcloudImageTypes[file]
+  const file = (getURLFileName(url) || ".png").toLowerCase() as imageType
+  const type = imageTypes[file]
 
   for (const [name, sizes] of Object.entries(soundcloudImageSizes)) {
     const src = url.replace("large", name)
@@ -61,7 +54,7 @@ const transformUser = (s: SoundcloudUser): User => ({
   trackCount: s.track_count,
   playlistCount: s.playlist_count,
   likesCount: s.public_favorites_count,
-  avatar: soundcloudImage(s.avatar_url) || [defaultImage],
+  avatar: soundcloudImage(s.avatar_url),
 })
 
 // cspell:ignore favoritings
@@ -86,7 +79,7 @@ const transformTrack = (t: SoundcloudTrack): Track => ({
   description: t.description,
   genre: t.genre,
   user: transformUser(t.user),
-  artwork: soundcloudImage(t.artwork_url || t.user.avatar_url) || [defaultImage],
+  artwork: soundcloudImage(t.artwork_url || t.user.avatar_url),
   playbackCount: t.playback_count,
   likeCount: t.favoritings_count,
 })
@@ -103,7 +96,7 @@ interface SoundcloudPlaylist {
   tracks: SoundcloudTrack[]
 }
 const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
-  artwork: soundcloudImage(p.artwork_url || p.tracks[0]?.artwork_url) || [defaultImage],
+  artwork: soundcloudImage(p.artwork_url || p.tracks[0]?.artwork_url),
   description: p.description,
   duration: p.duration,
   id: p.id,
@@ -125,12 +118,12 @@ const baseApi = "https://api.soundcloud.com"
 const client_id = "z8LRYFPM4UK5MMLaBe9vixfph5kqNA25"
 const auth = `client_id=${client_id}`
 
-function paginateNext(
+const paginateNext = (
   url: string,
   key = "collection",
   transform = (a: any) => a,
   limit = 50
-) {
+) => {
   return async () => {
     const { searchParams } = new URL(url)
     searchParams.set("client_id", client_id)

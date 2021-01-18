@@ -7,8 +7,8 @@ export interface MusicSource {
   playlistInfo(source: Source): Promise<Playlist>
   playlistTracks(source: Source, limit?: number): Promise<PlaylistTracks>
   stream(source: Source): Promise<URL>
-  user(source: Source): Promise<User>
   track(source: Source): Promise<Track>
+  user?(source: Source): Promise<User>
   resolve?(source: URL): Promise<any>
 }
 
@@ -41,7 +41,7 @@ export interface Track {
   platform: Platform
   duration: number
   id: number
-  createdAt: Date
+  createdAt?: Date
   title: string
   description?: string
   genre?: string

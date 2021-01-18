@@ -2,15 +2,17 @@ import Vue from "vue"
 import * as Sentry from "@sentry/browser"
 import { Integrations } from "@sentry/tracing"
 
-Sentry.init({
-  // @ts-ignore
-  Vue,
-  dsn: "https://b4d1c9034e3349dc8ba8014ad9de3b86@o105856.ingest.sentry.io/5596134",
-  autoSessionTracking: true,
-  integrations: [new Integrations.BrowserTracing()],
-  logErrors: true,
-  tracesSampleRate: 1.0,
-})
+if (process.env.NODE_ENV !== "development") {
+  Sentry.init({
+    // @ts-ignore
+    Vue,
+    dsn: "https://b4d1c9034e3349dc8ba8014ad9de3b86@o105856.ingest.sentry.io/5596134",
+    autoSessionTracking: true,
+    integrations: [new Integrations.BrowserTracing()],
+    logErrors: true,
+    tracesSampleRate: 1.0,
+  })
+}
 
 import App from "@/App.vue"
 import router from "@/router"

@@ -93,8 +93,12 @@ export const kyCache = (cacheName: string) => {
         ],
         afterResponse: [
           async (req, _, res) => {
-            const cache = await caches.open(cacheName)
-            await cache.put(req, res)
+            try {
+              const cache = await caches.open(cacheName)
+              await cache.put(req, res)
+            } catch (err) {
+              "ignore"
+            }
           },
         ],
       },
@@ -164,3 +168,10 @@ export const ls = (key: string, value?: any) =>
   void 0 !== value
     ? localStorage.setItem(key, JSON.stringify(value))
     : JSON.parse(localStorage.getItem(key) as string)
+
+export type imageType = ".png" | ".jpg" | ".gif"
+export const imageTypes = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".gif": "image/gif",
+}

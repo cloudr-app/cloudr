@@ -78,7 +78,7 @@ export default Vue.extend({
   --text-light: #C8C8CD
   --text-m-light: #4e505d
   --text-x-light: #343644
-  --text-trans-white: #FFFFFF
+  --text-trans-white: 255, 255, 255
   --text-highlight: #cec2ff
   --text-light-highlight: #aeaed5
   --small-artwork-highlight: 0 0 0 1px var(--text-white)
@@ -123,6 +123,21 @@ html, body
   width: 100%
   user-select: none
   -webkit-tap-highlight-color: transparent
+
+opacity(variable, opacity = 1)
+  s("rgba(var(%s), %s)", variable, opacity)
+
+button
+  border: 1px solid var(--text-light)
+  background: none
+  color: var(--text-light)
+  padding: 0.5em 1em
+  border-radius: var(--border-radius)
+  outline: none
+  transition: background var(--transition-short)
+
+  &:active
+    background: opacity(--text-trans-white, 0.2)
 
 *
   -webkit-font-smoothing: antialiased
