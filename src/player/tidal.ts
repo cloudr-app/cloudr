@@ -48,7 +48,14 @@ const kyxios: AxiosInstance = async (config: AxiosRequestConfig) => {
   }
 }
 
-import { _track, _auth, _search, _artist, _playlist } from "opentidal"
+import {
+  _track,
+  _auth,
+  _search,
+  _artist,
+  _playlist,
+  track as cachelessTrack,
+} from "opentidal"
 import { Track as TidalTrack } from "opentidal/lib/types"
 
 const track = _track(kyxios)
@@ -160,7 +167,7 @@ const tidal: MusicSource = {
     }
 
     const { access_token } = login
-    const stream = await track.stream({ id, access_token })
+    const stream = await cachelessTrack.stream({ id, access_token })
     return stream.urls[0].replace("http://", "https://")
   },
   async track(id) {
