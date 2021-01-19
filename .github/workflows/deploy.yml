@@ -2,11 +2,10 @@ name: deploy
 on: push
 jobs:
   telegram:
-    name: notify about commit on telegram
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: notify
+      - name: notify about commit on telegram
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
@@ -16,6 +15,10 @@ jobs:
             ⚙ <a href="https://github.com/cloudr-app/cloudr/commit/${{ github.event.after }}">new commit</a> by ${{ github.event.pusher.name }}.
             ${{ github.event.head_commit.message }}
 
+  sentry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: create sentry release
         uses: getsentry/action-release@v1
         env:
