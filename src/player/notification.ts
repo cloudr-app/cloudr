@@ -54,12 +54,13 @@ const notification = {
       artwork,
     })
 
-    for (const [action, handler] of Object.entries(handlers))
+    for (const [action, handler] of Object.entries(handlers)) {
       try {
         navigator.mediaSession.setActionHandler(action, handler)
       } catch (error) {
         return "ignore"
       }
+    }
   },
   setPositionState({ duration, playbackRate, currentTime: position }: PositionState) {
     if (isNative) return

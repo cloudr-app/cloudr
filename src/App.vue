@@ -89,6 +89,7 @@ export default Vue.extend({
   --font: "manrope"
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
+  --transition-x-short: 100ms
   --transition-short: 200ms
   --transition-medium: 500ms
   --top-nav-height: 56px
