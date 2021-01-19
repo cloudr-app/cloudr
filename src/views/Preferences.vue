@@ -27,6 +27,8 @@
 import Vue from "vue"
 import Preference from "@/components/Preference.vue"
 import { isObject } from "@/utils"
+// eslint-disable-next-line no-unused-vars
+import { SettingsValue } from "@/types"
 
 export default Vue.extend({
   name: "preferences",

@@ -5,6 +5,7 @@ import { toCloudrID, fromCloudrID, defaultImage } from "@/utils"
 import notification from "@/player/notification"
 
 import preferences from "./preferences"
+import { State, CurrentTrackInfo } from "@/types"
 
 Vue.use(Vuex)
 
@@ -15,6 +16,7 @@ export interface ActionArg {
   [key: string]: any
 }
 
+// @ts-expect-error
 const defaultState: State = {
   currentTrack: {
     id: "",

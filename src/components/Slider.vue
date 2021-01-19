@@ -20,10 +20,16 @@
 <script lang="ts">
 import { touchEventOffset } from "@/utils"
 import Vue from "vue"
-const debounce = (fn: Function, ms = 0) => {
-  let tid: number
-  return function (...args: any[]) {
-    clearTimeout(tid), (tid = setTimeout(() => fn.apply(this, args), ms))
+function throttle(func: Function, limit: number): Function {
+  let inThrottle: boolean
+  return function (this: any): any {
+    const args = arguments
+    const context = this
+    if (!inThrottle) {
+      inThrottle = true
+      func.apply(context, args)
+      setTimeout(() => (inThrottle = false), limit)
+    }
   }
 }
 
@@ -83,7 +89,7 @@ export default Vue.extend({
     /**
      * prevent duplicate emissions
      */
-    emit: debounce(function (type: string, value: any) {
+    emit: throttle(function (type: string, value: any) {
       if (this.lastEmitted !== value) {
         this.lastEmitted = value
         this.$emit("input", value)

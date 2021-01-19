@@ -1,13 +1,16 @@
 <template>
   <nav class="top" :class="{ scrolled }">
-    <!-- <i class="mi" @click="$router.back()" v-if="$route.fullPath !== '/'">arrow_back</i> -->
+    <i class="mi" @click="$router.back()" v-if="$route.fullPath === '/preferences'">
+      arrow_back
+    </i>
     <div class="spacer"></div>
     <i
       class="mi"
       @click="$router.push('/preferences')"
       v-if="$route.fullPath !== '/preferences'"
-      >settings</i
     >
+      settings
+    </i>
   </nav>
 </template>
 

@@ -68,6 +68,6 @@ export default Vue.extend({
 }
 
 .switch {
-  padding: 13.2px 14px;
+  padding: 13.2px 10px;
 }
 </style>

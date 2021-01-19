@@ -5,6 +5,8 @@
 <script lang="ts">
 import Vue from "vue"
 import notification from "@/player/notification"
+// eslint-disable-next-line no-unused-vars
+import { State } from "@/types"
 
 function throttle(func: Function, limit: number): Function {
   let inThrottle: boolean
@@ -43,8 +45,14 @@ export default Vue.extend({
     "$store.state.player.playing": "onPlaybackStateChange",
     "$store.state.player.setPosition": "setPosition",
     src: "onPlaybackStateChange",
+    "$store.state.preferences.defaultVolume": "setVolume",
   },
   methods: {
+    setVolume: throttle(function () {
+      const audio = this.$refs.audio as HTMLAudioElement
+      const state = this.$store.state as State
+      audio.volume = state.preferences.defaultVolume
+    }, 1e3 / 30),
     setPosition() {
       const audio = this.$refs.audio as HTMLAudioElement
       const state = this.$store.state as State
@@ -70,6 +78,8 @@ export default Vue.extend({
       const state = this.$store.state as State
       const { playing } = state.player
       const audio = this.$refs.audio as HTMLAudioElement
+
+      this.setVolume()
 
       if (this.lastPlaybackState === playing) return
       this.lastPlaybackState = playing

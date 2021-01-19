@@ -93,8 +93,7 @@ export const kyCache = (cacheName: string) => {
       hooks: {
         beforeRequest: [
           async req => {
-            if (!window[preferenceLocation].network.metadataCacheFirst)
-              return console.log("not cached")
+            if (!window[preferenceLocation].network.metadataCacheFirst) return
 
             const cache = await caches.open(cacheName)
             const cached = await cache.match(req)

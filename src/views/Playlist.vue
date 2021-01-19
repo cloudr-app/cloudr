@@ -31,6 +31,8 @@ import { getImageLargerThan, toCloudrID } from "@/utils"
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
 import type { MediaImage, Playlist, Track } from "@/player/musicSource"
+// eslint-disable-next-line no-unused-vars
+import { State } from "@/types"
 
 declare global {
   interface Window {

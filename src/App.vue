@@ -26,6 +26,8 @@ import audioPlayer from "@/components/AudioPlayer.vue"
 
 import soundcloud from "@/player/soundcloud"
 import player from "@/player"
+// eslint-disable-next-line no-unused-vars
+import { State } from "./types"
 
 declare global {
   interface Window {

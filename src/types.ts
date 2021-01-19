@@ -1,4 +1,7 @@
-interface State {
+import { MediaImage, Track } from "./player/musicSource"
+import { Preferences } from "./store/preferences"
+
+export interface State {
   currentTrack: CurrentTrackInfo
   queued: Track[]
   queue: Track[]
@@ -11,9 +14,10 @@ interface State {
     duration: number
     setPosition: number | false
   }
+  preferences: Preferences
 }
 
-interface CurrentTrackInfo {
+export interface CurrentTrackInfo {
   id: string
   title: string
   artist: string
@@ -21,12 +25,13 @@ interface CurrentTrackInfo {
   stream: string
 }
 
-type SettingsValue = number | string | boolean
+export type SettingsValue = number | string | boolean
 
-interface TextString {
+export interface TextString {
   [key: string]: {
     name: string
-    desc:
+    translateValue?(...v: any): string
+    desc?:
       | string
       | {
           [key: string]: string

@@ -14,3 +14,4 @@ jobs:
           message: |
             ⚙ <a href="https://github.com/cloudr-app/cloudr/commit/${{ github.event.after }}">new commit</a> by ${{ github.event.pusher.name }}.
             ${{ github.event.head_commit.message }}
+          disable_web_page_preview: true

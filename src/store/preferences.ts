@@ -1,4 +1,5 @@
 import { preferenceLocation } from "@/strings"
+import { SettingsValue } from "@/types"
 import { ls, updateDeep } from "@/utils"
 import { ActionArg } from "./"
 
@@ -6,6 +7,7 @@ import { ActionArg } from "./"
 export interface Preferences {
   // theme: "dark" | "light" | "custom" // todo import menu
   // fontSize: number // todo import slider
+  defaultVolume: number
   theme: {
     darkTheme: boolean
     monochromeTheme: boolean
@@ -16,12 +18,12 @@ export interface Preferences {
   }
   // soundcloud: {
   //   platformEnabled: boolean
-  //   defaultVolume: number
   // }
 }
 const defaultPreferences: Preferences = {
   // theme: "dark",
   // fontSize: 1,
+  defaultVolume: 1,
   theme: {
     darkTheme: true,
     monochromeTheme: false,
@@ -32,7 +34,6 @@ const defaultPreferences: Preferences = {
   },
   // soundcloud: {
   //   platformEnabled: true,
-  //   defaultVolume: 1,
   // },
 }
 

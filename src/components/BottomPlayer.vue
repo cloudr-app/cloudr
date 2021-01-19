@@ -43,6 +43,8 @@ import { formatTime, getImageLargerThan } from "@/utils"
 // eslint-disable-next-line no-unused-vars
 import type { MediaImage } from "@/player/musicSource"
 import Slider from "@/components/Slider.vue"
+// eslint-disable-next-line no-unused-vars
+import { State } from "@/types"
 
 export default Vue.extend({
   components: { Slider },

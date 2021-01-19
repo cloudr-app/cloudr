@@ -1,3 +1,5 @@
+import { TextString } from "./types"
+
 export const pref: TextString = {
   metadataCacheFirst: {
     name: "Metadata caching",
@@ -30,6 +32,10 @@ export const pref: TextString = {
   monochromeTheme: {
     name: "Monochrome Theme",
     desc: "Remove all colors from the UI",
+  },
+  defaultVolume: {
+    name: "Default volume",
+    translateValue: (v: number) => `${(v * 100).toFixed(0)}%`,
   },
 }
 
