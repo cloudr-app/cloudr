@@ -1,4 +1,4 @@
-name: telegram message
+name: deploy
 on: push
 jobs:
   telegram:
@@ -15,3 +15,12 @@ jobs:
           message: |
             ⚙ <a href="https://github.com/cloudr-app/cloudr/commit/${{ github.event.after }}">new commit</a> by ${{ github.event.pusher.name }}.
             ${{ github.event.head_commit.message }}
+
+      - name: create sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production

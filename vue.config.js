@@ -3,7 +3,6 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
   },
-  productionSourceMap: false,
   pwa: {
     workboxPluginMode: "InjectManifest",
     workboxOptions: {
