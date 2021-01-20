@@ -2,7 +2,7 @@
   <global-styles id="app" :class="{ noTrack }">
     <top-nav :scrolled="scrolled" />
     <main ref="main" class="rw">
-      <router-view />
+      <router-view :key="$route.name" />
     </main>
     <transition name="bottom-player">
       <bottom-player v-if="!noTrack" />
@@ -24,20 +24,18 @@ import globalStyles from "@/components/GlobalStyles.vue"
 
 import audioPlayer from "@/components/AudioPlayer.vue"
 
-import soundcloud from "@/player/soundcloud"
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
 import { State } from "./types"
 
 declare global {
   interface Window {
-    soundcloud: any
     vue: any
     player: any
   }
 }
+window.player = player
 
-window.soundcloud = soundcloud
 export default Vue.extend({
   components: { topNav, bottomNav, bottomPlayer, audioPlayer, globalStyles },
   data: () => ({
@@ -57,7 +55,6 @@ export default Vue.extend({
 
     // for debugging
     window.vue = self
-    window.player = player
 
     // cspell:ignore onscroll
     const { main } = self.$refs as any

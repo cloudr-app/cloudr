@@ -11,25 +11,34 @@ const platform = Object.entries(platformsShort)
   .map(plt => plt.join("|"))
   .join("|")
 
+// ❤|❤️
+const heart_emoji = "%E2%9D%A4|%E2%9D%A4%EF%B8%8F"
+
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: require("./views/Home.vue").default,
+    component: require("@/views/Home.vue").default,
   },
   {
     path: "/preferences",
     name: "Preferences",
-    component: require("./views/Preferences.vue").default,
+    component: require("@/views/Preferences.vue").default,
   },
   {
     path: `/(playlist|pl)/:platform(${platform})/:id`,
     name: "Playlist",
-    component: require("./views/Playlist.vue").default,
+    component: require("@/views/Playlist.vue").default,
+  },
+  {
+    path: `/(likes|%3C3|${heart_emoji})/:platform(${platform})/:id`,
+    name: "Likes",
+    component: require("@/views/Playlist.vue").default,
   },
   {
     path: "*",
-    redirect: "/",
+    // redirect: "/",
+    component: require("@/views/SoundcloudResolve.vue").default,
   },
   // {
   //   path: "/about",
@@ -37,7 +46,7 @@ const routes = [
   //   // route level code-splitting
   //   // this generates a separate chunk (about.[hash].js) for this route
   //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  //   component: () => import(/* webpackChunkName: "about" */ ".@/views/About.vue"),
   // },
 ]
 

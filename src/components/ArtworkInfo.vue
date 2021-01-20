@@ -105,7 +105,6 @@ export default Vue.extend({
     img
       border-radius: 0
       width: 100%
-      border: none
 
     .overlay
       transform: translateY(100%)

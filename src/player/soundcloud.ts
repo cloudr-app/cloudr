@@ -141,15 +141,41 @@ const paginateNext = (
 }
 
 const soundcloud: MusicSource = {
-  resolve: async source => {
-    const url = new URL(source, base).toString()
+  stream: id => Promise.resolve(`${baseApi}/tracks/${id}/stream?${auth}`),
+  async resolve(source) {
+    const url = new URL(source, base)
+    const path = url.pathname.slice(1).split("/")
+    console.log("resolving", url.toString())
+
+    // TODO check if URL is a playlist (set)
+    if (path.length === 2) {
+      if (path[1] === "likes") {
+        const { id } = await soundcloud.resolve?.(path[0])
+        return `/%3C3/sc/${id}`
+      }
+    }
+
     return await ky
       .get(`${baseApi}/resolve`, {
-        searchParams: { url, client_id },
+        searchParams: { url: url.toString(), client_id },
       })
       .json()
   },
-  stream: id => Promise.resolve(`${baseApi}/tracks/${id}/stream?${auth}`),
+  async likes(id, limit = 50) {
+    const data = (await ky
+      .get(`${baseApi}/users/${id}/favorites`, {
+        searchParams: { client_id, limit, linked_partitioning: true },
+      })
+      .json()) as SoundcloudPlaylistTracks
+
+    const ret: PlaylistTracks = {
+      tracks: data.collection.map(transformTrack),
+    }
+    if (data.next_href)
+      ret.next = paginateNext(data.next_href, "tracks", transformTrack, limit)
+
+    return ret
+  },
   async user(id) {
     const data = (await ky
       .get(`${baseApi}/users/${id}`, {

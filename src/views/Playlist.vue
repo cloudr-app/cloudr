@@ -66,6 +66,9 @@ export default Vue.extend({
 
       return getImageLargerThan(images, 500).src
     },
+    likes() {
+      return this.$route.name === "Likes"
+    },
   },
   async created() {
     window.playlist = this
@@ -83,14 +86,32 @@ export default Vue.extend({
     },
     async loadPlaylistInfo(params: Object) {
       const { platform, id }: any = params
-      this.playlistInfo = await player(platform).playlistInfo(id)
+      const plat = player(platform)
+
+      if (this.likes && plat.user) {
+        const user = await plat.user(id)
+
+        this.playlistInfo = {
+          platform: user.platform,
+          id: user.id,
+          artwork: user.avatar,
+          title: `${user.username}'s likes`,
+          trackCount: user.likesCount,
+          user,
+          description: user.description,
+        }
+      } else this.playlistInfo = await plat.playlistInfo(id)
     },
     async loadPlaylistTracks(params: Object) {
       const { platform, id }: any = params
-      const { tracks, next } = await player(platform).playlistTracks(id)
+      const plat = player(platform)
+      let tracks
 
-      this.playlistTracks = tracks
-      this.playlistNext = next
+      if (this.likes && plat.likes) tracks = await plat.likes(id)
+      else tracks = await plat.playlistTracks(id)
+
+      this.playlistTracks = tracks.tracks
+      this.playlistNext = tracks.next
     },
     async loadNext() {
       if (!this.playlistNext) return

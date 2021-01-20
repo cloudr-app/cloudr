@@ -23,8 +23,6 @@ if (process.env.NODE_ENV === "production") {
       console.log("New content is available; please refresh.")
       const worker = registration.waiting
       worker?.postMessage({ action: "skipWaiting" })
-      // TODO: remove when the settings structure becomes backwards-compatible
-      localStorage.clear()
       location.reload()
     },
     offline() {
