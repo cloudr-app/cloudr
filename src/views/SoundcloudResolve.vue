@@ -1,6 +1,6 @@
 <template>
   <div class="soundcloud-resolve">
-    <span> Resolving SoundCloud url...</span>
+    <span>Resolving SoundCloud url...</span>
   </div>
 </template>
 
@@ -15,6 +15,8 @@ export default Vue.extend({
   async created() {
     try {
       const resolved = await soundcloud.resolve?.(this.$route.path)
+      if (!resolved) return this.$router.replace("/")
+
       this.$router.replace(resolved)
     } catch (err) {
       console.log("resolve error", err)

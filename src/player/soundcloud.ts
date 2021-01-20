@@ -114,9 +114,13 @@ interface SoundcloudPlaylistTracks {
 
 const base = "https://soundcloud.com"
 const baseApi = "https://api.soundcloud.com"
+
+// ! this seems bad, but it's not as bad as a 1.5MB response
+// ! to get basic data about the playlists of a user
+const baseApi2 = "https://cors-anywhere.herokuapp.com/https://api-v2.soundcloud.com"
 // cspell:disable-next-line
 const client_id = "z8LRYFPM4UK5MMLaBe9vixfph5kqNA25"
-const auth = `client_id=${client_id}`
+const client_id2 = "XmvD0222mkoRiRKkf97v8i5K2FtAX5dH"
 
 const paginateNext = (
   url: string,
@@ -140,26 +144,66 @@ const paginateNext = (
   }
 }
 
+const userPlaylists = async (id: number) => {
+  const data = (await ky
+    .get(`${baseApi2}/users/${id}/playlists_without_albums`, {
+      searchParams: {
+        client_id: client_id2,
+        limit: 500,
+        offset: 0,
+        linked_partitioning: true,
+      },
+      headers: {
+        origin: location.origin,
+      },
+    })
+    .json()) as any
+
+  return data.collection as any[]
+}
+
+const apiResolve = async (source: string) => {
+  const url = new URL(source, base)
+  return (await ky
+    .get(`${baseApi}/resolve`, {
+      searchParams: { url: url.toString(), client_id },
+    })
+    .json()) as any
+}
+
 const soundcloud: MusicSource = {
-  stream: id => Promise.resolve(`${baseApi}/tracks/${id}/stream?${auth}`),
+  stream: id => Promise.resolve(`${baseApi}/tracks/${id}/stream?client_id=${client_id}`),
   async resolve(source) {
     const url = new URL(source, base)
     const path = url.pathname.slice(1).split("/")
-    console.log("resolving", url.toString())
+    const platform = "soundcloud"
 
-    // TODO check if URL is a playlist (set)
     if (path.length === 2) {
-      if (path[1] === "likes") {
-        const { id } = await soundcloud.resolve?.(path[0])
-        return `/%3C3/sc/${id}`
+      if (path[1]) {
+        const user = await apiResolve(path[0])
+        if (user)
+          return { name: "Likes", params: { "0": "playlist", platform, id: user.id } }
+      }
+    } else if (path.length === 3) {
+      if (path[1] === "sets") {
+        const user = await apiResolve(path[0])
+        const playlists = await userPlaylists(user.id)
+        const playlist = playlists.find(pl => pl.permalink === path[2])
+        if (playlist && user) {
+          return {
+            name: "Playlist",
+            params: { "0": "playlist", platform, id: playlist.id },
+          }
+        }
       }
     }
 
-    return await ky
-      .get(`${baseApi}/resolve`, {
-        searchParams: { url: url.toString(), client_id },
-      })
-      .json()
+    let res
+    console.log("fallback to traditional resolve for", url.toString())
+    const resolved = await apiResolve(url.toString())
+    if (resolved.kind === "playlist") res = `/playlist/soundcloud/${resolved.id}`
+
+    return res
   },
   async likes(id, limit = 50) {
     const data = (await ky
@@ -184,6 +228,10 @@ const soundcloud: MusicSource = {
       .json()) as SoundcloudUser
 
     return transformUser(data)
+  },
+  async userPlaylists(id) {
+    const data = await userPlaylists(id)
+    return data.map(transformPlaylistInfo)
   },
   async playlistInfo(id) {
     const data = (await ky

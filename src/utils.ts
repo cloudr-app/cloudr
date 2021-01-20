@@ -90,6 +90,7 @@ export const ls = (key: string, value?: any) =>
 export const kyCache = (cacheName: string) => {
   if ("caches" in self) {
     return ky.extend({
+      retry: 0,
       hooks: {
         beforeRequest: [
           async req => {
@@ -178,3 +179,6 @@ export const imageTypes = {
   ".jpg": "image/jpeg",
   ".gif": "image/gif",
 }
+
+// <3|❤|❤️
+export const heartEmoji = ["%3C3", "%E2%9D%A4", "%E2%9D%A4%EF%B8%8F"]

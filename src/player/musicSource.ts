@@ -11,6 +11,7 @@ export interface MusicSource {
   user?(source: Source): Promise<User>
   resolve?(source: URL): Promise<any>
   likes?(source: Source, limit?: number): Promise<PlaylistTracks>
+  userPlaylists?(source: Source): Promise<Playlist[]>
 }
 
 export interface User {

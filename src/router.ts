@@ -1,6 +1,6 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
-import { platformsShort } from "@/utils"
+import { heartEmoji, platformsShort } from "@/utils"
 
 import { Plugins } from "@capacitor/core"
 const { App } = Plugins
@@ -10,9 +10,6 @@ Vue.use(VueRouter)
 const platform = Object.entries(platformsShort)
   .map(plt => plt.join("|"))
   .join("|")
-
-// ❤|❤️
-const heart_emoji = "%E2%9D%A4|%E2%9D%A4%EF%B8%8F"
 
 const routes = [
   {
@@ -31,7 +28,7 @@ const routes = [
     component: require("@/views/Playlist.vue").default,
   },
   {
-    path: `/(likes|%3C3|${heart_emoji})/:platform(${platform})/:id`,
+    path: `/(likes|${heartEmoji.join("|")})/:platform(${platform})/:id`,
     name: "Likes",
     component: require("@/views/Playlist.vue").default,
   },
