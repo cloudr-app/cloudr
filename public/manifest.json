@@ -1,6 +1,47 @@
 {
   "name": "cloudr.app",
   "short_name": "cloudr",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#222436",
+  "orientation": "portrait",
+  "theme_color": "#222436",
+  "categories": ["music", "player", "soundcloud", "tidal", "youtube", "spotify"],
+  "share_target": {
+    "name": "cloudr",
+    "share_target": {
+      "action": "/",
+      "method": "GET",
+      "params": {
+        "title": "title",
+        "text": "text",
+        "url": "url"
+      }
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Open preferences",
+      "short_name": "Preferences",
+      "description": "Go to the preferences page",
+      "url": "/preferences",
+      "icons": [{ "src": "img/icons/maskable_icon_x512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Example playlist 1",
+      "short_name": "Example 1",
+      "description": "Go to example playlist 1 (soundcloud)",
+      "url": "/playlist/soundcloud/1162452736",
+      "icons": [{ "src": "img/icons/maskable_icon_x512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Example playlist 2",
+      "short_name": "Example 2",
+      "description": "Go to example playlist 2 (tidal)",
+      "url": "/pl/td/13697bfa-35c6-46d2-a6b7-dc05c4dd8401",
+      "icons": [{ "src": "img/icons/maskable_icon_x512.png", "sizes": "512x512" }]
+    }
+  ],
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
@@ -13,14 +54,50 @@
       "type": "image/png"
     },
     {
-      "src": "./img/icons/android-chrome-maskable-192x192.png",
-      "sizes": "192x192",
+      "src": "./img/icons/maskable_icon_x1.png",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "./img/icons/android-chrome-maskable-512x512.png",
+      "src": "./img/icons/maskable_icon_x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/maskable_icon_x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/maskable_icon_x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/maskable_icon_x512.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/maskable_icon_x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/maskable_icon_x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/maskable_icon_x128.png",
+      "sizes": "128x128",
       "type": "image/png",
       "purpose": "maskable"
     },
@@ -74,9 +151,5 @@
       "sizes": "150x150",
       "type": "image/png"
     }
-  ],
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#222436",
-  "theme_color": "#222436"
+  ]
 }

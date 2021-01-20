@@ -14,6 +14,12 @@
 
       <button @click="setTidalAccessToken">set tidal access_token</button>
     </div>
+    <div class="search-params" v-if="searchParams.length">
+      searchParams:
+      <div class="param" v-for="[key, value] in searchParams" :key="key + value">
+        {{ key }}: {{ value }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -23,13 +29,17 @@ import Vue from "vue"
 
 export default Vue.extend({
   name: "Home",
-  data: () => ({ value: 0.5 }),
+  data: () => ({ searchParams: [] }),
   methods: {
     setTidalAccessToken() {
       const access_token = prompt("enter access_token")
 
       if (access_token) ls("tidal-login", { access_token })
     },
+  },
+  mounted() {
+    const { searchParams } = new URL(window.location.href)
+    this.searchParams = [...searchParams.entries()]
   },
 })
 </script>
