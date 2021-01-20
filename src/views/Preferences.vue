@@ -54,7 +54,7 @@ export default Vue.extend({
   padding: 0 15px
 
   .category
-    margin: 10px 0
+    margin-bottom: 10px
 
     > span
       font-size: 0.75rem

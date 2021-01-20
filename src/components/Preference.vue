@@ -11,12 +11,19 @@
           :value="value"
           @input="$emit('input', $event)"
         />
-        <span v-else-if="type === 'number'">{{ valueDisplay }}</span>
+        <span v-else-if="isNumber">{{ valueDisplay }}</span>
       </div>
     </div>
-    <div class="extra" v-if="expanded">
-      <slider v-if="type === 'number'" immediate :value="value" @input="$emit('input', $event)" />
-    </div>
+    <dynamic-height-transition v-if="isNumber" :collapsed="collapsed">
+      <div class="extra">
+        <slider
+          v-if="isNumber"
+          immediate
+          :value="value"
+          @input="$emit('input', $event)"
+        />
+      </div>
+    </dynamic-height-transition>
   </div>
 </template>
 
@@ -26,12 +33,13 @@ import MwcSwitch from "@/components/mwc/Switch.vue"
 import { pref } from "@/strings"
 import { isObject } from "@/utils"
 import Slider from "@/components/Slider.vue"
+import DynamicHeightTransition from "@/components/DynamicHeightTransition.vue"
 
 export default Vue.extend({
   name: "preference",
-  components: { MwcSwitch, Slider },
+  components: { MwcSwitch, Slider, DynamicHeightTransition },
   data: () => ({
-    expanded: false,
+    collapsed: true,
   }),
   props: {
     preference: {
@@ -67,10 +75,13 @@ export default Vue.extend({
       const strings = pref[this.preference]
       return strings.translateValue?.(this.value) || this.value
     },
+    isNumber() {
+      return this.type === "number"
+    },
   },
   methods: {
     preferenceClick() {
-      if (this.type === "number") this.expanded = !this.expanded
+      if (this.type === "number") this.collapsed = !this.collapsed
     },
   },
 })
@@ -95,7 +106,11 @@ export default Vue.extend({
         opacity: 0.75
 
   .extra
-    padding: 5px 25px 0
+    padding: 0 15px
     display: flex
     align-items: center
+
+    .slider
+      margin-top: 5px
+      margin-bottom: 10px
 </style>

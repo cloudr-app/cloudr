@@ -25,7 +25,7 @@ export const pref: TextString = {
   roundBorders: {
     name: "Round Borders",
     desc: {
-      true: "Images get a modern rounded border",
+      true: "Images have rounded borders",
       false: "Images keep the original square shape",
     },
   },
@@ -35,6 +35,7 @@ export const pref: TextString = {
   },
   defaultVolume: {
     name: "Default volume",
+    desc: "Set the default volume for all platforms",
     translateValue: (v: number) => `${(v * 100).toFixed(0)}%`,
   },
 }

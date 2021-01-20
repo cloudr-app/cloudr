@@ -112,7 +112,7 @@ export default Vue.extend({
 
       .track-info
         margin-top: 4px
-        font-size: 0.9375rem
+        font-size: 0.9rem
 
         .title, .artist
           padding-left: 1px

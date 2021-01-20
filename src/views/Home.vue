@@ -14,10 +14,6 @@
 
       <button @click="setTidalAccessToken">set tidal access_token</button>
     </div>
-    <div class="slider-test">
-      <slider immediate v-model="value" />
-      <span>{{ value }}</span>
-    </div>
   </div>
 </template>
 
@@ -25,11 +21,8 @@
 import { ls } from "@/utils"
 import Vue from "vue"
 
-import Slider from "@/components/Slider.vue"
-
 export default Vue.extend({
   name: "Home",
-  components: { Slider },
   data: () => ({ value: 0.5 }),
   methods: {
     setTidalAccessToken() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="slider">
+  <div class="slider" :style="{ '--margin-amt': marginAmt }">
     <div class="prefix" v-if="prefix">{{ prefix }}</div>
     <div
       class="scrubber"
@@ -46,6 +46,12 @@ export default Vue.extend({
   computed: {
     position() {
       return this.positionOverride !== false ? this.positionOverride : this.value
+    },
+    marginAmt() {
+      let amt = 0
+      if (this.prefix) amt++
+      if (this.postfix) amt++
+      return amt
     },
   },
   props: {
@@ -154,11 +160,13 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .slider
   --margins: 10px
-  width: calc(100% - var(--margins) * 2)
+  --margin-amt: 0
+  --height: 5px
+  width: calc(100% - var(--margins) * var(--margin-amt))
   flex-grow: 1
   display: flex
   align-items: center
-  padding-bottom: 4px
+  height: calc(var(--height) * 3)
 
   .postfix, .prefix
     font-size: 0.6875rem
@@ -187,7 +195,7 @@ export default Vue.extend({
     >.bar, >.position
       background: var(--text-x-light)
       width: 100%
-      height: 5px
+      height: var(--height)
       border-radius: 2px
 
     >.position
@@ -198,10 +206,10 @@ export default Vue.extend({
 
     >.handle
       background: var(--text-white)
-      height: 10px
-      width: 10px
+      height: calc(var(--height) * 2)
+      width: calc(var(--height) * 2)
       border-radius: 50%
-      left: calc(var(--position) - 5px)
+      left: calc(var(--position) - var(--height))
       box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
       transition-duration: var(--transition), var(--transition), var(--transition)
       transition-property: height, width, left
