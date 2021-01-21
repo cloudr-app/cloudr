@@ -3,10 +3,11 @@
     class="track"
     @click="$emit('playTrack')"
     ref="main"
-    :style="{ height: height > 0 ? `${height}px` : null }"
+    :style="{ height: hide || !trackInfo ? `var(--track-height)` : null }"
     :class="{ 'is-playing': isPlaying }"
   >
-    <div class="main" v-if="!hide">
+    <slot v-if="!trackInfo && hide"></slot>
+    <div class="main" v-if="trackInfo && !hide">
       <div class="artwork">
         <img :src="imgSrc" alt="track artwork" />
       </div>
@@ -37,29 +38,25 @@ export default Vue.extend({
   props: {
     trackInfo: {
       type: Object,
-      required: true,
     },
   },
   data: () => ({
     hide: false,
-    height: 0,
   }),
   computed: {
     isPlaying() {
+      if (!this.trackInfo) return
+
       const { platform, id } = this.trackInfo
       return toCloudrID(platform, id) === this.$store.state.currentTrack.id
     },
     imgSrc() {
+      if (!this.trackInfo) return
+
       const images = this.trackInfo.artwork as MediaImage[]
       if (!images.length) return
 
       return getImageLargerThan(images, 40).src
-    },
-  },
-  watch: {
-    hide(n) {
-      if (n) this.height = this.$refs.main.scrollHeight
-      else this.height = 0
     },
   },
 })
@@ -67,11 +64,12 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .track
+  --track-height: 54px
   padding: 0 12.5px
   cursor: pointer
 
   .main
-    height: 54px
+    height: var(--track-height)
     display: flex
     align-items: center
 
