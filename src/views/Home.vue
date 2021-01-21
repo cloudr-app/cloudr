@@ -2,13 +2,13 @@
   <div class="home">
     <img alt="cloudr.app logo" src="../assets/icon.svg" width="200" height="200" />
     <div class="examples">
-      <router-link to="playlist/soundcloud/1162452736">
+      <router-link to="/soundcloud/playlist/1162452736">
         example 1 soundcloud playlist
       </router-link>
-      <router-link to="pl/sc/620756469">
+      <router-link to="/sc/pl/620756469">
         example 2 soundcloud playlist (short link)
       </router-link>
-      <router-link to="pl/td/13697bfa-35c6-46d2-a6b7-dc05c4dd8401">
+      <router-link to="/td/pl/13697bfa-35c6-46d2-a6b7-dc05c4dd8401">
         example 3 TIDAL playlist
       </router-link>
 

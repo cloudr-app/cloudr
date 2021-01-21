@@ -28,12 +28,12 @@ const routes = [
     component: require("@/views/Preferences.vue").default,
   },
   {
-    path: `/(playlist|pl)/:platform(${platform})/:id`,
+    path: `/:platform(${platform})/(playlist|pl)/:id`,
     name: "Playlist",
     component: require("@/views/Playlist.vue").default,
   },
   {
-    path: `/(likes|${heartEmoji.join("|")})/:platform(${platform})/:id`,
+    path: `/:platform(${platform})/(likes|${heartEmoji.join("|")})/:id`,
     name: "Likes",
     component: require("@/views/Playlist.vue").default,
   },
