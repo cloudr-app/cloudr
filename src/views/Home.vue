@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <img alt="cloudr.app logo" src="../assets/icon.svg" />
+    <img alt="cloudr.app logo" src="../assets/icon.svg" width="200" height="200" />
     <div class="examples">
       <router-link to="playlist/soundcloud/1162452736">
         example 1 soundcloud playlist
@@ -15,7 +15,7 @@
       <button @click="setTidalAccessToken">set tidal access_token</button>
     </div>
     <div class="search-params" v-if="searchParams.length">
-      searchParams:
+      params:
       <div class="param" v-for="[key, value] in searchParams" :key="key + value">
         {{ key }}: {{ value }}
       </div>

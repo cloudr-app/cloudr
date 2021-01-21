@@ -115,8 +115,8 @@ interface SoundcloudPlaylistTracks {
 const base = "https://soundcloud.com"
 const baseApi = "https://api.soundcloud.com"
 
-// ! this seems bad, but it's not as bad as a 1.5MB response
-// ! to get basic data about the playlists of a user
+// ! this seems bad, but it's not as bad as a 1.5MB response to
+// ! get basic data about the playlists of a user
 const baseApi2 = "https://cors-anywhere.herokuapp.com/https://api-v2.soundcloud.com"
 // cspell:disable-next-line
 const client_id = "z8LRYFPM4UK5MMLaBe9vixfph5kqNA25"

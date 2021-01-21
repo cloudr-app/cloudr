@@ -18,6 +18,11 @@ const routes = [
     component: require("@/views/Home.vue").default,
   },
   {
+    path: "/share-target",
+    name: "ShareTarget",
+    component: require("@/views/Home.vue").default,
+  },
+  {
     path: "/preferences",
     name: "Preferences",
     component: require("@/views/Preferences.vue").default,

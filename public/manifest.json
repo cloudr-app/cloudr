@@ -10,7 +10,7 @@
   "share_target": {
     "name": "cloudr",
     "share_target": {
-      "action": "/",
+      "action": "/share-target/",
       "method": "GET",
       "params": {
         "title": "title",
