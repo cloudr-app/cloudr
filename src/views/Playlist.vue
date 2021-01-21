@@ -84,9 +84,12 @@ export default Vue.extend({
     next()
   },
   methods: {
-    loadPlaylist(params: Object) {
-      this.loadPlaylistInfo(params)
-      this.loadPlaylistTracks(params)
+    async loadPlaylist(params: Object) {
+      await this.loadPlaylistInfo(params)
+      await this.loadPlaylistTracks(params)
+
+      const main = document.querySelector("main")
+      if (main) main.scrollTop = 0
     },
     async loadPlaylistInfo(params: Object) {
       const { platform, id }: any = params

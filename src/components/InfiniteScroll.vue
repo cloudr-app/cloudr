@@ -31,7 +31,7 @@ export default Vue.extend({
     })
     hideObserver = new IntersectionObserver(this.hideCallback, {
       root: document.querySelector(this.root),
-      rootMargin: "500px 0px 500px 0px",
+      rootMargin: "108px 0px 500px 0px",
     })
   },
   beforeDestroy() {
