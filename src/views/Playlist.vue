@@ -16,6 +16,9 @@
           @playTrack="playTrack(track, index)"
         />
       </infinite-scroll>
+      <div class="spinner" v-if="playlistNext">
+        <spinner :scale="0.5" />
+      </div>
     </section>
   </div>
 </template>
@@ -33,6 +36,7 @@ import player from "@/player"
 import type { MediaImage, Playlist, Track } from "@/player/musicSource"
 // eslint-disable-next-line no-unused-vars
 import { State } from "@/types"
+import Spinner from "@/components/Spinner.vue"
 
 declare global {
   interface Window {
@@ -42,7 +46,7 @@ declare global {
 
 export default Vue.extend({
   name: "playlist",
-  components: { artwork, TrackListItem, InfiniteScroll },
+  components: { artwork, TrackListItem, InfiniteScroll, Spinner },
   data: () => ({
     playlistInfo: {
       artwork: [],
@@ -152,4 +156,11 @@ export default Vue.extend({
 
   section.tracks
     margin-top: 10px
+
+    .spinner
+      display: flex
+      justify-content: center
+      align-items: center
+      padding: 2em 0
+      opacity: 0.5
 </style>
