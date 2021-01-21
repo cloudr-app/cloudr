@@ -6,7 +6,7 @@
     <router-link to="/search">
       <i class="mi">search</i>
     </router-link>
-    <router-link to="/playlist/soundcloud/1162452736">
+    <router-link to="/soundcloud/playlist/1162452736">
       <i class="mi">library_music</i>
     </router-link>
   </nav>

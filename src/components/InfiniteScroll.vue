@@ -24,12 +24,14 @@ export default Vue.extend({
       required: true,
     },
   },
-  created() {
+  mounted() {
     endObserver = new IntersectionObserver(this.intersectionCallback, {
       root: document.querySelector(this.root),
+      rootMargin: "0px 0px 1000px 0px",
     })
     hideObserver = new IntersectionObserver(this.hideCallback, {
       root: document.querySelector(this.root),
+      rootMargin: "500px 0px 500px 0px",
     })
   },
   beforeDestroy() {
@@ -43,7 +45,7 @@ export default Vue.extend({
       this.assignHideObservers()
 
       const children = this.$refs.wrap.children
-      observed = children[children.length - 11]
+      observed = children[children.length - 1]
       if (observed) endObserver.observe(observed)
     },
   },
