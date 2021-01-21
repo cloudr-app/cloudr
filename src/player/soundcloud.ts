@@ -4,7 +4,6 @@ import {
   PlaylistTracks,
   Track,
   User,
-  MediaImage,
 } from "@/player/musicSource"
 import { defaultImage, imageType, imageTypes, kyCache } from "@/utils"
 
@@ -178,22 +177,22 @@ const soundcloud: MusicSource = {
     const path = url.pathname.slice(1).split("/")
     const platform = "soundcloud"
 
-    if (path.length === 2) {
-      if (path[1]) {
-        const user = await apiResolve(path[0])
-        if (user)
-          return { name: "Likes", params: { "0": "playlist", platform, id: user.id } }
+    if (path.length === 2 && path[1] === "likes") {
+      const user = await apiResolve(path[0])
+      if (user) {
+        return {
+          name: "Likes",
+          params: { "0": "likes", platform, id: user.id },
+        }
       }
-    } else if (path.length === 3) {
-      if (path[1] === "sets") {
-        const user = await apiResolve(path[0])
-        const playlists = await userPlaylists(user.id)
-        const playlist = playlists.find(pl => pl.permalink === path[2])
-        if (playlist && user) {
-          return {
-            name: "Playlist",
-            params: { "0": "playlist", platform, id: playlist.id },
-          }
+    } else if (path.length === 3 && path[1] === "sets") {
+      const user = await apiResolve(path[0])
+      const playlists = await userPlaylists(user.id)
+      const playlist = playlists.find(pl => pl.permalink === path[2])
+      if (playlist && user) {
+        return {
+          name: "Playlist",
+          params: { "0": "playlist", platform, id: playlist.id },
         }
       }
     }
