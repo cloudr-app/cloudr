@@ -27,7 +27,7 @@ export default Vue.extend({
   mounted() {
     endObserver = new IntersectionObserver(this.intersectionCallback, {
       root: document.querySelector(this.root),
-      rootMargin: "50000px 0px 1000px 0px",
+      rootMargin: "0px 0px 1000px 0px",
     })
     hideObserver = new IntersectionObserver(this.hideCallback, {
       root: document.querySelector(this.root),
@@ -44,8 +44,8 @@ export default Vue.extend({
       await this.$nextTick()
       this.assignHideObservers()
 
-      const children = [...this.$refs.wrap.children]
-      observed = children.filter(e => e.classList.contains("spinner-item"))[0]
+      const children = this.$refs.wrap.children
+      observed = children[children.length - 1]
       if (observed) endObserver.observe(observed)
     },
   },
@@ -53,10 +53,7 @@ export default Vue.extend({
     intersectionCallback(entries: IntersectionObserverEntry[]) {
       const self = this
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          console.log("end")
-          self.$emit("end")
-        }
+        if (entry.isIntersecting) self.$emit("end")
       })
     },
     assignHideObservers() {
@@ -67,7 +64,7 @@ export default Vue.extend({
       if (children.length !== slotChildren.length)
         throw new Error("children length and slot content length are not the same.")
 
-      const childArray = [...children].filter(e => !e.classList.contains("spinner-item"))
+      const childArray = [...children]
       childArray.forEach((child: HTMLElement, index: number) => {
         if (hideObserved[index]) return
 

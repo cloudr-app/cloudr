@@ -15,15 +15,10 @@
           :track-info="track"
           @playTrack="playTrack(track, index)"
         />
-
-        <track-list-item
-          class="spinner-item"
-          v-for="track in tracksUnloaded"
-          :key="track"
-        >
-          <spinner :scale="0.5" />
-        </track-list-item>
       </infinite-scroll>
+      <div class="spinner" v-if="playlistNext">
+        <spinner :scale="0.5" />
+      </div>
     </section>
   </div>
 </template>
@@ -77,10 +72,6 @@ export default Vue.extend({
     },
     likes() {
       return this.$route.name === "Likes"
-    },
-    tracksUnloaded() {
-      if (!this.playlistNext) return 0
-      return this.playlistInfo.trackCount - this.playlistTracks.length
     },
   },
   async created() {
@@ -169,9 +160,10 @@ export default Vue.extend({
   section.tracks
     margin-top: 10px
 
-    .spinner-item
+    .spinner
       display: flex
       justify-content: center
       align-items: center
+      padding: 2em 0
       opacity: 0.5
 </style>
