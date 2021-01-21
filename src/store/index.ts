@@ -102,14 +102,19 @@ const store = new Vuex.Store({
       const queued = state.queued.shift()
       if (queued) state.queue.unshift(queued)
 
-      const nextTrack = state.queue[0]
-      if (!nextTrack) return
+      let nextTrack = state.queue[0]
+      if (!nextTrack) {
+        state.queue = state.queuePrev
+        state.queuePrev = []
+        nextTrack = state.queue[0]
+      }
 
       await dispatch("playTrack", toCloudrID(nextTrack.platform, nextTrack.id))
     },
     async prevTrack({ state, dispatch, commit }: ActionArg) {
       const progressSeconds = state.player.progress * state.player.duration
-      if (progressSeconds > 3) return commit("setPlayer", ["setPosition", 0])
+      if (progressSeconds > 3 || !state.queuePrev.length)
+        return commit("setPlayer", ["setPosition", 0])
 
       const queuePrevLastIndex = state.queuePrev.length - 1
       const previousTrack = state.queuePrev[queuePrevLastIndex]
