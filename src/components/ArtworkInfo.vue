@@ -1,6 +1,6 @@
 <template>
-  <div class="artwork" :class="{ expanded }" @click="expand">
-    <img :src="artwork" alt="artwork not found" draggable="false" />
+  <div class="artwork" :class="{ expanded }" @click="expand" ref="artwork">
+    <img :src="imgSrc" alt="artwork not found" draggable="false" />
     <div class="overlay">
       <div class="info">
         <div class="title">{{ title }}</div>
@@ -12,10 +12,22 @@
 
 <script lang="ts">
 import Vue from "vue"
+import { getImageLargerThan } from "@/utils"
+// eslint-disable-next-line no-unused-vars
+import { MediaImage } from "@/player/musicSource"
+
 export default Vue.extend({
   data: () => ({
     expanded: false,
   }),
+  computed: {
+    imgSrc() {
+      const images = this.artwork as MediaImage[]
+      if (!images.length) return "/artwork-placeholder.svg"
+
+      return getImageLargerThan(images, 500).src
+    },
+  },
   methods: {
     async expand() {
       this.expanded = !this.expanded
@@ -33,7 +45,7 @@ export default Vue.extend({
   props: {
     artwork: {
       required: true,
-      type: String,
+      type: Array,
     },
     title: {
       required: true,

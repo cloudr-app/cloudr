@@ -28,6 +28,11 @@ const routes = [
     component: require("@/views/Preferences.vue").default,
   },
   {
+    path: `/:platform(${platform})/(user|u)/:id`,
+    name: "User",
+    component: require("@/views/User.vue").default,
+  },
+  {
     path: `/:platform(${platform})/(playlist|pl)/:id`,
     name: "Playlist",
     component: require("@/views/Playlist.vue").default,

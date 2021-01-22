@@ -67,15 +67,9 @@ const playlist = _playlist(kyxios)
 /* cspell: disable-next-line */
 const client_id = "aR7gUaTK1ihpXOEP"
 
-const playlistImageSizes = [
-  "160x160",
-  "320x320",
-  "480x480",
-  "640x640",
-  "750x750",
-  "1080x1080",
-]
-const albumImageSizes = ["80x80", "160x160", "320x320", "640x640", "1280x1280"]
+const numberToSize = (n: number) => `${n}x${n}`
+const playlistImageSizes = [160, 320, 480, 640, 750, 1080].map(numberToSize)
+const albumImageSizes = [80, 160, 320, 640, 1280].map(numberToSize)
 
 const imageBaseURL = "https://resources.tidal.com/images"
 
@@ -102,6 +96,34 @@ const paginateNext = (fn: Function, limit: number, total: number, offset = 0) =>
 }
 
 const tidal: MusicSource = {
+  async stream(id) {
+    const login = ls("tidal-login")
+    if (!login) {
+      alert("no tidal access_token found")
+      return ""
+    }
+
+    const { access_token } = login
+    const stream = await cachelessTrack.stream({ id, access_token })
+    return stream.urls[0].replace("http://", "https://")
+  },
+  async track(id) {
+    const data = await track.get({ client_id, id })
+
+    return {
+      artwork: tidalImage(data.album.cover, albumImageSizes),
+      duration: data.duration,
+      id: data.id,
+      platform: "tidal",
+      title: data.title,
+      user: {
+        platform: "tidal",
+        id: data.artist.id,
+        username: data.artist.name || `user:${data.artist.id}`,
+        avatar: [defaultImage],
+      },
+    }
+  },
   async playlistInfo(uuid) {
     const data = await playlist.get({ client_id, uuid: String(uuid) })
 
@@ -158,34 +180,6 @@ const tidal: MusicSource = {
     }
 
     return ret
-  },
-  async stream(id) {
-    const login = ls("tidal-login")
-    if (!login) {
-      alert("no tidal access_token found")
-      return ""
-    }
-
-    const { access_token } = login
-    const stream = await cachelessTrack.stream({ id, access_token })
-    return stream.urls[0].replace("http://", "https://")
-  },
-  async track(id) {
-    const data = await track.get({ client_id, id })
-
-    return {
-      artwork: tidalImage(data.album.cover, albumImageSizes),
-      duration: data.duration,
-      id: data.id,
-      platform: "tidal",
-      title: data.title,
-      user: {
-        platform: "tidal",
-        id: data.artist.id,
-        username: data.artist.name || `user:${data.artist.id}`,
-        avatar: [defaultImage],
-      },
-    }
   },
 }
 

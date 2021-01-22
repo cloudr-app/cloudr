@@ -1,10 +1,4 @@
-import {
-  MusicSource,
-  Playlist,
-  PlaylistTracks,
-  Track,
-  User,
-} from "@/player/musicSource"
+import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
 import { defaultImage, imageType, imageTypes, kyCache } from "@/utils"
 
 const ky = kyCache("soundcloud")
@@ -182,7 +176,7 @@ const soundcloud: MusicSource = {
       if (user) {
         return {
           name: "Likes",
-          params: { "0": "likes", platform, id: user.id },
+          params: { id: user.id, "0": "likes", platform },
         }
       }
     } else if (path.length === 3 && path[1] === "sets") {
@@ -192,17 +186,20 @@ const soundcloud: MusicSource = {
       if (playlist && user) {
         return {
           name: "Playlist",
-          params: { "0": "playlist", platform, id: playlist.id },
+          params: { id: playlist.id, "0": "playlist", platform },
         }
       }
     }
 
-    let res
     console.log("fallback to traditional resolve for", url.toString())
     const resolved = await apiResolve(url.toString())
-    if (resolved.kind === "playlist") res = `/playlist/soundcloud/${resolved.id}`
 
-    return res
+    if (resolved.kind === "playlist")
+      return { name: "Playlist", params: { id: resolved.id, "0": "playlist", platform } }
+    if (resolved.kind === "user")
+      return { name: "User", params: { id: resolved.id, "0": "user", platform } }
+
+    return resolved
   },
   async likes(id, limit = 50) {
     const data = (await ky
@@ -232,15 +229,6 @@ const soundcloud: MusicSource = {
     const data = await userPlaylists(id)
     return data.map(transformPlaylistInfo)
   },
-  async playlistInfo(id) {
-    const data = (await ky
-      .get(`${baseApi}/playlists/${id}`, {
-        searchParams: { client_id, linked_partitioning: true, limit: 1 },
-      })
-      .json()) as SoundcloudPlaylist
-
-    return transformPlaylistInfo(data)
-  },
   async track(id) {
     const data = (await ky
       .get(`${baseApi}/tracks/${id}`, {
@@ -249,6 +237,15 @@ const soundcloud: MusicSource = {
       .json()) as SoundcloudTrack
 
     return transformTrack(data)
+  },
+  async playlistInfo(id) {
+    const data = (await ky
+      .get(`${baseApi}/playlists/${id}`, {
+        searchParams: { client_id, linked_partitioning: true, limit: 1 },
+      })
+      .json()) as SoundcloudPlaylist
+
+    return transformPlaylistInfo(data)
   },
   async playlistTracks(id, limit = 50) {
     const data = (await ky

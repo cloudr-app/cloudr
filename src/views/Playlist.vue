@@ -2,7 +2,7 @@
   <div class="playlist">
     <section class="playlist-info">
       <artwork
-        :artwork="imgSrc"
+        :artwork="playlistInfo.artwork"
         :author="playlistInfo.user.username"
         :title="playlistInfo.title"
       />
@@ -51,10 +51,8 @@ export default Vue.extend({
     playlistInfo: {
       artwork: [],
       id: 0,
-      platform: "soundcloud",
       title: "loading",
       user: {
-        platform: "soundcloud",
         username: "loading",
         id: 0,
       },
@@ -66,7 +64,7 @@ export default Vue.extend({
   computed: {
     imgSrc() {
       const images = this.playlistInfo.artwork as MediaImage[]
-      if (!images.length) return "/artwork-placeholder.svg"
+      if (!images?.length) return "/artwork-placeholder.svg"
 
       return getImageLargerThan(images, 500).src
     },
@@ -75,8 +73,6 @@ export default Vue.extend({
     },
   },
   async created() {
-    window.playlist = this
-
     await this.loadPlaylist(this.$route.params)
   },
   async beforeRouteUpdate(to, _, next) {
@@ -84,17 +80,17 @@ export default Vue.extend({
     next()
   },
   methods: {
-    async loadPlaylist(params: Object) {
-      await this.loadPlaylistInfo(params)
-      await this.loadPlaylistTracks(params)
+    async loadPlaylist(params: any) {
+      const { platform, id } = params
+      const plat = player(platform)
+
+      await this.loadPlaylistInfo({ plat, id })
+      await this.loadPlaylistTracks({ plat, id })
 
       const main = document.querySelector("main")
       if (main) main.scrollTop = 0
     },
-    async loadPlaylistInfo(params: Object) {
-      const { platform, id }: any = params
-      const plat = player(platform)
-
+    async loadPlaylistInfo({ plat, id }: any) {
       if (this.likes && plat.user) {
         const user = await plat.user(id)
 
@@ -109,9 +105,7 @@ export default Vue.extend({
         }
       } else this.playlistInfo = await plat.playlistInfo(id)
     },
-    async loadPlaylistTracks(params: Object) {
-      const { platform, id }: any = params
-      const plat = player(platform)
+    async loadPlaylistTracks({ plat, id }: any) {
       let tracks
 
       if (this.likes && plat.likes) tracks = await plat.likes(id)
