@@ -30,7 +30,7 @@
 import Vue from "vue"
 import { toCloudrID, getImageLargerThan } from "@/utils"
 // eslint-disable-next-line no-unused-vars
-import type { MediaImage } from "@/player/musicSource"
+import { MediaImage } from "@/player/musicSource"
 
 export default Vue.extend({
   name: "track-list-item",

@@ -33,7 +33,7 @@ import MwcSwitch from "@/components/mwc/Switch.vue"
 import { pref } from "@/strings"
 import { isObject } from "@/utils"
 import Slider from "@/components/Slider.vue"
-import DynamicHeightTransition from "@/components/DynamicHeightTransition.vue"
+import DynamicHeightTransition from "@/components/functional/DynamicHeightTransition.ts"
 
 export default Vue.extend({
   name: "preference",

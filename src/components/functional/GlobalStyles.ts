@@ -1,13 +1,6 @@
-<template>
-  <div class="styles" :style="style">
-    <slot></slot>
-  </div>
-</template>
-
-<script lang="ts">
-// eslint-disable-next-line no-unused-vars
-import type { Preferences } from "@/store/preferences"
 import Vue from "vue"
+
+import { Preferences } from "@/store/preferences"
 
 const squareBorders = {
   "--border-radius": "0",
@@ -61,7 +54,17 @@ const darkMonoTheme = {
 }
 
 export default Vue.extend({
-  name: "global-styles",
+  render(h) {
+    const { style } = this
+    return h(
+      "div",
+      {
+        class: "styles",
+        style,
+      },
+      this.$slots.default
+    )
+  },
   computed: {
     style() {
       const preferences = this.$store.state.preferences as Preferences
@@ -77,4 +80,3 @@ export default Vue.extend({
     },
   },
 })
-</script>

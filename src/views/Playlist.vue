@@ -27,13 +27,13 @@
 import Vue from "vue"
 import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
-import InfiniteScroll from "@/components/InfiniteScroll.vue"
+import InfiniteScroll from "@/components/functional/InfiniteScroll.ts"
 
 import { getImageLargerThan, toCloudrID } from "@/utils"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
-import type { MediaImage, Playlist, Track } from "@/player/musicSource"
+import { MediaImage, Track } from "@/player/musicSource"
 // eslint-disable-next-line no-unused-vars
 import { State } from "@/types"
 import Spinner from "@/components/Spinner.vue"
@@ -79,7 +79,7 @@ export default Vue.extend({
 
     await this.loadPlaylist(this.$route.params)
   },
-  async beforeRouteUpdate(to, from, next) {
+  async beforeRouteUpdate(to, _, next) {
     await this.loadPlaylist(to.params)
     next()
   },

@@ -1,12 +1,20 @@
-<template>
-  <div class="height-transition" ref="wrap" :style="{ 'max-height': `${height}px` }">
-    <slot></slot>
-  </div>
-</template>
-
-<script lang="ts">
 import Vue from "vue"
+
 export default Vue.extend({
+  render(h) {
+    const { height } = this
+    return h(
+      "div",
+      {
+        ref: "wrap",
+        class: "height-transition",
+        style: {
+          "max-height": `${height}px`,
+        },
+      },
+      this.$slots.default
+    )
+  },
   data: () => ({
     initialHeight: 0,
   }),
@@ -25,11 +33,3 @@ export default Vue.extend({
     },
   },
 })
-</script>
-
-<style lang="stylus">
-.height-transition
-  width: 100%
-  overflow: hidden
-  transition: max-height var(--transition-short) var(--ease)
-</style>

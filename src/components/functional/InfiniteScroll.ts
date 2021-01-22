@@ -1,19 +1,22 @@
-<template>
-  <div class="infinite-scroll" ref="wrap">
-    <slot></slot>
-  </div>
-</template>
+import Vue from "vue"
 
-<script lang="ts">
 let endObserver: IntersectionObserver
 let observed: HTMLElement
 
 let hideObserver: IntersectionObserver
 const hideObserved: boolean[] = []
 
-import Vue from "vue"
 export default Vue.extend({
-  name: "infinite-scroll",
+  render(h) {
+    return h(
+      "div",
+      {
+        class: "infinite-scroll",
+        ref: "wrap",
+      },
+      this.$slots.default
+    )
+  },
   props: {
     list: {
       type: Array,
@@ -84,4 +87,3 @@ export default Vue.extend({
     },
   },
 })
-</script>

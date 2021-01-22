@@ -20,9 +20,9 @@ import Vue from "vue"
 import topNav from "@/components/TopNav.vue"
 import bottomNav from "@/components/BottomNav.vue"
 import bottomPlayer from "@/components/BottomPlayer.vue"
-import globalStyles from "@/components/GlobalStyles.vue"
+import globalStyles from "@/components/functional/GlobalStyles.ts"
 
-import audioPlayer from "@/components/AudioPlayer.vue"
+import audioPlayer from "@/components/functional/AudioPlayer.ts"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
@@ -126,6 +126,11 @@ html, body
 
 opacity(variable, opacity = 1)
   s("rgba(var(%s), %s)", variable, opacity)
+
+.height-transition
+  width: 100%
+  overflow: hidden
+  transition: max-height var(--transition-short) var(--ease)
 
 button
   border: 1px solid var(--text-light)

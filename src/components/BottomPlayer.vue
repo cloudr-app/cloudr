@@ -41,7 +41,7 @@ import { mapState } from "vuex"
 import { formatTime, getImageLargerThan } from "@/utils"
 
 // eslint-disable-next-line no-unused-vars
-import type { MediaImage } from "@/player/musicSource"
+import { MediaImage } from "@/player/musicSource"
 import Slider from "@/components/Slider.vue"
 // eslint-disable-next-line no-unused-vars
 import { State } from "@/types"
