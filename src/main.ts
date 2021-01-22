@@ -17,6 +17,9 @@ if (process.env.NODE_ENV !== "development") {
 import App from "@/App.vue"
 import router from "@/router"
 import store from "@/store"
+import SvgIcon from "@/components/functional/SvgIcon"
+
+Vue.component("svg-icon", SvgIcon)
 
 import { Plugins, Capacitor } from "@capacitor/core"
 import "./registerServiceWorker"

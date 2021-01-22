@@ -53,6 +53,7 @@
     "sass-loader": "^10.1.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
+    "svg-inline-loader": "^0.8.2",
     "typescript": "~3.9.3",
     "vue-template-compiler": "^2.6.11"
   },

@@ -20,7 +20,7 @@ export default Vue.extend({
   render(h) {
     const { autoplay, src } = this
     return h("audio", {
-      domProps: { preload: true, autoplay, src },
+      attrs: { preload: true, autoplay, src },
       ref: "audio",
     })
   },

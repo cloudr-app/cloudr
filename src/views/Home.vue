@@ -24,8 +24,9 @@
 </template>
 
 <script lang="ts">
-import { ls } from "@/utils"
 import Vue from "vue"
+
+import { ls } from "@/utils"
 
 export default Vue.extend({
   name: "Home",

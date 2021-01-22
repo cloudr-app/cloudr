@@ -1,16 +1,16 @@
 <template>
   <nav class="top" :class="{ scrolled }">
-    <i class="mi" @click="$router.back()" v-if="$route.fullPath === '/preferences'">
-      arrow_back
-    </i>
+    <svg-icon
+      icon="arrow_back"
+      @click="$router.back()"
+      v-if="$route.fullPath === '/preferences'"
+    />
     <div class="spacer"></div>
-    <i
-      class="mi"
+    <svg-icon
+      icon="settings"
       @click="$router.push('/preferences')"
       v-if="$route.fullPath !== '/preferences'"
-    >
-      settings
-    </i>
+    />
   </nav>
 </template>
 
@@ -42,7 +42,7 @@ nav.top
   > .spacer
     flex-grow: 1
 
-  > i.mi
+  > svg.icon
     font-size: calc(var(--icon-size) * 0.75)
     margin: auto 14px
     cursor: pointer

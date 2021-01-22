@@ -1,5 +1,6 @@
 <template>
   <global-styles id="app" :class="{ noTrack }">
+    <svg-sprite />
     <top-nav :scrolled="scrolled" />
     <main ref="main" class="rw">
       <router-view :key="$route.name" />
@@ -17,12 +18,13 @@
 
 <script lang="ts">
 import Vue from "vue"
+import SvgSprite from "@/components/functional/SvgSprite"
 import topNav from "@/components/TopNav.vue"
 import bottomNav from "@/components/BottomNav.vue"
 import bottomPlayer from "@/components/BottomPlayer.vue"
-import globalStyles from "@/components/functional/GlobalStyles.ts"
+import globalStyles from "@/components/functional/GlobalStyles"
 
-import audioPlayer from "@/components/functional/AudioPlayer.ts"
+import audioPlayer from "@/components/functional/AudioPlayer"
 
 import player from "@/player"
 // eslint-disable-next-line no-unused-vars
@@ -37,7 +39,7 @@ declare global {
 window.player = player
 
 export default Vue.extend({
-  components: { topNav, bottomNav, bottomPlayer, audioPlayer, globalStyles },
+  components: { topNav, bottomNav, bottomPlayer, audioPlayer, globalStyles, SvgSprite },
   data: () => ({
     scrolled: false,
   }),
@@ -67,8 +69,6 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus">
-@import "./assets/material-icons.css"
-
 :root
   --bg: #222436
   --bg-dark: #1E2030
@@ -131,6 +131,12 @@ opacity(variable, opacity = 1)
   width: 100%
   overflow: hidden
   transition: max-height var(--transition-short) var(--ease)
+
+svg.icon
+  fill: currentColor
+  height: 1em
+  vertical-align: middle
+  width: 1em
 
 button
   border: 1px solid var(--text-light)

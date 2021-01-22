@@ -1,13 +1,13 @@
 <template>
   <nav class="bottom">
     <router-link to="/">
-      <i class="mi">home</i>
+      <svg-icon icon="home" />
     </router-link>
     <router-link to="/search">
-      <i class="mi">search</i>
+      <svg-icon icon="search" />
     </router-link>
     <router-link to="/soundcloud/playlist/1162452736">
-      <i class="mi">library_music</i>
+      <svg-icon icon="library_music" />
     </router-link>
   </nav>
 </template>
@@ -33,14 +33,14 @@ nav.bottom
     font-size: var(--icon-size)
     line-height: 1ch
     cursor: pointer
-    padding: calc((var(--bottom-nav-height) - var(--icon-size)) / 2) var(--icon-size)
+    padding: calc(((var(--bottom-nav-height) - var(--icon-size)) / 2)) var(--icon-size)
 
-    > i.mi
+    > svg.icon
       font-size: inherit
       color: var(--text-light)
       transition: var(--transition-short)
 
-    &.router-link-exact-active > i.mi
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.333)
-      color: var(--text-white)
+    &.router-link-exact-active > svg.icon
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.333))
+      fill: var(--text-white)
 </style>

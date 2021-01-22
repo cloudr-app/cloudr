@@ -16,10 +16,10 @@
       </div>
       <div class="actions">
         <!-- <div class="quick-action">
-          <i class="mi">queue</i>
+          <svg-icon icon="queue" />
         </div> -->
         <div class="options">
-          <i class="mi">more_vert</i>
+          <svg-icon icon="more_vert" />
         </div>
       </div>
     </div>
@@ -85,8 +85,9 @@ export default Vue.extend({
         align-items: center
         cursor: pointer
 
-        > i
+        > svg.icon
           margin-left: 12px
+          font-size: 1.5em
 
     .info
       max-width: calc(100% - 50px - 36px)

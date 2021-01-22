@@ -27,7 +27,7 @@
 import Vue from "vue"
 import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
-import InfiniteScroll from "@/components/functional/InfiniteScroll.ts"
+import InfiniteScroll from "@/components/functional/InfiniteScroll"
 
 import { getImageLargerThan, toCloudrID } from "@/utils"
 

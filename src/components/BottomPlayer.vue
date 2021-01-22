@@ -10,14 +10,14 @@
         <div class="spacer"></div>
         <div class="controls">
           <div class="skip-previous" @click="$store.dispatch('prevTrack')">
-            <i class="mi">skip_previous</i>
+            <svg-icon icon="skip_previous" />
           </div>
           <div class="play-pause" @click="playPause">
-            <i v-if="$store.state.player.playing" class="mi">pause</i>
-            <i v-else class="mi">play_arrow</i>
+            <svg-icon v-if="$store.state.player.playing" icon="pause" />
+            <svg-icon v-else icon="play_arrow" />
           </div>
           <div class="skip-next" @click="$store.dispatch('nextTrack')">
-            <i class="mi">skip_next</i>
+            <svg-icon icon="skip_next" />
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 // eslint-disable-next-line no-unused-vars
-import Vue, { WatchHandler } from "vue"
+import Vue from "vue"
 import { mapState } from "vuex"
 import { formatTime, getImageLargerThan } from "@/utils"
 
@@ -145,16 +145,16 @@ export default Vue.extend({
         > div
           height: var(--controls-size)
 
-          i.mi
+          svg.icon
             font-size: var(--controls-size)
             height: var(--controls-size)
-            color: var(--text-white)
+            fill: var(--text-white)
             cursor: pointer
 
         > .play-pause
           height: var(--playpause-size)
 
-          i.mi
+          svg.icon
             font-size: var(--playpause-size)
             height: var(--playpause-size)
 </style>
