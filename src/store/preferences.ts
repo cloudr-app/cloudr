@@ -6,7 +6,7 @@ import { ActionArg } from "./"
 // ! only nest this one-deep
 export interface Preferences {
   // theme: "dark" | "light" | "custom" // todo import menu
-  // fontSize: number // todo import slider
+  // fontSize: number
   defaultVolume: number
   theme: {
     darkTheme: boolean

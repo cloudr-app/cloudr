@@ -1,5 +1,7 @@
 import Vue from "vue"
 
+// TODO: forward click event
+
 export default Vue.extend({
   render(h) {
     return h(
