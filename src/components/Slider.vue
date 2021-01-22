@@ -106,51 +106,51 @@ export default Vue.extend({
     },
     mouseDown(event: any) {
       // TODO fix mouse sliding when out of bounds
-      const self = this
-      self.touching = true
+      const v = this
+      v.touching = true
 
       const position = event.offsetX / event.target.scrollWidth
-      self.positionOverride = position
+      v.positionOverride = position
 
       event.target.onmousemove = (evt: any) => {
         const pos = evt.offsetX / evt.target.scrollWidth
-        self.positionOverride = pos
-        if (self.immediate) self.emit("input", pos)
+        v.positionOverride = pos
+        if (v.immediate) v.emit("input", pos)
       }
 
       event.target.onmouseup = (evt: any) => {
         const pos = evt.offsetX / evt.target.scrollWidth
         event.target.onmousemove = null
-        if (self.updateSlack > 0) skipValueUpdates = self.updateSlack
-        else self.positionOverride = false
-        self.touching = false
+        if (v.updateSlack > 0) skipValueUpdates = v.updateSlack
+        else v.positionOverride = false
+        v.touching = false
 
-        self.emit("input", pos)
+        v.emit("input", pos)
       }
     },
     touchStart(event: any) {
-      const self = this
-      self.touching = true
-      self.moving = false
+      const v = this
+      v.touching = true
+      v.moving = false
 
       event.target.ontouchmove = (evt: any) => {
-        self.moving = true
+        v.moving = true
         const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
-        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, self.min), self.max)
-        self.positionOverride = pos
-        if (self.immediate) self.emit("input", pos)
+        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, v.min), v.max)
+        v.positionOverride = pos
+        if (v.immediate) v.emit("input", pos)
       }
 
       event.target.ontouchend = (evt: any) => {
-        self.moving = false
+        v.moving = false
         const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
-        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, self.min), self.max)
+        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, v.min), v.max)
         event.target.ontouchmove = null
-        self.touching = false
-        if (self.updateSlack > 0) skipValueUpdates = self.updateSlack
-        else self.positionOverride = false
+        v.touching = false
+        if (v.updateSlack > 0) skipValueUpdates = v.updateSlack
+        else v.positionOverride = false
 
-        self.emit("input", pos)
+        v.emit("input", pos)
       }
     },
   },

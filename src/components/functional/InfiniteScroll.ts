@@ -54,15 +54,14 @@ export default Vue.extend({
   },
   methods: {
     intersectionCallback(entries: IntersectionObserverEntry[]) {
-      const self = this
+      const v = this
       entries.forEach(entry => {
-        if (entry.isIntersecting) self.$emit("end")
+        if (entry.isIntersecting) v.$emit("end")
       })
     },
     assignHideObservers() {
-      const self = this
       const children = this.$refs.wrap.children as HTMLElement[]
-      const slotChildren = self.$slots.default
+      const slotChildren = this.$slots.default
 
       if (children.length !== slotChildren.length)
         throw new Error("children length and slot content length are not the same.")

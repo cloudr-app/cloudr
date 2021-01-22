@@ -51,16 +51,16 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    const self = this
+    const v = this
 
     // for debugging
-    window.vue = self
+    window.vue = v
 
     // cspell:ignore onscroll
-    const { main } = self.$refs as any
+    const { main } = v.$refs as any
     main.onscroll = (e: any) => {
-      if (e.target.scrollTop > 0) self.scrolled = true
-      else self.scrolled = false
+      if (e.target.scrollTop > 0) v.scrolled = true
+      else v.scrolled = false
     }
   },
 })
