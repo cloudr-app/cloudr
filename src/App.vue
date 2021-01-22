@@ -85,7 +85,7 @@ export default Vue.extend({
   --artwork-gradient: rgba(34, 36, 54, 0.95)
   // should be between .75 and 1.333
   --global-font-size: 1em
-  --font: "manrope"
+  --font: "manrope", "Roboto", sans-serif
   --ease: cubic-bezier(0.76, 0, 0.24, 1)
   --ease-less: cubic-bezier(0.45, 0, 0.55, 1)
   --transition-x-short: 100ms

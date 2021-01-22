@@ -1,6 +1,8 @@
 <template>
   <div class="slider" :style="{ '--margin-amt': marginAmt }">
-    <div class="prefix" v-if="prefix">{{ prefix }}</div>
+    <div class="prefix" :style="{ width: `${prefix.length}ch` }" v-if="prefix">
+      {{ prefix }}
+    </div>
     <div
       class="scrubber"
       :style="{ '--position': `${position * 100}%` }"
@@ -13,7 +15,9 @@
       <div class="position"></div>
       <div class="handle"></div>
     </div>
-    <div class="postfix" v-if="postfix">{{ postfix }}</div>
+    <div class="postfix" :style="{ width: `${postfix.length}ch` }" v-if="postfix">
+      {{ postfix }}
+    </div>
   </div>
 </template>
 
@@ -171,7 +175,7 @@ export default Vue.extend({
   .postfix, .prefix
     font-size: 0.6875rem
     margin-left: var(--margins)
-    font-family: "Roboto Mono", monospace
+    text-align: center
 
   .prefix
     margin-left: 0
