@@ -16,16 +16,22 @@ function throttle(func: Function, limit: number): Function {
   }
 }
 
+const playingEl = document.createElement("audio")
+// @ts-expect-error
+window.playingEl = playingEl
+
+const nextEl = document.createElement("audio")
+// @ts-expect-error
+window.nextEl = nextEl
+
+for (const el of [playingEl, nextEl]) {
+  el.preload = "auto"
+  el.autoplay = true
+}
+
 export default Vue.extend({
-  render(h) {
-    const { autoplay, src } = this
-    return h("audio", {
-      attrs: { preload: true, autoplay, src },
-      ref: "audio",
-    })
-  },
+  render: h => h(),
   data: () => ({
-    autoplay: false,
     lastPlaybackState: false,
   }),
   props: {
@@ -36,50 +42,67 @@ export default Vue.extend({
   },
   mounted() {
     const state = this.$store.state as State
-    const audio = this.$refs.audio as HTMLAudioElement
 
-    audio.volume = state.player.volume
+    playingEl.volume = state.player.volume
+    playingEl.src = this.src
+    this.setOncanplay()
     notification.init()
     this.initAudioEl()
     this.onPlaybackStateChange()
   },
+  beforeDestroy() {
+    playingEl.src = ""
+    playingEl.pause()
+    nextEl.src = ""
+    nextEl.pause()
+  },
   watch: {
     "$store.state.player.playing": "onPlaybackStateChange",
     "$store.state.player.setPosition": "setPosition",
-    src: "onPlaybackStateChange",
+    async src(n) {
+      playingEl.src = n
+      this.setOncanplay()
+      this.onPlaybackStateChange()
+    },
     "$store.state.preferences.defaultVolume": "setVolume",
   },
   methods: {
     setVolume: throttle(function t() {
-      const audio = this.$refs.audio as HTMLAudioElement
       const state = this.$store.state as State
-      audio.volume = state.preferences.defaultVolume
+      playingEl.volume = state.preferences.defaultVolume
     }, 1e3 / 30),
+    setOncanplay() {
+      const state = this.$store.state as State
+      const { commit } = this.$store
+
+      playingEl.oncanplaythrough = () => {
+        playingEl.oncanplaythrough = null
+        if (state.player.setPosition === false) return
+
+        const currentTime = state.player.setPosition * playingEl.duration
+        if (!isNaN(currentTime)) playingEl.currentTime = currentTime
+
+        commit("setPlayer", ["setPosition", false])
+      }
+    },
     setPosition() {
-      const audio = this.$refs.audio as HTMLAudioElement
       const state = this.$store.state as State
       const { commit } = this.$store
 
       if (state.player.setPosition === false) return
 
-      const currentTime = state.player.setPosition * audio.duration
+      const currentTime = state.player.setPosition * playingEl.duration
 
-      if (!isNaN(currentTime)) audio.currentTime = currentTime
-      else {
-        audio.oncanplay = () => {
-          audio.oncanplay = null
-          if (state.player.setPosition === false) return
-          audio.currentTime = state.player.setPosition * audio.duration
-        }
+      if (!isNaN(currentTime)) {
+        playingEl.currentTime = currentTime
+        commit("setPlayer", ["setPosition", false])
       }
 
-      commit("setPlayer", ["setPosition", false])
       this.updateProgress(true)
     },
     async onPlaybackStateChange() {
       const state = this.$store.state as State
       const { playing } = state.player
-      const audio = this.$refs.audio as HTMLAudioElement
 
       this.setVolume()
 
@@ -89,21 +112,22 @@ export default Vue.extend({
       this.updateNotificationPositionState()
 
       if (playing) {
-        this.autoplay = true
-        await audio.play()
+        playingEl.autoplay = true
+        await playingEl.play()
         this.updateProgress()
       } else {
-        this.autoplay = false
-        audio.pause()
+        playingEl.autoplay = false
+        playingEl.pause()
       }
     },
     initAudioEl() {
-      const audio = this.$refs.audio as HTMLAudioElement
-      const { commit } = this.$store
+      const { commit, state } = this.$store
 
-      audio.onplay = () => commit("setPlayer", ["playing", true])
-      audio.onpause = () => commit("setPlayer", ["playing", false])
-      audio.onended = this.onended
+      playingEl.onplay = () => commit("setPlayer", ["playing", true])
+      playingEl.onpause = () => {
+        if (state.player.progress < 0.999) commit("setPlayer", ["playing", false])
+      }
+      playingEl.onended = this.onended
     },
     async onended() {
       // TODO implement repeating tracks
@@ -115,14 +139,12 @@ export default Vue.extend({
     updateDuration: throttle(function t() {
       const { commit } = this.$store
       const state = this.$store.state as State
-      const audio = this.$refs.audio as HTMLAudioElement
 
-      if (!isNaN(audio.duration) && state.player.duration !== audio.duration)
-        commit("setPlayer", ["duration", audio.duration])
+      if (!isNaN(playingEl.duration) && state.player.duration !== playingEl.duration)
+        commit("setPlayer", ["duration", playingEl.duration])
     }, 100),
     updateNotificationPositionState: throttle(function t() {
-      const audio = this.$refs.audio as HTMLAudioElement
-      const { duration, playbackRate, currentTime } = audio
+      const { duration, playbackRate, currentTime } = playingEl
       const isAnyNaN = (numbers: number[]) =>
         Boolean(numbers.filter(n => isNaN(n)).length)
 
@@ -132,12 +154,11 @@ export default Vue.extend({
     updateProgress(single: boolean) {
       const state = this.$store.state as State
       const { commit } = this.$store
-      const audio = this.$refs.audio as HTMLAudioElement
 
       this.updateDuration()
 
       try {
-        const progress = audio.currentTime / audio.duration || 0
+        const progress = playingEl.currentTime / playingEl.duration || 0
         commit("setPlayer", ["progress", progress])
       } catch (err) {
         return "ignore"

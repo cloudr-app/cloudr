@@ -45,6 +45,7 @@ const defaultState: State = {
 const store = new Vuex.Store({
   state: defaultState,
   modules: { preferences },
+  getters: { fullQueue: s => [...s.queued, ...s.queue] },
   mutations: {
     trackStream(state: State, stream: string) {
       state.currentTrack.stream = stream
