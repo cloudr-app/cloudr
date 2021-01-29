@@ -50,6 +50,22 @@ export const platformsLong = {
   youtube: "yt",
 }
 
+export type Type = "user" | "playlist" | "track"
+export type ShortType = "u" | "pl" | "t"
+export type TypeAccessor = Type | ShortType
+
+export const typesShort = {
+  u: "user",
+  pl: "playlist",
+  t: "track",
+}
+
+export const typesLong = {
+  user: "u",
+  playlist: "pl",
+  track: "t",
+}
+
 type CloudrID = string
 
 /**
@@ -57,19 +73,30 @@ type CloudrID = string
  * @param platform the platform identifier, can be both long or short
  * @param id number
  * @example toCloudrID("soundcloud", 16514846) // "sc:16514846"
+ * @example toCloudrID("soundcloud", 16514846, "user") // "u:sc:16514846"
  */
-export const toCloudrID = (platform: Platform, id: number): CloudrID =>
-  `${platformsLong[platform] || platform}:${id}`
+export const toCloudrID = (platform: Platform, id: number, type: Type = "track") => {
+  const _type = typesLong[type] || type
+  const _platform = platformsLong[platform] || platform
 
+  return `${_type}:${_platform}:${id}` as CloudrID
+}
+
+type SplitCloudrID = [number, Platform, Type?]
 /**
  * convert the cloudrID format to an array containing the platform and id
  * @param cloudrID
- * @example fromCloudrID("soundcloud:16514846") // ["sc", "16514846"]
+ * @example fromCloudrID("soundcloud:16514846") // { platform: "sc", id: 16514846 }
+ * @example fromCloudrID("user:soundcloud:16514846") // { platform: "sc", id: 16514846, type: "u" }
  */
-export const fromCloudrID = (cloudrID: CloudrID): [PlatformAccessor, number] => {
-  const [platform, id] = cloudrID.split(":") as [Platform, number]
-  const pl = (platformsLong[platform] || platform) as PlatformAccessor
-  return [pl, id]
+export const fromCloudrID = (cloudrID: CloudrID) => {
+  const [id, _platform, _type] = [...cloudrID.split(":")].reverse() as SplitCloudrID
+  const platform = (platformsLong[_platform] || _platform) as PlatformAccessor
+
+  let type = "t"
+  if (_type) type = (typesLong[_type] || _type) as TypeAccessor
+
+  return { platform, id, type }
 }
 
 /**

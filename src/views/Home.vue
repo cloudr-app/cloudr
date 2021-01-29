@@ -7,6 +7,7 @@
         soundcloud playlist
       </router-link>
       <router-link to="/vaaski/likes"> soundcloud likes (resolve link) </router-link>
+      <router-link to="/noisia"> soundcloud user (resolve link) </router-link>
       <router-link to="/td/pl/13697bfa-35c6-46d2-a6b7-dc05c4dd8401">
         TIDAL playlist
       </router-link>

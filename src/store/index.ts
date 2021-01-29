@@ -137,14 +137,14 @@ const store = new Vuex.Store({
       await dispatch("playTrack", toCloudrID(previousTrack.platform, previousTrack.id))
     },
     async playTrack({ dispatch, commit, state }: ActionArg, track) {
-      const [platform, id] = fromCloudrID(track)
+      const { platform, id } = fromCloudrID(track)
 
       if (state.currentTrack.id === track) return commit("setPlayer", ["setPosition", 0])
 
       if (state.nextTrack.id !== track) {
         dispatch("currentTrack", { id: track })
         const stream = await player(platform).stream(id)
-        commit("setPlayer", ["playing", true])
+        // commit("setPlayer", ["playing", true])
 
         const { artwork, title, user } = await dispatch("resolveTrackInfo", track)
         dispatch("currentTrack", {
@@ -154,7 +154,7 @@ const store = new Vuex.Store({
           stream,
         })
       } else {
-        commit("setPlayer", ["playing", true])
+        // commit("setPlayer", ["playing", true])
         dispatch("currentTrack", { ...state.nextTrack })
       }
 
@@ -173,7 +173,7 @@ const store = new Vuex.Store({
       }
     },
     async resolveTrackInfo(_, track: string) {
-      const [platform, id] = fromCloudrID(track)
+      const { platform, id } = fromCloudrID(track)
 
       return await player(platform).track(Number(id))
     },

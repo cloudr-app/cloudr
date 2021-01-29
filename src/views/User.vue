@@ -7,7 +7,7 @@
         :description="userInfo.description"
       />
     </section>
-    <!-- <section class="tracks">
+    <section class="tracks">
       <infinite-scroll :list="userTracks" root="main" @end="loadNext()">
         <track-list-item
           v-for="(track, index) in userTracks"
@@ -19,22 +19,27 @@
       <div class="spinner" v-if="userNext">
         <spinner :scale="0.5" />
       </div>
-    </section> -->
+    </section>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue"
-// import TrackListItem from "@/components/TrackListItem.vue"
-// import InfiniteScroll from "@/components/functional/InfiniteScroll"
+import TrackListItem from "@/components/TrackListItem.vue"
+import InfiniteScroll from "@/components/functional/InfiniteScroll"
 import UserInfo from "@/components/UserInfo.vue"
+import Spinner from "@/components/Spinner.vue"
 
 import player from "@/player"
+// eslint-disable-next-line no-unused-vars
+import { MusicSource, Track } from "@/player/musicSource"
+import { toCloudrID } from "@/utils"
+// eslint-disable-next-line no-unused-vars
+import { State } from "@/types"
 
 export default Vue.extend({
   name: "user",
-  // components: { TrackListItem, InfiniteScroll, UserInfo },
-  components: { UserInfo },
+  components: { TrackListItem, InfiniteScroll, UserInfo, Spinner },
   data: () => ({
     userInfo: {
       avatar: [],
@@ -64,10 +69,38 @@ export default Vue.extend({
       const main = document.querySelector("main")
       if (main) main.scrollTop = 0
     },
-    async loadUserInfo({ plat, id }: any) {
-      this.userInfo = await plat.user(id)
+    async loadUserInfo({ plat, id }: { plat: MusicSource; id: number }) {
+      this.userInfo = await plat.user?.(id)
     },
-    async loadUserTracks() {},
+    async loadUserTracks({ plat, id }: { plat: MusicSource; id: number }) {
+      const tracks = await plat.userTracks(id)
+
+      this.userTracks = tracks.tracks
+      this.userNext = tracks.next
+    },
+    async playTrack(track: Track, index: number) {
+      const { dispatch, commit } = this.$store
+      const { userTracks } = this
+      const { platform, id }: any = this.$route.params
+
+      dispatch("playTrack", toCloudrID(track.platform, track.id))
+      commit("setQueuePrev", userTracks.slice(0, index))
+      commit("setQueue", userTracks.slice(index))
+      commit("setPlayingList", toCloudrID(platform, id, "user"))
+    },
+    async loadNext() {
+      if (!this.userNext) return
+
+      const { commit, state } = this.$store as { state: State; commit: Function }
+      const { tracks, next } = await this.userNext()
+
+      this.userTracks = [...this.userTracks, ...tracks]
+      this.userNext = next
+
+      const { platform, id }: any = this.$route.params
+      if (state.playingList === toCloudrID(platform, id))
+        commit("setQueue", [...state.queue, ...tracks])
+    },
   },
 })
 </script>
@@ -80,4 +113,5 @@ export default Vue.extend({
     display: flex
     justify-content: center
     align-items: center
+    margin-bottom: 1em
 </style>

@@ -28,6 +28,7 @@ import Vue from "vue"
 import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
 import InfiniteScroll from "@/components/functional/InfiniteScroll"
+import Spinner from "@/components/Spinner.vue"
 
 import { getImageLargerThan, toCloudrID } from "@/utils"
 
@@ -36,7 +37,6 @@ import player from "@/player"
 import { MediaImage, Track } from "@/player/musicSource"
 // eslint-disable-next-line no-unused-vars
 import { State } from "@/types"
-import Spinner from "@/components/Spinner.vue"
 
 declare global {
   interface Window {
@@ -135,7 +135,7 @@ export default Vue.extend({
       dispatch("playTrack", toCloudrID(track.platform, track.id))
       commit("setQueuePrev", playlistTracks.slice(0, index))
       commit("setQueue", playlistTracks.slice(index))
-      commit("setPlayingList", toCloudrID(platform, id))
+      commit("setPlayingList", toCloudrID(platform, id, "playlist"))
     },
   },
 })

@@ -55,6 +55,7 @@ export default Vue.extend({
     "$store.state.player.setPosition": "setPosition",
     async "$store.state.currentTrack.stream"(n) {
       playingEl.src = n
+      await playingEl.play()
       this.setOncanplay()
       this.onPlaybackStateChange()
     },

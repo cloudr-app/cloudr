@@ -262,6 +262,21 @@ const soundcloud: MusicSource = {
 
     return ret
   },
+  async userTracks(id, page_size = 50) {
+    const data = (await ky
+      .get(`${baseApi}/users/${id}/tracks`, {
+        searchParams: { client_id, page_size, linked_partitioning: true },
+      })
+      .json()) as SoundcloudPlaylistTracks
+
+    const ret: PlaylistTracks = {
+      tracks: data.collection.map(transformTrack),
+    }
+    if (data.next_href)
+      ret.next = paginateNext(data.next_href, "tracks", transformTrack, page_size)
+
+    return ret
+  },
 }
 
 export default soundcloud

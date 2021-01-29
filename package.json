@@ -65,7 +65,8 @@
     "extends": [
       "plugin:vue/essential",
       "eslint:recommended",
-      "@vue/typescript"
+      "@vue/typescript",
+      "@vue/eslint-config-typescript"
     ],
     "parserOptions": {
       "parser": "@typescript-eslint/parser"

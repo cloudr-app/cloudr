@@ -6,6 +6,7 @@ type Source = number
 export interface MusicSource {
   playlistInfo(source: Source): Promise<Playlist>
   playlistTracks(source: Source, limit?: number): Promise<PlaylistTracks>
+  userTracks?(source: Source, limit?: number): Promise<PlaylistTracks>
   stream(source: Source): Promise<URL>
   track(source: Source): Promise<Track>
   user?(source: Source): Promise<User>
