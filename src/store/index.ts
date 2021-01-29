@@ -5,7 +5,8 @@ import { toCloudrID, fromCloudrID, defaultImage } from "@/utils"
 import notification from "@/player/notification"
 
 import preferences from "./preferences"
-import { State, CurrentTrackInfo } from "@/types"
+import { State, PlayingTrackInfo } from "@/types"
+import { Track } from "@/player/musicSource"
 
 Vue.use(Vuex)
 
@@ -13,12 +14,23 @@ export interface ActionArg {
   state: State
   commit: Function
   dispatch: Function
+  getters: {
+    fullQueue: Track[]
+    [key: string]: any
+  }
   [key: string]: any
 }
 
 // @ts-expect-error
 const defaultState: State = {
   currentTrack: {
+    id: "",
+    title: "",
+    artist: "",
+    artwork: [defaultImage],
+    stream: "",
+  },
+  nextTrack: {
     id: "",
     title: "",
     artist: "",
@@ -47,9 +59,6 @@ const store = new Vuex.Store({
   modules: { preferences },
   getters: { fullQueue: s => [...s.queued, ...s.queue] },
   mutations: {
-    trackStream(state: State, stream: string) {
-      state.currentTrack.stream = stream
-    },
     setPlayer(state: any, [prop, value]) {
       state.player[prop] = value
     },
@@ -68,7 +77,7 @@ const store = new Vuex.Store({
       const trackInfo = await dispatch("resolveTrackInfo", track)
       state.queued.push(trackInfo)
     },
-    async currentTrack({ dispatch, state }: ActionArg, info: CurrentTrackInfo) {
+    async currentTrack({ dispatch, state }: ActionArg, info: PlayingTrackInfo) {
       state.currentTrack = { ...state.currentTrack, ...info }
       await dispatch("updateNotification")
     },
@@ -132,16 +141,36 @@ const store = new Vuex.Store({
 
       if (state.currentTrack.id === track) return commit("setPlayer", ["setPosition", 0])
 
-      dispatch("currentTrack", { id: track })
-      commit("trackStream", await player(platform).stream(Number(id)))
-      commit("setPlayer", ["playing", true])
+      if (state.nextTrack.id !== track) {
+        dispatch("currentTrack", { id: track })
+        const stream = await player(platform).stream(id)
+        commit("setPlayer", ["playing", true])
 
-      const { artwork, title, user } = await dispatch("resolveTrackInfo", track)
-      dispatch("currentTrack", {
+        const { artwork, title, user } = await dispatch("resolveTrackInfo", track)
+        dispatch("currentTrack", {
+          artwork,
+          title,
+          artist: user.username,
+          stream,
+        })
+      } else {
+        commit("setPlayer", ["playing", true])
+        dispatch("currentTrack", { ...state.nextTrack })
+      }
+
+      dispatch("preloadNext")
+    },
+    async preloadNext({ state, getters }: ActionArg) {
+      const { artwork, title, user, id, platform } = getters.fullQueue[1]
+      const stream = await player(platform).stream(id)
+
+      state.nextTrack = {
         artwork,
         title,
         artist: user.username,
-      })
+        id: toCloudrID(platform, id),
+        stream,
+      }
     },
     async resolveTrackInfo(_, track: string) {
       const [platform, id] = fromCloudrID(track)

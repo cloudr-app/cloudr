@@ -34,17 +34,11 @@ export default Vue.extend({
   data: () => ({
     lastPlaybackState: false,
   }),
-  props: {
-    src: {
-      type: String,
-      required: true,
-    },
-  },
   mounted() {
     const state = this.$store.state as State
 
     playingEl.volume = state.player.volume
-    playingEl.src = this.src
+    playingEl.src = state.currentTrack.stream
     this.setOncanplay()
     notification.init()
     this.initAudioEl()
@@ -59,7 +53,7 @@ export default Vue.extend({
   watch: {
     "$store.state.player.playing": "onPlaybackStateChange",
     "$store.state.player.setPosition": "setPosition",
-    async src(n) {
+    async "$store.state.currentTrack.stream"(n) {
       playingEl.src = n
       this.setOncanplay()
       this.onPlaybackStateChange()
@@ -113,7 +107,11 @@ export default Vue.extend({
 
       if (playing) {
         playingEl.autoplay = true
-        await playingEl.play()
+        try {
+          await playingEl.play()
+        } catch (e) {
+          "ignore"
+        }
         this.updateProgress()
       } else {
         playingEl.autoplay = false

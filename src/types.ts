@@ -2,7 +2,8 @@ import { MediaImage, Track } from "./player/musicSource"
 import { Preferences } from "./store/preferences"
 
 export interface State {
-  currentTrack: CurrentTrackInfo
+  currentTrack: PlayingTrackInfo
+  nextTrack: PlayingTrackInfo
   queued: Track[]
   queue: Track[]
   queuePrev: Track[]
@@ -17,7 +18,7 @@ export interface State {
   preferences: Preferences
 }
 
-export interface CurrentTrackInfo {
+export interface PlayingTrackInfo {
   id: string
   title: string
   artist: string

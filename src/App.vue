@@ -11,7 +11,6 @@
     <bottom-nav />
     <audio-player
       v-if="$store.state.currentTrack.stream"
-      :src="$store.state.currentTrack.stream"
     />
   </global-styles>
 </template>
@@ -45,7 +44,7 @@ export default Vue.extend({
   }),
   computed: {
     noTrack() {
-      const allEmpty = (arr: string[]) => !arr.filter(s => s.length).length
+      const allEmpty = (arr: string[]) => !arr.filter(s => s).length
 
       const { currentTrack } = this.$store.state as State
       const { artist, id, stream, title } = currentTrack
@@ -146,6 +145,7 @@ button
   border-radius: var(--border-radius)
   outline: none
   transition: background var(--transition-short)
+  font-family: var(--font)
 
   &:active
     background: opacity(--text-trans-white, 0.2)

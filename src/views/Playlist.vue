@@ -132,10 +132,10 @@ export default Vue.extend({
       const { playlistTracks } = this
       const { platform, id }: any = this.$route.params
 
+      dispatch("playTrack", toCloudrID(track.platform, track.id))
       commit("setQueuePrev", playlistTracks.slice(0, index))
       commit("setQueue", playlistTracks.slice(index))
       commit("setPlayingList", toCloudrID(platform, id))
-      await dispatch("playTrack", toCloudrID(track.platform, track.id))
     },
   },
 })

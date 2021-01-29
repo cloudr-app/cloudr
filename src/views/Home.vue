@@ -11,6 +11,9 @@
       <router-link to="/td/pl/13697bfa-35c6-46d2-a6b7-dc05c4dd8401">
         example 3 TIDAL playlist
       </router-link>
+      <router-link to="/tidal/playlist/f3338b1a-5eec-4582-80a7-bcfd677f65f1">
+        example 4 TIDAL playlist (Justice)
+      </router-link>
 
       <button @click="setTidalAccessToken">set tidal access_token</button>
     </div>
