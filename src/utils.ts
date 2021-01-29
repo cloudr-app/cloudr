@@ -142,7 +142,7 @@ export const getWidth = (sizes: string) => Number(sizes.split("x")[0])
  * @param size number
  */
 export const getImageLargerThan = (images: MediaImage[], size: number) => {
-  const sorted = images.sort((a, b) => getWidth(a.sizes) - getWidth(b.sizes))
+  const sorted = [...images].sort((a, b) => getWidth(a.sizes) - getWidth(b.sizes))
   const largest = sorted.filter(s => getWidth(s.sizes) >= size)[0]
 
   if (largest) return largest
