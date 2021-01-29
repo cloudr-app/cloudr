@@ -1,10 +1,6 @@
 <template>
   <div class="user-info">
-    <div
-      class="avatar"
-      @click="avatarExpanded = !avatarExpanded"
-      :class="{ expanded: avatarExpanded }"
-    >
+    <div class="avatar" @click="expand" :class="{ expanded }">
       <img :src="imgSrc" alt="avatar not found" draggable="false" />
     </div>
     <div class="info">
@@ -22,6 +18,7 @@
 
 <script lang="ts">
 import Vue from "vue"
+
 import { getImageLargerThan } from "@/utils"
 // eslint-disable-next-line no-unused-vars
 import { MediaImage } from "@/player/musicSource"
@@ -29,7 +26,7 @@ import { MediaImage } from "@/player/musicSource"
 export default Vue.extend({
   data: () => ({
     descriptionExpanded: false,
-    avatarExpanded: false,
+    expanded: false,
   }),
   props: {
     name: {
@@ -53,6 +50,20 @@ export default Vue.extend({
       return getImageLargerThan(images, 500).src
     },
   },
+  methods: {
+    async expand() {
+      this.expanded = !this.expanded
+
+      if (this.expanded) window.addEventListener("pointerdown", this.outsideClick, false)
+      else window.removeEventListener("pointerdown", this.outsideClick)
+    },
+    outsideClick(event: any) {
+      if (event.target.closest(".avatar")) return
+      this.expanded = false
+
+      window.removeEventListener("pointerdown", this.outsideClick)
+    },
+  },
 })
 </script>
 
@@ -61,6 +72,8 @@ export default Vue.extend({
   width: calc(100% - 20px)
 
   .avatar
+    margin-bottom: 0.5em
+
     img
       width: 50%
       border-radius: 50%
@@ -74,7 +87,6 @@ export default Vue.extend({
       width: 100%
 
   .info
-    margin-top: 0.5em
     font-size: 1.5rem
     display: flex
     justify-content: center

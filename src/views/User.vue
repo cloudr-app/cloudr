@@ -73,10 +73,10 @@ export default Vue.extend({
       this.userInfo = await plat.user?.(id)
     },
     async loadUserTracks({ plat, id }: { plat: MusicSource; id: number }) {
-      const tracks = await plat.userTracks(id)
+      const tracks = await plat.userTracks?.(id)
 
-      this.userTracks = tracks.tracks
-      this.userNext = tracks.next
+      this.userTracks = tracks?.tracks
+      this.userNext = tracks?.next
     },
     async playTrack(track: Track, index: number) {
       const { dispatch, commit } = this.$store
