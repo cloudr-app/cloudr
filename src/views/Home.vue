@@ -2,17 +2,16 @@
   <div class="home">
     <img alt="cloudr.app logo" src="../assets/icon.svg" width="200" height="200" />
     <div class="examples">
+      <h2>examples</h2>
       <router-link to="/soundcloud/playlist/1162452736">
-        example 1 soundcloud playlist
+        soundcloud playlist
       </router-link>
-      <router-link to="/sc/pl/620756469">
-        example 2 soundcloud playlist (short link)
-      </router-link>
+      <router-link to="/vaaski/likes"> soundcloud likes (resolve link) </router-link>
       <router-link to="/td/pl/13697bfa-35c6-46d2-a6b7-dc05c4dd8401">
-        example 3 TIDAL playlist
+        TIDAL playlist
       </router-link>
       <router-link to="/tidal/playlist/f3338b1a-5eec-4582-80a7-bcfd677f65f1">
-        example 4 TIDAL playlist (Justice)
+        TIDAL playlist (gapless playback test)
       </router-link>
 
       <button @click="setTidalAccessToken">set tidal access_token</button>
