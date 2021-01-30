@@ -7,7 +7,7 @@
         :description="userInfo.description"
       />
     </section>
-    <section class="tracks">
+    <section class="tracks" v-if="userTracks.length">
       <infinite-scroll :list="userTracks" root="main" @end="loadNext()">
         <track-list-item
           v-for="(track, index) in userTracks"
@@ -114,4 +114,11 @@ export default Vue.extend({
     justify-content: center
     align-items: center
     margin-bottom: 1em
+
+  .spinner
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 2em 0
+    opacity: 0.5
 </style>
