@@ -1,8 +1,8 @@
 <template>
-  <div class="mdc-form-field" ref="mdcFormField">
+  <div class="mdc-form-field" ref="mdcFormFieldRef">
     <div
       class="mdc-checkbox mdc-checkbox--touch"
-      ref="mdcCheckbox"
+      ref="mdcCheckboxRef"
       :class="{ 'mdc-checkbox--disabled': disabled }"
     >
       <input

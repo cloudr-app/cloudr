@@ -1,10 +1,10 @@
 <template>
   <label
-    ref="textField"
+    ref="textFieldRef"
     class="mdc-text-field mdc-text-field--outlined"
     :class="{ 'mdc-text-field--no-label': !label.length }"
   >
-    <span ref="notchedOutline" class="mdc-notched-outline">
+    <span ref="notchedOutlineRef" class="mdc-notched-outline">
       <span class="mdc-notched-outline__leading"></span>
       <span class="mdc-notched-outline__notch" v-if="label.length">
         <span class="mdc-floating-label" id="my-label-id">{{ label }}</span>
