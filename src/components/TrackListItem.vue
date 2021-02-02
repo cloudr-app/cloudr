@@ -1,7 +1,7 @@
 <template>
   <div
     class="track"
-    @click="$emit('playTrack')"
+    @click="$emit('play-track')"
     ref="main"
     :style="{ height: height > 0 ? `${height}px` : null }"
     :class="{ 'is-playing': isPlaying }"
