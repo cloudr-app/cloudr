@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { register } from "register-service-worker"
 
 if (process.env.NODE_ENV === "production") {
@@ -19,8 +17,11 @@ if (process.env.NODE_ENV === "production") {
     updatefound() {
       console.log("New content is downloading.")
     },
-    updated() {
+    updated(registration) {
       console.log("New content is available; please refresh.")
+      const worker = registration.waiting
+      worker?.postMessage({ action: "skipWaiting" })
+      location.reload()
     },
     offline() {
       console.log("No internet connection found. App is running in offline mode.")
