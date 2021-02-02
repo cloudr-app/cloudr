@@ -1,5 +1,5 @@
 import ky from "ky"
-import { MediaImage } from "./player/musicSource"
+import { ID, MediaImage } from "./player/musicSource"
 import { preferenceLocation } from "./strings"
 
 /**
@@ -75,14 +75,19 @@ type CloudrID = string
  * @example toCloudrID("soundcloud", 16514846) // "sc:16514846"
  * @example toCloudrID("soundcloud", 16514846, "user") // "u:sc:16514846"
  */
-export const toCloudrID = (platform: Platform, id: number, type: Type = "track") => {
+export const toCloudrID = (
+  platform: PlatformAccessor,
+  id: ID,
+  type: Type = "track"
+) => {
   const _type = typesLong[type] || type
+  // @ts-expect-error
   const _platform = platformsLong[platform] || platform
 
   return `${_type}:${_platform}:${id}` as CloudrID
 }
 
-type SplitCloudrID = [number, Platform, Type?]
+type SplitCloudrID = [ID, Platform, Type?]
 /**
  * convert the cloudrID format to an array containing the platform and id
  * @param cloudrID

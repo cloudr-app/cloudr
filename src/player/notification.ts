@@ -1,7 +1,8 @@
-import { Capacitor } from "@capacitor/core"
+// import { Capacitor } from "@capacitor/core"
 import { MediaImage } from "./musicSource"
 
-const { isNative } = Capacitor
+// const { isNative } = Capacitor
+const isNative = false
 
 interface NotificationUpdate {
   title?: string

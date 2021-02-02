@@ -9,14 +9,14 @@
         </div>
         <div class="spacer"></div>
         <div class="controls">
-          <div class="skip-previous" @click="$store.dispatch('prevTrack')">
+          <div class="skip-previous" @click="prevTrack">
             <svg-icon icon="skip_previous" />
           </div>
           <div class="play-pause" @click="playPause">
-            <svg-icon v-if="$store.state.player.playing" icon="pause" />
+            <svg-icon v-if="playing" icon="pause" />
             <svg-icon v-else icon="play_arrow" />
           </div>
-          <div class="skip-next" @click="$store.dispatch('nextTrack')">
+          <div class="skip-next" @click="nextTrack">
             <svg-icon icon="skip_next" />
           </div>
         </div>
@@ -35,51 +35,46 @@
 </template>
 
 <script lang="ts">
-// eslint-disable-next-line no-unused-vars
-import Vue from "vue"
-import { mapState } from "vuex"
+import { defineComponent, computed } from "vue"
+
 import { formatTime, getImageLargerThan } from "@/utils"
 
-// eslint-disable-next-line no-unused-vars
-import { MediaImage } from "@/player/musicSource"
 import Slider from "@/components/Slider.vue"
-// eslint-disable-next-line no-unused-vars
-import { State } from "@/types"
+import { useStore } from "@/store/store"
 
-export default Vue.extend({
+export default defineComponent({
   components: { Slider },
-  name: "bottomPlayer",
-  computed: {
-    ...mapState({
-      progress: (state: any) => state.player.progress,
-      duration: (state: any) => state.player.duration,
-      title: (state: any) => state.currentTrack.title,
-      artist: (state: any) => state.currentTrack.artist,
-    }),
-    imgSrc() {
-      const images = this.$store.state.currentTrack.artwork as MediaImage[]
-      if (!images.length) return
+  setup() {
+    const { state, commit, dispatch } = useStore()
 
-      return getImageLargerThan(images, 55).src
-    },
-  },
-  methods: {
-    formatTime,
-    playPause() {
-      const { commit } = this.$store
-      const state = this.$store.state as State
+    const playing = computed(() => state.player.playing)
+    const playPause = () => commit("setPlayer", ["playing", !playing.value])
+    const sliderVal = (pos: number) => commit("setPlayer", ["setPosition", pos])
 
-      commit("setPlayer", ["playing", !state.player.playing])
-    },
-    sliderVal(pos: any) {
-      const { commit } = this.$store
-      commit("setPlayer", ["setPosition", pos])
-    },
+    return {
+      formatTime,
+      playPause,
+      sliderVal,
+      playing,
+      prevTrack: () => dispatch("prevTrack"),
+      nextTrack: () => dispatch("nextTrack"),
+      progress: computed(() => state.player.progress),
+      duration: computed(() => state.player.duration),
+      title: computed(() => state.currentTrack.title),
+      artist: computed(() => state.currentTrack.artist),
+      // TODO move as factory function into utils
+      imgSrc: computed(() => {
+        const images = state.currentTrack.artwork
+        if (!images.length) return
+
+        return getImageLargerThan(images, 55).src
+      }),
+    }
   },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .player
   --margins: 10px
   background: var(--bg-dark)
@@ -92,7 +87,7 @@ export default Vue.extend({
   &.bottom-player-enter-active, &.bottom-player-leave-active
     transition: var(--transition-medium) var(--ease)
 
-  &.bottom-player-enter, &.bottom-player-leave-to
+  &.bottom-player-enter-from, &.bottom-player-leave-to
     height: 0
     padding: 0 var(--margins)
 

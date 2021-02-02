@@ -1,4 +1,4 @@
-import Vue from "vue"
+import { defineComponent, h } from "vue"
 
 const svgContext = require.context(
   "!svg-inline-loader?" +
@@ -16,19 +16,16 @@ const symbols = svgContext.keys().map(path => {
   return content.replace("<svg", `<symbol id="${id}"`).replace("svg>", "symbol>")
 })
 
-export default Vue.extend({
-  render(h) {
+export default defineComponent({
+  render() {
     return h("svg", {
-      domProps: {
-        width: "0",
-        height: "0",
-        innerHTML: this.$options.svgSprite,
-      },
+      width: "0",
+      height: "0",
+      innerHTML: this.$options.svgSprite,
       style: {
         display: "none",
       },
     })
   },
-  // @ts-expect-error
   svgSprite: symbols.join("\n"),
 })

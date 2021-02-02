@@ -13,13 +13,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-export default Vue.extend({
+import { defineComponent } from "vue"
+
+export default defineComponent({
   name: "bottom-nav",
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 nav.bottom
   height: var(--bottom-nav-height)
   width: 100%

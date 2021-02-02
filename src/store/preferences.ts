@@ -1,7 +1,7 @@
 import { preferenceLocation } from "@/strings"
 import { SettingsValue } from "@/types"
 import { ls, updateDeep } from "@/utils"
-import { ActionArg } from "./"
+import { ActionArg } from "./store"
 
 // ! only nest this one-deep
 export interface Preferences {

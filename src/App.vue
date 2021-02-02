@@ -9,65 +9,72 @@
       <bottom-player v-if="!noTrack" />
     </transition>
     <bottom-nav />
-    <audio-player
-      v-if="$store.state.currentTrack.stream"
-    />
+    <audio-player v-if="currentTrack.stream" />
   </global-styles>
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, onMounted, computed } from "vue"
+import { useStore } from "./store/store"
+
 import SvgSprite from "@/components/functional/SvgSprite"
 import topNav from "@/components/TopNav.vue"
 import bottomNav from "@/components/BottomNav.vue"
 import bottomPlayer from "@/components/BottomPlayer.vue"
 import globalStyles from "@/components/functional/GlobalStyles"
-
 import audioPlayer from "@/components/functional/AudioPlayer"
 
 import player from "@/player"
-// eslint-disable-next-line no-unused-vars
-import { State } from "./types"
+import { useRoute, useRouter } from "vue-router"
 
-declare global {
-  interface Window {
-    vue: any
-    player: any
-  }
-}
+// @ts-expect-error
 window.player = player
 
-export default Vue.extend({
+export default defineComponent({
   components: { topNav, bottomNav, bottomPlayer, audioPlayer, globalStyles, SvgSprite },
-  data: () => ({
-    scrolled: false,
-  }),
-  computed: {
-    noTrack() {
+  setup() {
+    const { state } = useStore()
+    const scrolled = ref(false)
+    const main = ref<HTMLElement | null>(null)
+
+    if (process.env.NODE_ENV === "development") {
+      // for debugging
+      // @ts-expect-error
+      window.route = useRoute()
+      // @ts-expect-error
+      window.router = useRouter()
+      // @ts-expect-error
+      window.store = useStore()
+    }
+
+    onMounted(() => {
+      if (!main.value) return
+      main.value.onscroll = (e: any) => {
+        if (e.target.scrollTop > 0) scrolled.value = true
+        else scrolled.value = false
+      }
+    })
+
+    const noTrack = computed(() => {
       const allEmpty = (arr: string[]) => !arr.filter(s => s).length
 
-      const { currentTrack } = this.$store.state as State
-      const { artist, id, stream, title } = currentTrack
+      const { artist, id, stream, title } = state.currentTrack
       return allEmpty([artist, id, stream, title])
-    },
-  },
-  async mounted() {
-    const v = this
+    })
 
-    // for debugging
-    window.vue = v
-
-    // cspell:ignore onscroll
-    const { main } = v.$refs as any
-    main.onscroll = (e: any) => {
-      if (e.target.scrollTop > 0) v.scrolled = true
-      else v.scrolled = false
+    return {
+      scrolled,
+      main,
+      noTrack,
+      currentTrack: computed(() => state.currentTrack),
     }
   },
 })
 </script>
 
-<style lang="stylus">
+<style lang="sass">
+@use "./components/mwc/theme.css"
+
 :root
   --bg: #222436
   --bg-dark: #1E2030
@@ -98,8 +105,6 @@ export default Vue.extend({
   --icon-size: 30px
   --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
 
-@import "./components/mwc/theme.css"
-
 @font-face
   font-family: "manrope"
   src: url("./assets/manrope.ttf")
@@ -123,9 +128,6 @@ html, body
   user-select: none
   -webkit-tap-highlight-color: transparent
 
-opacity(variable, opacity = 1)
-  s("rgba(var(%s), %s)", variable, opacity)
-
 .height-transition
   width: 100%
   overflow: hidden
@@ -148,7 +150,7 @@ button
   font-family: var(--font)
 
   &:active
-    background: opacity(--text-trans-white, 0.2)
+    background: rgba(var(--text-trans-white), 0.2)
 
 *
   -webkit-font-smoothing: antialiased

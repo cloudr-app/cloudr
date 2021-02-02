@@ -15,8 +15,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-export default Vue.extend({
+import { defineComponent } from "vue"
+
+export default defineComponent({
   name: "top-nav",
   props: {
     scrolled: {
@@ -27,7 +28,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 nav.top
   height: var(--top-nav-height)
   width: 100%

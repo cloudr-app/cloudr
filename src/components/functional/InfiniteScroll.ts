@@ -1,20 +1,20 @@
-import Vue from "vue"
+import { defineComponent, h } from "vue"
 
 let endObserver: IntersectionObserver
-let observed: HTMLElement
+let observed: Element
 
 let hideObserver: IntersectionObserver
 const hideObserved: boolean[] = []
 
-export default Vue.extend({
-  render(h) {
+export default defineComponent({
+  render() {
     return h(
       "div",
       {
         class: "infinite-scroll",
         ref: "wrap",
       },
-      this.$slots.default
+      this.$slots.default?.()
     )
   },
   props: {
@@ -37,7 +37,7 @@ export default Vue.extend({
       rootMargin: "108px 0px 500px 0px",
     })
   },
-  beforeDestroy() {
+  beforeUnmount() {
     endObserver.disconnect()
   },
   watch: {
@@ -45,29 +45,30 @@ export default Vue.extend({
       if (observed) endObserver.unobserve(observed)
 
       await this.$nextTick()
-      this.assignHideObservers()
+      // this.assignHideObservers()
 
-      const children = this.$refs.wrap.children
+      const wrap = this.$refs.wrap as HTMLElement
+      const children = wrap.children
       observed = children[children.length - 1]
       if (observed) endObserver.observe(observed)
     },
   },
   methods: {
     intersectionCallback(entries: IntersectionObserverEntry[]) {
-      const v = this
       entries.forEach(entry => {
-        if (entry.isIntersecting) v.$emit("end")
+        if (entry.isIntersecting) this.$emit("end")
       })
     },
     assignHideObservers() {
-      const children = this.$refs.wrap.children as HTMLElement[]
-      const slotChildren = this.$slots.default
+      const wrap = this.$refs.wrap as HTMLElement
+      const children = wrap.children
+      const slotChildren = this.$slots.default?.()
 
-      if (children.length !== slotChildren.length)
+      if (!slotChildren || children.length !== slotChildren.length)
         throw new Error("children length and slot content length are not the same.")
 
       const childArray = [...children]
-      childArray.forEach((child: HTMLElement, index: number) => {
+      childArray.forEach((child, index) => {
         if (hideObserved[index]) return
 
         hideObserver.observe(child)

@@ -27,8 +27,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-export default Vue.extend({
+import { defineComponent } from "vue"
+
+export default defineComponent({
   props: {
     scale: {
       type: Number,
@@ -38,7 +39,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="stylus">
+<style lang="sass">
 .main-logo
   stroke-dasharray: 900
   stroke-dashoffset: 900

@@ -18,12 +18,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, onMounted, onBeforeUnmount, toRefs, watch } from "vue"
 import { MDCSwitch } from "@material/switch"
 
-let mdcSwitch: undefined | MDCSwitch
-
-export default Vue.extend({
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -33,26 +31,31 @@ export default Vue.extend({
       type: Boolean,
     },
   },
-  watch: {
-    label: "reInit",
-  },
-  mounted() {
-    this.init()
-  },
-  beforeDestroy() {
-    this.destroy()
-  },
-  methods: {
-    reInit() {
-      this.destroy()
-      this.init()
-    },
-    init() {
-      mdcSwitch = new MDCSwitch(this.$refs.mdcSwitch)
-    },
-    destroy() {
+  setup(props) {
+    const { label } = toRefs(props)
+    const mdcSwitchRef = ref<HTMLElement | null>(null)
+
+    let mdcSwitch: undefined | MDCSwitch
+
+    const init = () => {
+      if (!mdcSwitchRef.value) return
+      mdcSwitch = new MDCSwitch(mdcSwitchRef.value)
+    }
+
+    const destroy = () => {
       if (mdcSwitch) mdcSwitch.destroy()
-    },
+    }
+
+    const reInit = () => {
+      destroy()
+      init()
+    }
+
+    onMounted(init)
+    onBeforeUnmount(destroy)
+    watch(label, reInit)
+
+    return { mdcSwitchRef }
   },
 })
 </script>

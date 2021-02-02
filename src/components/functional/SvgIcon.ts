@@ -1,9 +1,9 @@
-import Vue from "vue"
+import { defineComponent, h } from "vue"
 
 // TODO: forward click event
 
-export default Vue.extend({
-  render(h) {
+export default defineComponent({
+  render() {
     return h(
       "svg",
       {
@@ -11,9 +11,7 @@ export default Vue.extend({
       },
       [
         h("use", {
-          attrs: {
-            "xlink:href": `#${this.icon}`,
-          },
+          "xlink:href": `#${this.icon}`,
         }),
       ]
     )

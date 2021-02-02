@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { MusicSource, PlaylistTracks, Track } from "@/player/musicSource"
 import { defaultImage, kyCache, ls } from "@/utils"
 import { AxiosInstance, AxiosRequestConfig } from "axios"
@@ -9,7 +10,7 @@ const ky = kyCache("tidal")
  * caching to work the way I liked it, I wrote this adapter that roughly translates
  * an axios request to the config syntax of ky.
  */
-// @ts-ignore
+// @ts-expect-error
 const kyxios: AxiosInstance = async (config: AxiosRequestConfig) => {
   // disable native cache to let cloudr decide how to cache
   const headers: any = { "cache-control": "no-cache" }
@@ -50,9 +51,9 @@ const kyxios: AxiosInstance = async (config: AxiosRequestConfig) => {
 
 import {
   _track,
-  _auth,
-  _search,
-  _artist,
+  // _auth,
+  // _search,
+  // _artist,
   _playlist,
   track as cachelessTrack,
 } from "opentidal"
@@ -104,23 +105,24 @@ const tidal: MusicSource = {
     }
 
     const { access_token } = login
-    const stream = await cachelessTrack.stream({ id, access_token })
+    const stream = await cachelessTrack.stream({ id: +id, access_token })
     return stream.urls[0].replace("http://", "https://")
   },
   async track(id) {
-    const data = await track.get({ client_id, id })
+    const data = await track.get({ client_id, id: +id })
 
     return {
       artwork: tidalImage(data.album.cover, albumImageSizes),
       duration: data.duration,
-      id: data.id,
+      id: String(data.id),
       platform: "tidal",
       title: data.title,
       user: {
         platform: "tidal",
-        id: data.artist.id,
+        id: String(data.artist.id),
         username: data.artist.name || `user:${data.artist.id}`,
         avatar: [defaultImage],
+        description: null,
       },
     }
   },
@@ -128,7 +130,7 @@ const tidal: MusicSource = {
     const data = await playlist.get({ client_id, uuid: String(uuid) })
 
     return {
-      id: uuid,
+      id: String(uuid),
       platform: "tidal",
       title: data.title,
       trackCount: data.numberOfTracks,
@@ -136,8 +138,9 @@ const tidal: MusicSource = {
       user: {
         platform: "tidal",
         avatar: [defaultImage],
-        id: data.creator.id,
+        id: String(data.creator.id),
         username: data.creator.name || `user:${data.creator.id}`,
+        description: null,
       },
       description: data.description,
       duration: data.duration,
@@ -150,12 +153,13 @@ const tidal: MusicSource = {
     const transformTrack = ({ item }: { item: TidalTrack }): Track => ({
       platform: "tidal",
       title: item.title,
-      id: item.id,
+      id: String(item.id),
       user: {
         platform: "tidal",
-        id: item.artist.id,
+        id: String(item.artist.id),
         username: item.artist.name,
         avatar: [defaultImage],
+        description: null,
       },
       artwork: tidalImage(item.album.cover, albumImageSizes),
       duration: item.duration,

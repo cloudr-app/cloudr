@@ -22,14 +22,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, toRefs, onMounted, watch, onBeforeUnmount } from "vue"
 import { MDCTextField } from "@material/textfield"
 import { MDCNotchedOutline } from "@material/notched-outline"
 
-let textField: undefined | MDCTextField
-let notchedOutline: undefined | MDCNotchedOutline
-
-export default Vue.extend({
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -37,28 +34,40 @@ export default Vue.extend({
     },
     value: {},
   },
-  watch: {
-    label: "reInit",
-  },
-  mounted() {
-    this.init()
-  },
-  beforeDestroy() {
-    this.destroy()
-  },
-  methods: {
-    reInit() {
-      this.destroy()
-      this.init()
-    },
-    init() {
-      textField = new MDCTextField(this.$refs.textField)
-      notchedOutline = new MDCNotchedOutline(this.$refs.notchedOutline)
-    },
-    destroy() {
+  setup(props) {
+    const { label } = toRefs(props)
+
+    const textFieldRef = ref<HTMLElement | null>(null)
+    const notchedOutlineRef = ref<HTMLElement | null>(null)
+
+    let textField: undefined | MDCTextField
+    let notchedOutline: undefined | MDCNotchedOutline
+
+    const init = () => {
+      if (!textFieldRef.value || !notchedOutlineRef.value) return
+
+      textField = new MDCTextField(textFieldRef.value)
+      notchedOutline = new MDCNotchedOutline(notchedOutlineRef.value)
+    }
+
+    const destroy = () => {
       if (textField) textField.destroy()
       if (notchedOutline) notchedOutline.destroy()
-    },
+    }
+
+    const reInit = () => {
+      destroy()
+      init()
+    }
+
+    onMounted(init)
+    watch(label, reInit)
+    onBeforeUnmount(destroy)
+
+    return {
+      textFieldRef,
+      notchedOutlineRef,
+    }
   },
 })
 </script>

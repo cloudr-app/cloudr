@@ -1,14 +1,14 @@
 <template>
   <div class="preferences">
     <template v-for="(val, preference) in preferences">
-      <div v-if="isObject(val)" :key="preference" class="category">
+      <div v-if="isObject(val)" :key="preference + 'isObject'" class="category">
         <span>{{ preference }}</span>
         <preference
           v-for="(subVal, subPreference) in val"
           :key="subPreference"
           :preference="subPreference"
           :value="subVal"
-          @input="handleChange($event, preference, subPreference)"
+          @input="handleChange($event, preference, String(subPreference))"
         />
       </div>
 
@@ -24,32 +24,31 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent } from "vue"
 import Preference from "@/components/Preference.vue"
 import { isObject } from "@/utils"
-// eslint-disable-next-line no-unused-vars
 import { SettingsValue } from "@/types"
+import { useStore } from "@/store/store"
 
-export default Vue.extend({
+export default defineComponent({
   name: "preferences",
   components: { Preference },
-  computed: {
-    preferences() {
-      return this.$store.state.preferences
-    },
-  },
-  methods: {
-    isObject,
-    handleChange(value: SettingsValue, pref: string, sub: string) {
-      const { dispatch } = this.$store
+  setup() {
+    const { state, dispatch } = useStore()
 
+    const handleChange = (value: SettingsValue, pref: string, sub?: string) =>
       dispatch("pref", [value, pref, sub])
-    },
+
+    return {
+      isObject,
+      handleChange,
+      preferences: state.preferences,
+    }
   },
 })
 </script>
 
-<style lang="stylus">
+<style lang="sass">
 .preferences
   padding: 0 15px
 

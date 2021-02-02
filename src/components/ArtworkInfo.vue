@@ -11,41 +11,16 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, computed, toRefs, PropType } from "vue"
+
 import { getImageLargerThan } from "@/utils"
-// eslint-disable-next-line no-unused-vars
 import { MediaImage } from "@/player/musicSource"
 
-export default Vue.extend({
-  data: () => ({
-    expanded: false,
-  }),
-  computed: {
-    imgSrc() {
-      const images = this.artwork as MediaImage[]
-      if (!images.length) return "/artwork-placeholder.svg"
-
-      return getImageLargerThan(images, 500).src
-    },
-  },
-  methods: {
-    async expand() {
-      this.expanded = !this.expanded
-
-      if (this.expanded) window.addEventListener("pointerdown", this.outsideClick, false)
-      else window.removeEventListener("pointerdown", this.outsideClick)
-    },
-    outsideClick(event: any) {
-      if (event.target.closest(".artwork")) return
-      this.expanded = false
-
-      window.removeEventListener("pointerdown", this.outsideClick)
-    },
-  },
+export default defineComponent({
   props: {
     artwork: {
       required: true,
-      type: Array,
+      type: Array as PropType<Array<MediaImage>>,
     },
     title: {
       required: true,
@@ -56,10 +31,39 @@ export default Vue.extend({
       type: String,
     },
   },
+  setup(props) {
+    const expanded = ref(false)
+    const { artwork } = toRefs(props)
+
+    const outsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (target.closest?.(".artwork")) return
+      expanded.value = false
+
+      window.removeEventListener("pointerdown", outsideClick)
+    }
+
+    const expand = () => {
+      expanded.value = !expanded.value
+
+      if (expanded.value) window.addEventListener("pointerdown", outsideClick, false)
+      else window.removeEventListener("pointerdown", outsideClick)
+    }
+
+    return {
+      expand,
+      expanded,
+      imgSrc: computed(() => {
+        if (!artwork.value.length) return "/artwork-placeholder.svg"
+
+        return getImageLargerThan(artwork.value, 500).src
+      }),
+    }
+  },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .artwork
   --title-offset: 20px
   width: calc(100% - 60px)

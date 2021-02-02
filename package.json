@@ -1,61 +1,62 @@
 {
-  "name": "cloudr",
-  "version": "0.2.0",
+  "name": "cloudr-vue3",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "android": "npm run build && cap sync && cap open android",
-    "commit": "cz -S",
-    "icons": "cordova-res android --skip-config --copy --icon-background-source \"#222436\"",
-    "refresh": "npm run build && cap sync"
+    "commit": "cz -S"
   },
   "dependencies": {
-    "@capacitor/android": "^2.4.5",
-    "@capacitor/cli": "^2.4.5",
-    "@capacitor/core": "^2.4.5",
     "@material/checkbox": "^9.0.0",
     "@material/form-field": "^9.0.0",
     "@material/notched-outline": "^9.0.0",
     "@material/switch": "^9.0.0",
     "@material/textfield": "^9.0.0",
-    "@sentry/tracing": "^5.30.0",
-    "@sentry/vue": "^5.30.0",
-    "core-js": "^3.8.2",
-    "ky": "^0.25.1",
+    "@sentry/tracing": "^6.0.3",
+    "@sentry/vue": "^6.0.3",
+    "core-js": "^3.6.5",
+    "ky": "^0.26.0",
     "localforage": "^1.9.0",
     "opentidal": "0.0.5",
     "register-service-worker": "^1.7.1",
-    "vue": "^2.6.11",
-    "vue-router": "^3.4.9",
-    "vuex": "^3.6.0"
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
-    "@vue/cli-plugin-babel": "^4.5.10",
-    "@vue/cli-plugin-eslint": "^4.5.10",
-    "@vue/cli-plugin-pwa": "^4.5.10",
-    "@vue/cli-plugin-router": "^4.5.10",
-    "@vue/cli-plugin-typescript": "^4.5.10",
-    "@vue/cli-plugin-vuex": "^4.5.10",
-    "@vue/cli-service": "^4.5.10",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-plugin-unit-jest": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
+    "@vue/test-utils": "^2.0.0-0",
     "axios": "^0.21.1",
-    "babel-eslint": "^10.1.0",
     "commitizen": "^4.2.2",
-    "cordova-res": "^0.15.2",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue": "^7.0.0-0",
     "lint-staged": "^9.5.0",
-    "sass": "^1.32.2",
-    "sass-loader": "^10.1.0",
-    "stylus": "^0.54.7",
-    "stylus-loader": "^3.0.2",
+    "prettier": "^1.19.1",
+    "sass": "^1.32.6",
+    "sass-loader": "^10.1.1",
+    "stylus": "^0.54.8",
+    "stylus-loader": "^4.3.3",
     "svg-inline-loader": "^0.8.2",
     "typescript": "~3.9.3",
-    "vue-template-compiler": "^2.6.11"
+    "vue-jest": "^5.0.0-0"
   },
   "eslintConfig": {
     "root": true,
@@ -63,28 +64,66 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/vue3-essential",
       "eslint:recommended",
-      "@vue/typescript",
+      "@vue/typescript/recommended",
       "@vue/eslint-config-typescript"
     ],
     "parserOptions": {
-      "parser": "@typescript-eslint/parser"
+      "ecmaVersion": 2020
     },
-    "rules": {}
+    "rules": {
+      "@typescript-eslint/member-delimiter-style": [
+        "error",
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "@typescript-eslint/no-explicit-any": [
+        "off"
+      ]
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
   ],
+  "jest": {
+    "preset": "@vue/cli-plugin-unit-jest/presets/typescript-and-babel",
+    "transform": {
+      "^.+\\.vue$": "vue-jest"
+    }
+  },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx,vue}": [
+    "*.{js,jsx,vue,ts,tsx}": [
       "vue-cli-service lint",
       "git add"
     ]
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "arrowParens": "avoid",
+    "printWidth": 90,
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": false
   }
 }

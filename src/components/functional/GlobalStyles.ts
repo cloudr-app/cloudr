@@ -1,6 +1,6 @@
-import Vue from "vue"
+import { computed, defineComponent, h } from "vue"
 
-import { Preferences } from "@/store/preferences"
+import { useStore } from "@/store/store"
 
 const squareBorders = {
   "--border-radius": "0",
@@ -53,8 +53,8 @@ const darkMonoTheme = {
   "--small-artwork-highlight": "0 0 0 1px var(--text-white)",
 }
 
-export default Vue.extend({
-  render(h) {
+export default defineComponent({
+  render() {
     const { style } = this
     return h(
       "div",
@@ -62,21 +62,25 @@ export default Vue.extend({
         class: "styles",
         style,
       },
-      this.$slots.default
+      this.$slots.default?.()
     )
   },
-  computed: {
-    style() {
-      const preferences = this.$store.state.preferences as Preferences
-      let ret = {}
+  setup() {
+    const { state } = useStore()
 
-      if (!preferences.theme.roundBorders) ret = { ...ret, ...squareBorders }
-      if (preferences.theme.monochromeTheme) {
-        if (preferences.theme.darkTheme) ret = { ...ret, ...darkMonoTheme }
-        else ret = { ...ret, ...lightMonoTheme }
-      } else if (!preferences.theme.darkTheme) ret = { ...ret, ...lightTheme }
+    return {
+      style: computed(() => {
+        const preferences = state.preferences
+        let ret = {}
 
-      return ret
-    },
+        if (!preferences.theme.roundBorders) ret = { ...ret, ...squareBorders }
+        if (preferences.theme.monochromeTheme) {
+          if (preferences.theme.darkTheme) ret = { ...ret, ...darkMonoTheme }
+          else ret = { ...ret, ...lightMonoTheme }
+        } else if (!preferences.theme.darkTheme) ret = { ...ret, ...lightTheme }
+
+        return ret
+      }),
+    }
   },
 })

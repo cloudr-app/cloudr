@@ -8,27 +8,36 @@
 <script lang="ts">
 import player from "@/player"
 import Spinner from "@/components/Spinner.vue"
-import Vue from "vue"
+import { defineComponent } from "vue"
+import { useRouter, useRoute } from "vue-router"
 
 const soundcloud = player("soundcloud")
 
-export default Vue.extend({
+export default defineComponent({
   components: { Spinner },
   name: "soundcloud-resolve",
-  async created() {
-    try {
-      const resolved = await soundcloud.resolve?.(this.$route.path)
-      if (!resolved) return this.$router.replace("/")
-      this.$router.replace(resolved)
-    } catch (err) {
-      console.log("resolve error", err)
-      this.$router.replace("/")
+  setup() {
+    const router = useRouter()
+    const route = useRoute()
+
+    const resolve = async () => {
+      try {
+        const resolved = await soundcloud.resolve?.(route.path)
+        if (!resolved) return router.replace("/")
+        console.log(resolved)
+        router.replace(resolved)
+      } catch (err) {
+        console.log("resolve error", err)
+        router.replace("/")
+      }
     }
+
+    resolve()
   },
 })
 </script>
 
-<style lang="stylus">
+<style lang="sass">
 .soundcloud-resolve
   height: 100%
   display: flex

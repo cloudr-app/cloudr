@@ -17,17 +17,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, PropType, computed, toRefs } from "vue"
 
 import { getImageLargerThan } from "@/utils"
-// eslint-disable-next-line no-unused-vars
 import { MediaImage } from "@/player/musicSource"
 
-export default Vue.extend({
-  data: () => ({
-    descriptionExpanded: false,
-    expanded: false,
-  }),
+export default defineComponent({
   props: {
     name: {
       type: String,
@@ -38,36 +33,46 @@ export default Vue.extend({
       default: "",
     },
     avatar: {
-      type: Array,
+      type: Array as PropType<MediaImage[]>,
       required: true,
     },
   },
-  computed: {
-    imgSrc() {
-      const images = this.avatar as MediaImage[]
-      if (!images?.length) return "/artwork-placeholder.svg"
+  setup(props) {
+    const descriptionExpanded = ref(false)
+    const expanded = ref(false)
+    const { avatar } = toRefs(props)
 
-      return getImageLargerThan(images, 500).src
-    },
-  },
-  methods: {
-    async expand() {
-      this.expanded = !this.expanded
+    const outsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (target.closest(".avatar")) return
+      expanded.value = false
 
-      if (this.expanded) window.addEventListener("pointerdown", this.outsideClick, false)
-      else window.removeEventListener("pointerdown", this.outsideClick)
-    },
-    outsideClick(event: any) {
-      if (event.target.closest(".avatar")) return
-      this.expanded = false
+      window.removeEventListener("pointerdown", outsideClick)
+    }
 
-      window.removeEventListener("pointerdown", this.outsideClick)
-    },
+    const expand = () => {
+      expanded.value = !expanded.value
+
+      if (expanded.value) window.addEventListener("pointerdown", outsideClick, false)
+      else window.removeEventListener("pointerdown", outsideClick)
+    }
+
+    return {
+      descriptionExpanded,
+      expanded,
+      expand,
+      imgSrc: computed(() => {
+        const images = avatar.value
+        if (!images?.length) return "/artwork-placeholder.svg"
+
+        return getImageLargerThan(images, 500).src
+      }),
+    }
   },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .user-info
   width: calc(100% - 20px)
 

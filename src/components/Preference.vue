@@ -28,19 +28,16 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, toRefs, computed } from "vue"
 import MwcSwitch from "@/components/mwc/Switch.vue"
 import { pref } from "@/strings"
 import { isObject } from "@/utils"
 import Slider from "@/components/Slider.vue"
 import DynamicHeightTransition from "@/components/functional/DynamicHeightTransition"
 
-export default Vue.extend({
+export default defineComponent({
   name: "preference",
   components: { MwcSwitch, Slider, DynamicHeightTransition },
-  data: () => ({
-    collapsed: true,
-  }),
   props: {
     preference: {
       type: String,
@@ -51,43 +48,57 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {
-    name() {
-      const strings = pref[this.preference]
+  setup(props) {
+    const collapsed = ref(true)
+    const { preference, value } = toRefs(props)
+
+    const name = computed(() => {
+      const strings = pref[preference.value]
 
       if (strings) return strings.name
-      return this.preference
-    },
-    desc() {
-      const strings = pref[this.preference]
+      return preference.value
+    })
+
+    const desc = computed(() => {
+      const strings = pref[preference.value]
 
       if (!strings) return ""
 
       if (typeof strings.desc === "string") return strings.desc
-      if (isObject(strings.desc)) return strings.desc?.[this.value] || ""
+      if (isObject(strings.desc)) return strings.desc?.[String(value.value)] || ""
 
       return ""
-    },
-    type() {
-      return typeof this.value
-    },
-    valueDisplay() {
-      const strings = pref[this.preference]
-      return strings.translateValue?.(this.value) || this.value
-    },
-    isNumber() {
-      return this.type === "number"
-    },
-  },
-  methods: {
-    preferenceClick() {
-      if (this.type === "number") this.collapsed = !this.collapsed
-    },
+    })
+
+    const type = computed(() => {
+      return typeof value.value
+    })
+
+    const valueDisplay = computed(() => {
+      const strings = pref[preference.value]
+      return strings.translateValue?.(value.value) || value.value
+    })
+
+    const isNumber = computed(() => {
+      return type.value === "number"
+    })
+
+    return {
+      name,
+      desc,
+      type,
+      valueDisplay,
+      isNumber,
+      collapsed,
+      preferenceClick() {
+        if (type.value === "number") collapsed.value = !collapsed.value
+      },
+    }
   },
 })
 </script>
 
-<style lang="stylus">
+<style lang="sass">
 .preference
   // background: #f0f
   .main

@@ -1,7 +1,7 @@
-import Vue from "vue"
+import { computed, defineComponent, h, onMounted, ref, toRefs } from "vue"
 
-export default Vue.extend({
-  render(h) {
+export default defineComponent({
+  render() {
     const { height } = this
     return h(
       "div",
@@ -12,24 +12,27 @@ export default Vue.extend({
           "max-height": `${height}px`,
         },
       },
-      this.$slots.default
+      this.$slots.default?.()
     )
   },
-  data: () => ({
-    initialHeight: 0,
-  }),
   props: {
     collapsed: {
       type: Boolean,
       required: true,
     },
   },
-  mounted() {
-    this.initialHeight = this.$refs.wrap.scrollHeight
-  },
-  computed: {
-    height() {
-      return this.collapsed ? 0 : this.initialHeight
-    },
+  setup(props) {
+    const initialHeight = ref(0)
+    const wrap = ref<HTMLElement | null>(null)
+    const { collapsed } = toRefs(props)
+
+    onMounted(() => {
+      if (!wrap.value) return
+      initialHeight.value = wrap.value.scrollHeight
+    })
+
+    return {
+      height: computed(() => (collapsed ? 0 : initialHeight)),
+    }
   },
 })

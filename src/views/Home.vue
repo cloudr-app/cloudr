@@ -17,9 +17,9 @@
 
       <button @click="setTidalAccessToken">set tidal access_token</button>
     </div>
-    <div class="search-params" v-if="searchParams.length">
+    <div class="search-params" v-if="params.length">
       params:
-      <div class="param" v-for="[key, value] in searchParams" :key="key + value">
+      <div class="param" v-for="[key, value] in params" :key="key + value">
         {{ key }}: {{ value }}
       </div>
     </div>
@@ -27,28 +27,34 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, onMounted, ref } from "vue"
 
 import { ls } from "@/utils"
 
-export default Vue.extend({
+export default defineComponent({
   name: "Home",
-  data: () => ({ searchParams: [] }),
-  methods: {
-    setTidalAccessToken() {
+  setup() {
+    const params = ref([[""]])
+
+    onMounted(() => {
+      const { searchParams } = new URL(window.location.href)
+      params.value = [...searchParams.entries()]
+    })
+
+    const setTidalAccessToken = () => {
+      // eslint-disable-next-line @typescript-eslint/camelcase
       const access_token = prompt("enter access_token")
 
+      // eslint-disable-next-line @typescript-eslint/camelcase
       if (access_token) ls("tidal-login", { access_token })
-    },
-  },
-  mounted() {
-    const { searchParams } = new URL(window.location.href)
-    this.searchParams = [...searchParams.entries()]
+    }
+
+    return { params, setTidalAccessToken }
   },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .home
   width: 100%
   display: flex

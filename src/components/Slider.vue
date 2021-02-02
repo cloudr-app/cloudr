@@ -22,42 +22,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref } from "vue"
+
 import { touchEventOffset } from "@/utils"
-import Vue from "vue"
-function throttle(func: Function, limit: number): Function {
-  let inThrottle: boolean
-  return function (this: any): any {
-    const args = arguments
-    const context = this
-    if (!inThrottle) {
-      inThrottle = true
-      func.apply(context, args)
-      setTimeout(() => (inThrottle = false), limit)
-    }
-  }
-}
 
 let skipValueUpdates = 0
 
-export default Vue.extend({
-  data: () => ({
-    positionOverride: false,
-    animated: false,
-    touching: false,
-    moving: false,
-    lastEmitted: false,
-  }),
-  computed: {
-    position() {
-      return this.positionOverride !== false ? this.positionOverride : this.value
-    },
-    marginAmt() {
-      let amt = 0
-      if (this.prefix) amt++
-      if (this.postfix) amt++
-      return amt
-    },
-  },
+export default defineComponent({
   props: {
     value: {
       type: Number,
@@ -86,6 +57,34 @@ export default Vue.extend({
       default: 0,
     },
   },
+  setup() {
+    const positionOverride = ref(false)
+    const override = ref(0)
+    const animated = ref(false)
+    const touching = ref(false)
+    const moving = ref(false)
+    const lastEmitted = ref(false)
+
+    return {
+      positionOverride,
+      animated,
+      touching,
+      moving,
+      lastEmitted,
+      override,
+    }
+  },
+  computed: {
+    marginAmt() {
+      let amt = 0
+      if (this.prefix) amt++
+      if (this.postfix) amt++
+      return amt
+    },
+    position(): number {
+      return this.positionOverride ? this.override : this.value
+    },
+  },
   watch: {
     value() {
       if (skipValueUpdates > 1) skipValueUpdates--
@@ -96,72 +95,71 @@ export default Vue.extend({
     },
   },
   methods: {
-    /**
-     * prevent duplicate emissions
-     */
-    emit: throttle(function (type: string, value: any) {
+    // TODO check if duplicates still happen
+    emit(_: string, value: any) {
       if (this.lastEmitted !== value) {
         this.lastEmitted = value
         this.$emit("input", value)
       }
-    }, 10),
+    },
     contextmenu(event: any) {
       event.preventDefault()
     },
     mouseDown(event: any) {
       // TODO fix mouse sliding when out of bounds
-      const v = this
-      v.touching = true
+      this.touching = true
 
       const position = event.offsetX / event.target.scrollWidth
-      v.positionOverride = position
+      this.positionOverride = true
+      this.override = position
 
       event.target.onmousemove = (evt: any) => {
         const pos = evt.offsetX / evt.target.scrollWidth
-        v.positionOverride = pos
-        if (v.immediate) v.emit("input", pos)
+        this.positionOverride = true
+        this.override = pos
+        if (this.immediate) this.emit("input", pos)
       }
 
       event.target.onmouseup = (evt: any) => {
         const pos = evt.offsetX / evt.target.scrollWidth
         event.target.onmousemove = null
-        if (v.updateSlack > 0) skipValueUpdates = v.updateSlack
-        else v.positionOverride = false
-        v.touching = false
+        if (this.updateSlack > 0) skipValueUpdates = this.updateSlack
+        else this.positionOverride = false
+        this.touching = false
 
-        v.emit("input", pos)
+        this.emit("input", pos)
       }
     },
     touchStart(event: any) {
-      const v = this
-      v.touching = true
-      v.moving = false
+      this.touching = true
+      this.moving = false
 
       event.target.ontouchmove = (evt: any) => {
-        v.moving = true
+        this.moving = true
         const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
-        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, v.min), v.max)
-        v.positionOverride = pos
-        if (v.immediate) v.emit("input", pos)
+        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, this.min), this.max)
+        this.positionOverride = true
+        this.override = pos
+        if (this.immediate) this.emit("input", pos)
       }
 
       event.target.ontouchend = (evt: any) => {
-        v.moving = false
+        this.moving = false
         const [offX] = touchEventOffset(evt.changedTouches[0], event.target)
-        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, v.min), v.max)
+        const pos = Math.min(Math.max(offX / evt.target.scrollWidth, this.min), this.max)
         event.target.ontouchmove = null
-        v.touching = false
-        if (v.updateSlack > 0) skipValueUpdates = v.updateSlack
-        else v.positionOverride = false
+        this.touching = false
+        if (this.updateSlack > 0) skipValueUpdates = this.updateSlack
+        else this.positionOverride = false
 
-        v.emit("input", pos)
+        this.emit("input", pos)
       }
     },
   },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .slider
   --margins: 10px
   --margin-amt: 0

@@ -24,88 +24,109 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref } from "vue"
 import TrackListItem from "@/components/TrackListItem.vue"
 import InfiniteScroll from "@/components/functional/InfiniteScroll"
 import UserInfo from "@/components/UserInfo.vue"
 import Spinner from "@/components/Spinner.vue"
 
 import player from "@/player"
-// eslint-disable-next-line no-unused-vars
-import { MusicSource, Track } from "@/player/musicSource"
-import { toCloudrID } from "@/utils"
-// eslint-disable-next-line no-unused-vars
-import { State } from "@/types"
+import { MusicSource, Track, MediaImage, ID } from "@/player/musicSource"
+import { toCloudrID, PlatformAccessor } from "@/utils"
+import { useStore } from "@/store/store"
+import { RouteParams, useRoute } from "vue-router"
 
-export default Vue.extend({
+// TODO move some of this stuff out into reusable stuff for playlists
+// ? or
+// TODO make this one component with playlist
+
+export default defineComponent({
   name: "user",
   components: { TrackListItem, InfiniteScroll, UserInfo, Spinner },
-  data: () => ({
-    userInfo: {
-      avatar: [],
-      description: "loading",
-      followerCount: 0,
-      followsCount: 0,
-      id: 0,
-      likesCount: 0,
-      playlistCount: 0,
-      trackCount: 0,
+  setup() {
+    const route = useRoute()
+    type PlaylistRouteParams = RouteParams & {
+      platform: PlatformAccessor
+      id: string
+    }
+    const params = route.params as PlaylistRouteParams
+
+    const { state, commit, dispatch } = useStore()
+
+    const userInfo = ref({
+      avatar: [] as MediaImage[],
+      description: "loading" as string | null,
+      // followerCount: 0,
+      // followsCount: 0,
+      // likesCount: 0,
+      // playlistCount: 0,
+      // trackCount: 0,
+      id: "",
       username: "loading",
-    },
-    userTracks: [],
-    userNext: undefined,
-  }),
-  async created() {
-    await this.loadUser(this.$route.params)
-  },
-  methods: {
-    async loadUser(params: any) {
-      const { platform, id } = params
+    })
+    const userTracks = ref<Track[]>([])
+    const userNext = ref()
+
+    const loadUserInfo = async (plat: MusicSource, id: ID) => {
+      const info = await plat.user?.(id)
+      if (!info) return
+      userInfo.value = info
+    }
+
+    const loadUserTracks = async (plat: MusicSource, id: ID) => {
+      const tracks = await plat.userTracks?.(id)
+
+      if (tracks) userTracks.value = tracks.tracks
+      userNext.value = tracks?.next
+    }
+
+    const loadUser = async (_params: PlaylistRouteParams) => {
+      const { platform, id } = _params
       const plat = player(platform)
 
-      await this.loadUserInfo({ plat, id })
-      await this.loadUserTracks({ plat, id })
+      await loadUserInfo(plat, id)
+      await loadUserTracks(plat, id)
 
       const main = document.querySelector("main")
       if (main) main.scrollTop = 0
-    },
-    async loadUserInfo({ plat, id }: { plat: MusicSource; id: number }) {
-      this.userInfo = await plat.user?.(id)
-    },
-    async loadUserTracks({ plat, id }: { plat: MusicSource; id: number }) {
-      const tracks = await plat.userTracks?.(id)
+    }
 
-      this.userTracks = tracks?.tracks
-      this.userNext = tracks?.next
-    },
-    async playTrack(track: Track, index: number) {
-      const { dispatch, commit } = this.$store
-      const { userTracks } = this
-      const { platform, id }: any = this.$route.params
+    const playTrack = async (track: Track, index: number) => {
+      const { platform, id } = params
 
       dispatch("playTrack", toCloudrID(track.platform, track.id))
-      commit("setQueuePrev", userTracks.slice(0, index))
-      commit("setQueue", userTracks.slice(index))
-      commit("setPlayingList", toCloudrID(platform, id, "user"))
-    },
-    async loadNext() {
-      if (!this.userNext) return
+      commit("setQueuePrev", userTracks.value.slice(0, index))
+      commit("setQueue", userTracks.value.slice(index))
+      commit("setPlayingList", toCloudrID(platform, id, "playlist"))
+    }
 
-      const { commit, state } = this.$store as { state: State; commit: Function }
-      const { tracks, next } = await this.userNext()
+    const loadNext = async () => {
+      if (!userNext.value) return
 
-      this.userTracks = [...this.userTracks, ...tracks]
-      this.userNext = next
+      const { tracks, next } = await userNext.value()
 
-      const { platform, id }: any = this.$route.params
+      userTracks.value = [...userTracks.value, ...tracks]
+      userNext.value = next
+
+      const { platform, id }: any = route.params
       if (state.playingList === toCloudrID(platform, id))
         commit("setQueue", [...state.queue, ...tracks])
-    },
+    }
+
+    loadUser(params)
+
+    return {
+      playTrack,
+      userInfo,
+      userTracks,
+      userNext,
+      loadNext,
+    }
   },
 })
 </script>
 
-<style lang="stylus">
+<style lang="sass">
 .user
   padding-top: 10px
 

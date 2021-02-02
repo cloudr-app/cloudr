@@ -27,45 +27,53 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-import { toCloudrID, getImageLargerThan } from "@/utils"
-// eslint-disable-next-line no-unused-vars
-import { MediaImage } from "@/player/musicSource"
+import { defineComponent, ref, computed, toRefs, PropType, watch } from "vue"
 
-export default Vue.extend({
-  name: "track-list-item",
+import { toCloudrID, getImageLargerThan } from "@/utils"
+import { Track } from "@/player/musicSource"
+import { useStore } from "@/store/store"
+
+export default defineComponent({
   props: {
     trackInfo: {
-      type: Object,
+      type: Object as PropType<Track>,
       required: true,
     },
   },
-  data: () => ({
-    hide: false,
-    height: 0,
-  }),
-  computed: {
-    isPlaying() {
-      const { platform, id } = this.trackInfo
-      return toCloudrID(platform, id) === this.$store.state.currentTrack.id
-    },
-    imgSrc() {
-      const images = this.trackInfo.artwork as MediaImage[]
-      if (!images.length) return
+  setup(props) {
+    const hide = ref(false)
+    const height = ref(0)
+    const main = ref<HTMLElement | null>(null)
+    const { trackInfo } = toRefs(props)
+    const { state } = useStore()
 
-      return getImageLargerThan(images, 40).src
-    },
-  },
-  watch: {
-    hide(n) {
-      if (n) this.height = this.$refs.main.scrollHeight
-      else this.height = 0
-    },
+    const isPlaying = computed(() => {
+      const { platform, id } = trackInfo.value
+      return toCloudrID(platform, id) === state.currentTrack.id
+    })
+
+    watch(hide, () => {
+      if (!main.value) return
+      if (hide.value) height.value = main.value.scrollHeight
+      else height.value = 0
+    })
+
+    return {
+      hide,
+      height,
+      isPlaying,
+      imgSrc: computed(() => {
+        const images = trackInfo.value.artwork
+        if (!images.length) return
+
+        return getImageLargerThan(images, 40).src
+      }),
+    }
   },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .track
   padding: 0 12.5px
   cursor: pointer

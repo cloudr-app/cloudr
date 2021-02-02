@@ -24,19 +24,19 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, computed } from "vue"
+import { useRoute, RouteParams, onBeforeRouteUpdate } from "vue-router"
+
 import artwork from "@/components/ArtworkInfo.vue"
 import TrackListItem from "@/components/TrackListItem.vue"
 import InfiniteScroll from "@/components/functional/InfiniteScroll"
 import Spinner from "@/components/Spinner.vue"
 
-import { getImageLargerThan, toCloudrID } from "@/utils"
+import { getImageLargerThan, toCloudrID, PlatformAccessor } from "@/utils"
 
 import player from "@/player"
-// eslint-disable-next-line no-unused-vars
-import { MediaImage, Track } from "@/player/musicSource"
-// eslint-disable-next-line no-unused-vars
-import { State } from "@/types"
+import { MediaImage, Track, MusicSource } from "@/player/musicSource"
+import { useStore } from "@/store/store"
 
 declare global {
   interface Window {
@@ -44,104 +44,111 @@ declare global {
   }
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: "playlist",
   components: { artwork, TrackListItem, InfiniteScroll, Spinner },
-  data: () => ({
-    playlistInfo: {
-      artwork: [],
-      id: 0,
+  setup() {
+    const route = useRoute()
+    type PlaylistRouteParams = RouteParams & {
+      platform: PlatformAccessor
+      id: string
+    }
+    const params = route.params as PlaylistRouteParams
+
+    const { state, commit, dispatch } = useStore()
+
+    const playlistInfo = ref({
+      artwork: [] as MediaImage[],
+      id: "",
       title: "loading",
       user: {
         username: "loading",
-        id: 0,
+        id: "",
       },
-      trackCount: 0,
-    },
-    playlistTracks: [],
-    playlistNext: undefined,
-  }),
-  computed: {
-    imgSrc() {
-      const images = this.playlistInfo.artwork as MediaImage[]
-      if (!images?.length) return "/artwork-placeholder.svg"
+    })
+    const playlistTracks = ref<Track[]>([])
+    const playlistNext = ref()
 
-      return getImageLargerThan(images, 500).src
-    },
-    likes() {
-      return this.$route.name === "Likes"
-    },
-  },
-  async created() {
-    await this.loadPlaylist(this.$route.params)
-  },
-  async beforeRouteUpdate(to, _, next) {
-    await this.loadPlaylist(to.params)
-    next()
-  },
-  methods: {
-    async loadPlaylist(params: any) {
-      const { platform, id } = params
-      const plat = player(platform)
+    const likes = computed(() => route.name === "Likes")
 
-      await this.loadPlaylistInfo({ plat, id })
-      await this.loadPlaylistTracks({ plat, id })
-
-      const main = document.querySelector("main")
-      if (main) main.scrollTop = 0
-    },
-    async loadPlaylistInfo({ plat, id }: any) {
-      if (this.likes && plat.user) {
+    const loadPlaylistInfo = async (plat: MusicSource, id: string) => {
+      if (likes.value && plat.user) {
         const user = await plat.user(id)
 
-        this.playlistInfo = {
-          platform: user.platform,
+        playlistInfo.value = {
           id: user.id,
           artwork: user.avatar,
           title: `${user.username}'s likes`,
-          trackCount: user.likesCount,
           user,
-          description: user.description,
         }
-      } else this.playlistInfo = await plat.playlistInfo(id)
-    },
-    async loadPlaylistTracks({ plat, id }: any) {
+      } else playlistInfo.value = await plat.playlistInfo(id)
+    }
+
+    const loadPlaylistTracks = async (plat: MusicSource, id: string) => {
       let tracks
 
-      if (this.likes && plat.likes) tracks = await plat.likes(id)
+      if (likes.value && plat.likes) tracks = await plat.likes(id)
       else tracks = await plat.playlistTracks(id)
 
-      this.playlistTracks = tracks.tracks
-      this.playlistNext = tracks.next
-    },
-    async loadNext() {
-      if (!this.playlistNext) return
+      playlistTracks.value = tracks.tracks
+      playlistNext.value = tracks.next
+    }
 
-      const { commit, state } = this.$store as { state: State; commit: Function }
-      const { tracks, next } = await this.playlistNext()
+    const loadPlaylist = async (_params: PlaylistRouteParams) => {
+      const { platform, id } = _params
+      const plat = player(platform)
 
-      this.playlistTracks = [...this.playlistTracks, ...tracks]
-      this.playlistNext = next
+      await loadPlaylistInfo(plat, id)
+      await loadPlaylistTracks(plat, id)
 
-      const { platform, id }: any = this.$route.params
+      const main = document.querySelector("main")
+      if (main) main.scrollTop = 0
+    }
+
+    onBeforeRouteUpdate(async to => await loadPlaylist(to.params as PlaylistRouteParams))
+
+    const loadNext = async () => {
+      if (!playlistNext.value) return
+
+      const { tracks, next } = await playlistNext.value()
+
+      playlistTracks.value = [...playlistTracks.value, ...tracks]
+      playlistNext.value = next
+
+      const { platform, id } = params
       if (state.playingList === toCloudrID(platform, id))
         commit("setQueue", [...state.queue, ...tracks])
-    },
-    async playTrack(track: Track, index: number) {
-      const { dispatch, commit } = this.$store
-      const { playlistTracks } = this
-      const { platform, id }: any = this.$route.params
+    }
+
+    const playTrack = async (track: Track, index: number) => {
+      const { platform, id } = params
 
       dispatch("playTrack", toCloudrID(track.platform, track.id))
-      commit("setQueuePrev", playlistTracks.slice(0, index))
-      commit("setQueue", playlistTracks.slice(index))
+      commit("setQueuePrev", playlistTracks.value.slice(0, index))
+      commit("setQueue", playlistTracks.value.slice(index))
       commit("setPlayingList", toCloudrID(platform, id, "playlist"))
-    },
+    }
+
+    loadPlaylist(params)
+
+    return {
+      playlistInfo,
+      playlistTracks,
+      playlistNext,
+      loadNext,
+      playTrack,
+      imgSrc: computed(() => {
+        const images = playlistInfo.value.artwork as MediaImage[]
+        if (!images?.length) return "/artwork-placeholder.svg"
+
+        return getImageLargerThan(images, 500).src
+      }),
+    }
   },
 })
 </script>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
 .playlist
   padding-top: 10px
 

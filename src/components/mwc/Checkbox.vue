@@ -30,14 +30,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import { defineComponent, ref, onMounted, watch, toRefs, onBeforeUnmount } from "vue"
 import { MDCFormField } from "@material/form-field"
 import { MDCCheckbox } from "@material/checkbox"
 
-let mdcCheckbox: undefined | MDCCheckbox
-let mdcFormField: undefined | MDCFormField
-
-export default Vue.extend({
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -51,29 +48,41 @@ export default Vue.extend({
       default: false,
     },
   },
-  watch: {
-    label: "reInit",
-  },
-  mounted() {
-    this.init()
-  },
-  beforeDestroy() {
-    this.destroy()
-  },
-  methods: {
-    reInit() {
-      this.destroy()
-      this.init()
-    },
-    init() {
-      mdcCheckbox = new MDCCheckbox(this.$refs.mdcCheckbox)
-      mdcFormField = new MDCFormField(this.$refs.mdcFormField)
+  setup(props) {
+    const { label } = toRefs(props)
+
+    const mdcCheckboxRef = ref<HTMLElement | null>(null)
+    const mdcFormFieldRef = ref<HTMLElement | null>(null)
+
+    let mdcCheckbox: undefined | MDCCheckbox
+    let mdcFormField: undefined | MDCFormField
+
+    const init = () => {
+      if (!mdcCheckboxRef.value || !mdcFormFieldRef.value) return
+
+      mdcCheckbox = new MDCCheckbox(mdcCheckboxRef.value)
+      mdcFormField = new MDCFormField(mdcFormFieldRef.value)
       mdcFormField.input = mdcCheckbox
-    },
-    destroy() {
+    }
+
+    const destroy = () => {
       if (mdcCheckbox) mdcCheckbox.destroy()
       if (mdcFormField) mdcFormField.destroy()
-    },
+    }
+
+    const reInit = () => {
+      destroy()
+      init()
+    }
+
+    onMounted(init)
+    watch(label, reInit)
+    onBeforeUnmount(destroy)
+
+    return {
+      mdcCheckboxRef,
+      mdcFormFieldRef,
+    }
   },
 })
 </script>

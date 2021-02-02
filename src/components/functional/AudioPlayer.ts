@@ -1,13 +1,13 @@
-import Vue from "vue"
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from "vue"
+
 import notification from "@/player/notification"
 
-import { State } from "@/types"
+import { useStore } from "@/store/store"
 
-function throttle(func: Function, limit: number): Function {
+function throttle(func: Function, limit: number): () => any {
   let inThrottle: boolean
-  return function t(this: any): any {
-    const args = arguments
-    const context = this
+  return function t(...args: any[]): any {
+    const context = args[0] as any
     if (!inThrottle) {
       inThrottle = true
       func.apply(context, args)
@@ -29,132 +29,22 @@ for (const el of [playingEl, nextEl]) {
   el.autoplay = true
 }
 
-export default Vue.extend({
-  render: h => h(),
-  data: () => ({
-    lastPlaybackState: false,
-  }),
-  mounted() {
-    const state = this.$store.state as State
+// TODO this doesn't need to be a vue componenet
 
-    playingEl.volume = state.player.volume
-    playingEl.src = state.currentTrack.stream
-    this.setOncanplay()
-    notification.init()
-    this.initAudioEl()
-    this.onPlaybackStateChange()
-  },
-  beforeDestroy() {
-    playingEl.src = ""
-    playingEl.pause()
-    nextEl.src = ""
-    nextEl.pause()
-  },
-  watch: {
-    "$store.state.player.playing": "onPlaybackStateChange",
-    "$store.state.player.setPosition": "setPosition",
-    async "$store.state.currentTrack.stream"(n) {
-      playingEl.src = n
-      await playingEl.play()
-      this.setOncanplay()
-      this.onPlaybackStateChange()
-    },
-    "$store.state.preferences.defaultVolume": "setVolume",
-  },
-  methods: {
-    setVolume: throttle(function t() {
-      const state = this.$store.state as State
-      playingEl.volume = state.preferences.defaultVolume
-    }, 1e3 / 30),
-    setOncanplay() {
-      const state = this.$store.state as State
-      const { commit } = this.$store
+export default defineComponent({
+  render: () => h("div"),
+  setup() {
+    const { commit, dispatch, state } = useStore()
 
-      playingEl.oncanplaythrough = () => {
-        playingEl.oncanplaythrough = null
-        if (state.player.setPosition === false) return
+    const lastPlaybackState = ref(false)
 
-        const currentTime = state.player.setPosition * playingEl.duration
-        if (!isNaN(currentTime)) playingEl.currentTime = currentTime
-
-        commit("setPlayer", ["setPosition", false])
-      }
-    },
-    setPosition() {
-      const state = this.$store.state as State
-      const { commit } = this.$store
-
-      if (state.player.setPosition === false) return
-
-      const currentTime = state.player.setPosition * playingEl.duration
-
-      if (!isNaN(currentTime)) {
-        playingEl.currentTime = currentTime
-        commit("setPlayer", ["setPosition", false])
-      }
-
-      this.updateProgress(true)
-    },
-    async onPlaybackStateChange() {
-      const state = this.$store.state as State
-      const { playing } = state.player
-
-      this.setVolume()
-
-      if (this.lastPlaybackState === playing) return
-      this.lastPlaybackState = playing
-
-      this.updateNotificationPositionState()
-
-      if (playing) {
-        playingEl.autoplay = true
-        try {
-          await playingEl.play()
-        } catch (e) {
-          "ignore"
-        }
-        this.updateProgress()
-      } else {
-        playingEl.autoplay = false
-        playingEl.pause()
-      }
-    },
-    initAudioEl() {
-      const { commit, state } = this.$store
-
-      playingEl.onplay = () => commit("setPlayer", ["playing", true])
-      playingEl.onpause = () => {
-        if (state.player.progress < 0.999) commit("setPlayer", ["playing", false])
-      }
-      playingEl.onended = this.onended
-    },
-    async onended() {
-      // TODO implement repeating tracks
-      const { commit } = this.$store
-
-      await this.$store.dispatch("nextTrack")
-      commit("setPlayer", ["playing", true])
-    },
-    updateDuration: throttle(function t() {
-      const { commit } = this.$store
-      const state = this.$store.state as State
-
+    const updateDuration = throttle(() => {
       if (!isNaN(playingEl.duration) && state.player.duration !== playingEl.duration)
         commit("setPlayer", ["duration", playingEl.duration])
-    }, 100),
-    updateNotificationPositionState: throttle(function t() {
-      const { duration, playbackRate, currentTime } = playingEl
-      const isAnyNaN = (numbers: number[]) =>
-        Boolean(numbers.filter(n => isNaN(n)).length)
+    }, 100)
 
-      if (!isAnyNaN([duration, playbackRate, currentTime]))
-        notification.setPositionState({ duration, playbackRate, currentTime })
-    }, 500),
-    updateProgress(single: boolean) {
-      const state = this.$store.state as State
-      const { commit } = this.$store
-
-      this.updateDuration()
+    const updateProgress = (single?: boolean) => {
+      updateDuration()
 
       try {
         const progress = playingEl.currentTime / playingEl.duration || 0
@@ -164,7 +54,112 @@ export default Vue.extend({
       }
 
       if (state.player.playing && !single)
-        window.requestAnimationFrame(() => this.updateProgress())
-    },
+        window.requestAnimationFrame(() => updateProgress())
+    }
+
+    const updateNotificationPositionState = throttle(() => {
+      const { duration, playbackRate, currentTime } = playingEl
+      const isAnyNaN = (numbers: number[]) =>
+        Boolean(numbers.filter(n => isNaN(n)).length)
+
+      if (!isAnyNaN([duration, playbackRate, currentTime]))
+        notification.setPositionState({ duration, playbackRate, currentTime })
+    }, 500)
+
+    const setVolume = throttle(() => {
+      playingEl.volume = state.preferences.defaultVolume
+    }, 1e3 / 30)
+
+    const setOncanplay = () => {
+      playingEl.oncanplaythrough = () => {
+        playingEl.oncanplaythrough = null
+        if (state.player.setPosition === false) return
+
+        const currentTime = state.player.setPosition * playingEl.duration
+        if (!isNaN(currentTime)) playingEl.currentTime = currentTime
+
+        commit("setPlayer", ["setPosition", false])
+      }
+    }
+
+    const setPosition = () => {
+      if (state.player.setPosition === false) return
+
+      const currentTime = state.player.setPosition * playingEl.duration
+
+      if (!isNaN(currentTime)) {
+        playingEl.currentTime = currentTime
+        commit("setPlayer", ["setPosition", false])
+      }
+
+      updateProgress(true)
+    }
+
+    const onPlaybackStateChange = async () => {
+      const { playing } = state.player
+
+      setVolume()
+
+      if (lastPlaybackState.value === playing) return
+      lastPlaybackState.value = playing
+
+      updateNotificationPositionState()
+
+      if (playing) {
+        playingEl.autoplay = true
+        try {
+          await playingEl.play()
+        } catch (e) {
+          "ignore"
+        }
+        updateProgress()
+      } else {
+        playingEl.autoplay = false
+        playingEl.pause()
+      }
+    }
+
+    const onended = async () => {
+      // TODO implement repeating tracks
+      await dispatch("nextTrack")
+      commit("setPlayer", ["playing", true])
+    }
+
+    const initAudioEl = () => {
+      playingEl.onplay = () => commit("setPlayer", ["playing", true])
+      playingEl.onpause = () => {
+        if (state.player.progress < 0.999) commit("setPlayer", ["playing", false])
+      }
+      playingEl.onended = onended
+    }
+
+    onMounted(() => {
+      playingEl.volume = state.player.volume
+      playingEl.src = state.currentTrack.stream
+      setOncanplay()
+      notification.init()
+      initAudioEl()
+      onPlaybackStateChange()
+    })
+
+    onBeforeUnmount(() => {
+      playingEl.src = ""
+      playingEl.pause()
+      nextEl.src = ""
+      nextEl.pause()
+    })
+
+    watch(() => state.player.playing, onPlaybackStateChange)
+    watch(() => state.player.setPosition, setPosition)
+    watch(() => state.preferences.defaultVolume, setVolume)
+    watch(
+      () => state.currentTrack.stream,
+      async n => {
+        playingEl.src = n
+        await playingEl.play()
+        setOncanplay()
+        onPlaybackStateChange()
+      }
+    )
   },
 })

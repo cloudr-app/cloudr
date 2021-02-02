@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "Unmount",
     "cloudr",
     "kyxios",
     "labelledby",
@@ -10,6 +11,7 @@
     "onplay",
     "onpointermove",
     "onpointerup",
+    "onscroll",
     "resizer",
     "seekto",
     "spotify",
