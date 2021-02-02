@@ -58,7 +58,7 @@ export default defineComponent({
     let mdcFormField: undefined | MDCFormField
 
     const init = () => {
-      if (!mdcCheckboxRef.value || !mdcFormFieldRef.value) return
+      if (!mdcCheckboxRef.value || !mdcFormFieldRef.value) throw new Error("template ref not available at mount")
 
       mdcCheckbox = new MDCCheckbox(mdcCheckboxRef.value)
       mdcFormField = new MDCFormField(mdcFormFieldRef.value)

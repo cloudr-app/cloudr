@@ -38,7 +38,7 @@ export default defineComponent({
     let mdcSwitch: undefined | MDCSwitch
 
     const init = () => {
-      if (!mdcSwitchRef.value) return
+      if (!mdcSwitchRef.value) throw new Error("template ref not available at mount")
       mdcSwitch = new MDCSwitch(mdcSwitchRef.value)
     }
 

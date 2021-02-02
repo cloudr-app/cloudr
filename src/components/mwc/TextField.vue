@@ -44,7 +44,7 @@ export default defineComponent({
     let notchedOutline: undefined | MDCNotchedOutline
 
     const init = () => {
-      if (!textFieldRef.value || !notchedOutlineRef.value) return
+      if (!textFieldRef.value || !notchedOutlineRef.value) throw new Error("template ref not available at mount")
 
       textField = new MDCTextField(textFieldRef.value)
       notchedOutline = new MDCNotchedOutline(notchedOutlineRef.value)

@@ -1,6 +1,7 @@
 import { computed, defineComponent, h, onMounted, ref, toRefs } from "vue"
 
 export default defineComponent({
+  name: "dynamic-height-transition",
   render() {
     const { height } = this
     return h(
@@ -27,12 +28,14 @@ export default defineComponent({
     const { collapsed } = toRefs(props)
 
     onMounted(() => {
-      if (!wrap.value) return
+      if (!wrap.value) throw new Error("template ref not available at mount")
       initialHeight.value = wrap.value.scrollHeight
+      console.log(initialHeight.value)
     })
 
     return {
-      height: computed(() => (collapsed ? 0 : initialHeight)),
+      wrap,
+      height: computed(() => (collapsed.value ? 0 : initialHeight.value)),
     }
   },
 })

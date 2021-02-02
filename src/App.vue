@@ -48,7 +48,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (!main.value) return
+      if (!main.value) throw new Error("template ref not available at mount")
       main.value.onscroll = (e: any) => {
         if (e.target.scrollTop > 0) scrolled.value = true
         else scrolled.value = false
