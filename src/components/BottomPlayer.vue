@@ -87,7 +87,7 @@ export default defineComponent({
   &.bottom-player-enter-active, &.bottom-player-leave-active
     transition: var(--transition-medium) var(--ease)
 
-  &.bottom-player-enter, &.bottom-player-leave-to
+  &.bottom-player-enter-from, &.bottom-player-leave-to
     height: 0
     padding: 0 var(--margins)
 
