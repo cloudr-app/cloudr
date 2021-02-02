@@ -13,7 +13,7 @@
           v-for="(track, index) in userTracks"
           :key="track.platform + track.id"
           :track-info="track"
-          @playTrack="playTrack(track, index)"
+          @play-track="playTrack(track, index)"
         />
       </infinite-scroll>
       <div class="spinner" v-if="userNext">

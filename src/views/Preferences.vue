@@ -7,8 +7,8 @@
           v-for="(subVal, subPreference) in val"
           :key="subPreference"
           :preference="subPreference"
-          :value="subVal"
-          @input="handleChange($event, preference, String(subPreference))"
+          :modelValue="subVal"
+          @update:modelValue="handleChange($event, preference, String(subPreference))"
         />
       </div>
 
@@ -16,8 +16,8 @@
         v-else
         :key="preference"
         :preference="preference"
-        :value="val"
-        @input="handleChange($event, preference)"
+        :modelValue="val"
+        @update:modelValue="handleChange($event, preference)"
       />
     </template>
   </div>
@@ -36,8 +36,9 @@ export default defineComponent({
   setup() {
     const { state, dispatch } = useStore()
 
-    const handleChange = (value: SettingsValue, pref: string, sub?: string) =>
+    const handleChange = (value: SettingsValue, pref: string, sub?: string) => {
       dispatch("pref", [value, pref, sub])
+    }
 
     return {
       isObject,

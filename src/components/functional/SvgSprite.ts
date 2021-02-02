@@ -17,6 +17,7 @@ const symbols = svgContext.keys().map(path => {
 })
 
 export default defineComponent({
+  name: "svg-sprite",
   render() {
     return h("svg", {
       width: "0",

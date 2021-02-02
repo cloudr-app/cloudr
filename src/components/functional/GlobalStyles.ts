@@ -54,6 +54,7 @@ const darkMonoTheme = {
 }
 
 export default defineComponent({
+  name: "global-styles",
   render() {
     const { style } = this
     return h(

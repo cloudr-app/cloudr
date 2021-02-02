@@ -30,7 +30,6 @@ export default defineComponent({
     onMounted(() => {
       if (!wrap.value) throw new Error("template ref not available at mount")
       initialHeight.value = wrap.value.scrollHeight
-      console.log(initialHeight.value)
     })
 
     return {

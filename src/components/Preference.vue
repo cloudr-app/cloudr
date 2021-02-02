@@ -7,9 +7,9 @@
       </div>
       <div class="value">
         <mwc-switch
-          v-if="typeof value === 'boolean'"
-          :value="value"
-          @input="$emit('input', $event)"
+          v-if="typeof modelValue === 'boolean'"
+          :modelValue="modelValue"
+          @update:modelValue="$emit('update:modelValue', $event)"
         />
         <span v-else-if="isNumber">{{ valueDisplay }}</span>
       </div>
@@ -19,8 +19,8 @@
         <slider
           v-if="isNumber"
           immediate
-          :value="value"
-          @input="$emit('input', $event)"
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event)"
         />
       </div>
     </dynamic-height-transition>
@@ -43,14 +43,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    value: {
+    modelValue: {
       type: [String, Boolean, Number],
       required: true,
     },
   },
   setup(props) {
     const collapsed = ref(true)
-    const { preference, value } = toRefs(props)
+    const { preference, modelValue } = toRefs(props)
 
     const name = computed(() => {
       const strings = pref[preference.value]
@@ -65,18 +65,18 @@ export default defineComponent({
       if (!strings) return ""
 
       if (typeof strings.desc === "string") return strings.desc
-      if (isObject(strings.desc)) return strings.desc?.[String(value.value)] || ""
+      if (isObject(strings.desc)) return strings.desc?.[String(modelValue.value)] || ""
 
       return ""
     })
 
     const type = computed(() => {
-      return typeof value.value
+      return typeof modelValue.value
     })
 
     const valueDisplay = computed(() => {
       const strings = pref[preference.value]
-      return strings.translateValue?.(value.value) || value.value
+      return strings.translateValue?.(modelValue.value) || modelValue.value
     })
 
     const isNumber = computed(() => {
