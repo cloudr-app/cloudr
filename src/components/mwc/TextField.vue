@@ -12,8 +12,8 @@
       <span class="mdc-notched-outline__trailing"></span>
     </span>
     <input
-      :value="value"
-      @input="$emit('input', $event.target.value)"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
       type="text"
       class="mdc-text-field__input"
       aria-labelledby="my-label-id"
@@ -32,7 +32,7 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    value: {},
+    modelValue: {},
   },
   setup(props) {
     const { label } = toRefs(props)

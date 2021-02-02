@@ -9,9 +9,9 @@
         type="checkbox"
         class="mdc-checkbox__native-control"
         :id="label"
-        :aria-checked="value"
-        :checked="value"
-        @change="$emit('input', $event.target.checked)"
+        :aria-checked="modelValue"
+        :checked="modelValue"
+        @change="$emit('update:modelValue', $event.target.checked)"
         :disabled="disabled"
       />
       <div class="mdc-checkbox__background">
@@ -40,7 +40,7 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    value: {
+    modelValue: {
       type: Boolean,
     },
     disabled: {

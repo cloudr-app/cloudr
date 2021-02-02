@@ -1,6 +1,6 @@
 <template>
   <div class="switch">
-    <div class="mdc-switch" ref="mdcSwitchRef" :class="{ 'mdc-switch--checked': value }">
+    <div class="mdc-switch" ref="mdcSwitchRef" :class="{ 'mdc-switch--checked': modelValue }">
       <div class="mdc-switch__track"></div>
       <div class="mdc-switch__thumb-underlay">
         <div class="mdc-switch__thumb"></div>
@@ -8,9 +8,9 @@
           type="checkbox"
           class="mdc-switch__native-control"
           role="switch"
-          :aria-checked="value"
-          :checked="value"
-          @change="$emit('input', $event.target.checked)"
+          :aria-checked="modelValue"
+          :checked="modelValue"
+          @change="$emit('update:modelValue', $event.target.checked)"
         />
       </div>
     </div>
@@ -27,7 +27,7 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    value: {
+    modelValue: {
       type: Boolean,
     },
   },
