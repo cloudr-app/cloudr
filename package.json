@@ -10,9 +10,19 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@material/checkbox": "^9.0.0",
+    "@material/form-field": "^9.0.0",
+    "@material/notched-outline": "^9.0.0",
+    "@material/switch": "^9.0.0",
+    "@material/textfield": "^9.0.0",
+    "@sentry/tracing": "^6.0.3",
+    "@sentry/vue": "^6.0.3",
     "core-js": "^3.6.5",
+    "ky": "^0.26.0",
+    "localforage": "^1.9.0",
+    "opentidal": "0.0.5",
     "register-service-worker": "^1.7.1",
-    "vue": "^3.0.0",
+    "vue": "^3.0.5",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
@@ -33,12 +43,17 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-0",
+    "axios": "^0.21.1",
+    "commitizen": "^4.2.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
-    "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
+    "sass": "^1.32.6",
+    "sass-loader": "^10.1.1",
+    "stylus": "^0.54.8",
+    "stylus-loader": "^4.3.3",
+    "svg-inline-loader": "^0.8.2",
     "typescript": "~3.9.3",
     "vue-jest": "^5.0.0-0"
   },
@@ -56,7 +71,19 @@
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {},
+    "rules": {
+      "@typescript-eslint/member-delimiter-style": [
+        "error",
+        {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
+      ],
+      "@typescript-eslint/no-explicit-any": [
+        "off"
+      ]
+    },
     "overrides": [
       {
         "files": [

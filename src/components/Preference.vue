@@ -1,0 +1,127 @@
+<template>
+  <div class="preference" :class="[type]">
+    <div class="main" @click="preferenceClick()">
+      <div class="info">
+        <div class="name">{{ name }}</div>
+        <div class="description">{{ desc }}</div>
+      </div>
+      <div class="value">
+        <mwc-switch
+          v-if="typeof value === 'boolean'"
+          :value="value"
+          @input="$emit('input', $event)"
+        />
+        <span v-else-if="isNumber">{{ valueDisplay }}</span>
+      </div>
+    </div>
+    <dynamic-height-transition v-if="isNumber" :collapsed="collapsed">
+      <div class="extra">
+        <slider
+          v-if="isNumber"
+          immediate
+          :value="value"
+          @input="$emit('input', $event)"
+        />
+      </div>
+    </dynamic-height-transition>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, toRefs } from "vue"
+import MwcSwitch from "@/components/mwc/Switch.vue"
+import { pref } from "@/strings"
+import { isObject } from "@/utils"
+import Slider from "@/components/Slider.vue"
+import DynamicHeightTransition from "@/components/functional/DynamicHeightTransition"
+
+export default defineComponent({
+  name: "preference",
+  components: { MwcSwitch, Slider, DynamicHeightTransition },
+  props: {
+    preference: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: [String, Boolean, Number],
+      required: true,
+    },
+  },
+  setup(props) {
+    const collapsed = ref(true)
+    const { preference, value } = toRefs(props)
+
+    const name = () => {
+      const strings = pref[preference.value]
+
+      if (strings) return strings.name
+      return preference.value
+    }
+
+    const desc = () => {
+      const strings = pref[preference.value]
+
+      if (!strings) return ""
+
+      if (typeof strings.desc === "string") return strings.desc
+      if (isObject(strings.desc)) return strings.desc?.[String(value.value)] || ""
+
+      return ""
+    }
+
+    const type = () => {
+      return typeof value.value
+    }
+
+    const valueDisplay = () => {
+      const strings = pref[preference.value]
+      return strings.translateValue?.(value.value) || value.value
+    }
+
+    const isNumber = () => {
+      // TODO check if you can really just do that
+      return type() === "number"
+    }
+
+    return {
+      name,
+      desc,
+      type,
+      valueDisplay,
+      isNumber,
+      preferenceClick() {
+        if (type() === "number") collapsed.value = !collapsed.value
+      },
+    }
+  },
+})
+</script>
+
+<style lang="sass">
+.preference
+  // background: #f0f
+  .main
+    display: flex
+    justify-content: space-between
+    align-items: center
+    min-height: 50px
+    padding-left: 5px
+
+    .info
+      .name
+        font-size: 1rem
+
+      .description
+        font-size: 0.75rem
+        opacity: 0.75
+
+  .extra
+    padding: 0 15px
+    display: flex
+    align-items: center
+
+    .slider
+      margin-top: 5px
+      margin-bottom: 10px
+</style>
