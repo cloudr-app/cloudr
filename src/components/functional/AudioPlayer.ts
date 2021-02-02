@@ -1,4 +1,4 @@
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from "vue"
 
 import notification from "@/player/notification"
 
@@ -29,7 +29,10 @@ for (const el of [playingEl, nextEl]) {
   el.autoplay = true
 }
 
+// TODO this doesn't need to be a vue componenet
+
 export default defineComponent({
+  render: () => h("div"),
   setup() {
     const { commit, dispatch, state } = useStore()
 

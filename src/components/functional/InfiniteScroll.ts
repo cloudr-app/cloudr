@@ -45,7 +45,7 @@ export default defineComponent({
       if (observed) endObserver.unobserve(observed)
 
       await this.$nextTick()
-      this.assignHideObservers()
+      // this.assignHideObservers()
 
       const wrap = this.$refs.wrap as HTMLElement
       const children = wrap.children

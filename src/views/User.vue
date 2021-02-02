@@ -43,7 +43,7 @@ import { RouteParams, useRoute } from "vue-router"
 export default defineComponent({
   name: "user",
   components: { TrackListItem, InfiniteScroll, UserInfo, Spinner },
-  async setup() {
+  setup() {
     const route = useRoute()
     type PlaylistRouteParams = RouteParams & {
       platform: PlatformAccessor
@@ -113,7 +113,7 @@ export default defineComponent({
         commit("setQueue", [...state.queue, ...tracks])
     }
 
-    await loadUser(params)
+    loadUser(params)
 
     return {
       playTrack,

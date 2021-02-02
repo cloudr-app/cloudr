@@ -16,18 +16,22 @@ const soundcloud = player("soundcloud")
 export default defineComponent({
   components: { Spinner },
   name: "soundcloud-resolve",
-  async setup() {
+  setup() {
     const router = useRouter()
     const route = useRoute()
 
-    try {
-      const resolved = await soundcloud.resolve?.(route.path)
-      if (!resolved) return router.replace("/")
-      router.replace(resolved)
-    } catch (err) {
-      console.log("resolve error", err)
-      router.replace("/")
+    const resolve = async () => {
+      try {
+        const resolved = await soundcloud.resolve?.(route.path)
+        if (!resolved) return router.replace("/")
+        router.replace(resolved)
+      } catch (err) {
+        console.log("resolve error", err)
+        router.replace("/")
+      }
     }
+
+    resolve()
   },
 })
 </script>

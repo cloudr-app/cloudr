@@ -47,7 +47,7 @@ declare global {
 export default defineComponent({
   name: "playlist",
   components: { artwork, TrackListItem, InfiniteScroll, Spinner },
-  async setup() {
+  setup() {
     const route = useRoute()
     type PlaylistRouteParams = RouteParams & {
       platform: PlatformAccessor
@@ -129,7 +129,7 @@ export default defineComponent({
       commit("setPlayingList", toCloudrID(platform, +id, "playlist"))
     }
 
-    await loadPlaylist(params)
+    loadPlaylist(params)
 
     return {
       playlistInfo,

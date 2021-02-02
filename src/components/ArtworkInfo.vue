@@ -52,6 +52,7 @@ export default defineComponent({
 
     return {
       expand,
+      expanded,
       imgSrc: computed(() => {
         if (!artwork.value.length) return "/artwork-placeholder.svg"
 
