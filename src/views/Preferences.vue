@@ -8,7 +8,7 @@
           :key="subPreference"
           :preference="subPreference"
           :value="subVal"
-          @input="handleChange($event, preference, subPreference)"
+          @input="handleChange($event, preference, String(subPreference))"
         />
       </div>
 
@@ -36,7 +36,7 @@ export default defineComponent({
   setup() {
     const { state, dispatch } = useStore()
 
-    const handleChange = (value: SettingsValue, pref: string, sub: string) =>
+    const handleChange = (value: SettingsValue, pref: string, sub?: string) =>
       dispatch("pref", [value, pref, sub])
 
     return {

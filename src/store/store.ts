@@ -176,7 +176,7 @@ export default createStore<State>({
     async resolveTrackInfo(_, track: string) {
       const { platform, id } = fromCloudrID(track)
 
-      return await player(platform).track(Number(id))
+      return await player(platform).track(id)
     },
   },
 })

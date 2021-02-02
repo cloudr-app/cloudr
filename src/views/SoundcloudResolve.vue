@@ -24,6 +24,7 @@ export default defineComponent({
       try {
         const resolved = await soundcloud.resolve?.(route.path)
         if (!resolved) return router.replace("/")
+        console.log(resolved)
         router.replace(resolved)
       } catch (err) {
         console.log("resolve error", err)

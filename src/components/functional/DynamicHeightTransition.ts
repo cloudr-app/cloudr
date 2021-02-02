@@ -12,7 +12,7 @@ export default defineComponent({
           "max-height": `${height}px`,
         },
       },
-      this.$slots.default
+      this.$slots.default?.()
     )
   },
   props: {

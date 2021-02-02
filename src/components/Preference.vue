@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from "vue"
+import { defineComponent, ref, toRefs, computed } from "vue"
 import MwcSwitch from "@/components/mwc/Switch.vue"
 import { pref } from "@/strings"
 import { isObject } from "@/utils"
@@ -52,14 +52,14 @@ export default defineComponent({
     const collapsed = ref(true)
     const { preference, value } = toRefs(props)
 
-    const name = () => {
+    const name = computed(() => {
       const strings = pref[preference.value]
 
       if (strings) return strings.name
       return preference.value
-    }
+    })
 
-    const desc = () => {
+    const desc = computed(() => {
       const strings = pref[preference.value]
 
       if (!strings) return ""
@@ -68,21 +68,20 @@ export default defineComponent({
       if (isObject(strings.desc)) return strings.desc?.[String(value.value)] || ""
 
       return ""
-    }
+    })
 
-    const type = () => {
+    const type = computed(() => {
       return typeof value.value
-    }
+    })
 
-    const valueDisplay = () => {
+    const valueDisplay = computed(() => {
       const strings = pref[preference.value]
       return strings.translateValue?.(value.value) || value.value
-    }
+    })
 
-    const isNumber = () => {
-      // TODO check if you can really just do that
-      return type() === "number"
-    }
+    const isNumber = computed(() => {
+      return type.value === "number"
+    })
 
     return {
       name,
@@ -90,8 +89,9 @@ export default defineComponent({
       type,
       valueDisplay,
       isNumber,
+      collapsed,
       preferenceClick() {
-        if (type() === "number") collapsed.value = !collapsed.value
+        if (type.value === "number") collapsed.value = !collapsed.value
       },
     }
   },

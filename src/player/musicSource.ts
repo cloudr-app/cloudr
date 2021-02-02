@@ -1,23 +1,23 @@
 import { Platform } from "@/utils"
 
 type URL = string
-type Source = number
+export type ID = string
 
 export interface MusicSource {
-  playlistInfo(source: Source): Promise<Playlist>
-  playlistTracks(source: Source, limit?: number): Promise<PlaylistTracks>
-  userTracks?(source: Source, limit?: number): Promise<PlaylistTracks>
-  stream(source: Source): Promise<URL>
-  track(source: Source): Promise<Track>
-  user?(source: Source): Promise<User>
+  playlistInfo(source: ID): Promise<Playlist>
+  playlistTracks(source: ID, limit?: number): Promise<PlaylistTracks>
+  userTracks?(source: ID, limit?: number): Promise<PlaylistTracks>
+  stream(source: ID): Promise<URL>
+  track(source: ID): Promise<Track>
+  user?(source: ID): Promise<User>
   resolve?(source: URL): Promise<any>
-  likes?(source: Source, limit?: number): Promise<PlaylistTracks>
-  userPlaylists?(source: Source): Promise<Playlist[]>
+  likes?(source: ID, limit?: number): Promise<PlaylistTracks>
+  userPlaylists?(source: ID): Promise<Playlist[]>
 }
 
 // TODO make more of these non-optional
 export interface User {
-  id: number
+  id: ID
   platform: Platform
   username: string
   description: string | null
@@ -31,7 +31,7 @@ export interface User {
 
 export interface Playlist {
   artwork: MediaImage[]
-  id: number
+  id: ID
   platform: Platform
   title: string
   trackCount: number
@@ -44,7 +44,7 @@ export interface Playlist {
 export interface Track {
   platform: Platform
   duration: number
-  id: number
+  id: ID
   createdAt?: Date
   title: string
   description?: string

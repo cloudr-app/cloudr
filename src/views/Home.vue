@@ -17,9 +17,9 @@
 
       <button @click="setTidalAccessToken">set tidal access_token</button>
     </div>
-    <div class="search-params" v-if="searchParams.length">
+    <div class="search-params" v-if="params.length">
       params:
-      <div class="param" v-for="[key, value] in searchParams" :key="key + value">
+      <div class="param" v-for="[key, value] in params" :key="key + value">
         {{ key }}: {{ value }}
       </div>
     </div>
@@ -33,25 +33,23 @@ import { ls } from "@/utils"
 
 export default defineComponent({
   name: "Home",
-  data: () => ({ searchParams: [] }),
-  methods: {
-    setTidalAccessToken() {
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      const access_token = prompt("enter access_token")
-
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      if (access_token) ls("tidal-login", { access_token })
-    },
-  },
   setup() {
-    const params = ref([[""], [""]])
+    const params = ref([[""]])
 
     onMounted(() => {
       const { searchParams } = new URL(window.location.href)
       params.value = [...searchParams.entries()]
     })
 
-    return { params }
+    const setTidalAccessToken = () => {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const access_token = prompt("enter access_token")
+
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      if (access_token) ls("tidal-login", { access_token })
+    }
+
+    return { params, setTidalAccessToken }
   },
 })
 </script>

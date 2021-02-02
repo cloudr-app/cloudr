@@ -9,7 +9,7 @@
       <bottom-player v-if="!noTrack" />
     </transition>
     <bottom-nav />
-    <audio-player v-if="$store.state.currentTrack.stream" />
+    <audio-player v-if="currentTrack.stream" />
   </global-styles>
 </template>
 
@@ -62,12 +62,19 @@ export default defineComponent({
       return allEmpty([artist, id, stream, title])
     })
 
-    return { scrolled, main, noTrack }
+    return {
+      scrolled,
+      main,
+      noTrack,
+      currentTrack: computed(() => state.currentTrack),
+    }
   },
 })
 </script>
 
 <style lang="sass">
+@use "./components/mwc/theme.css"
+
 :root
   --bg: #222436
   --bg-dark: #1E2030
@@ -97,8 +104,6 @@ export default defineComponent({
   --border-radius-large: 15px
   --icon-size: 30px
   --small-artwork-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.25)
-
-  @import "./components/mwc/theme.css"
 
 @font-face
   font-family: "manrope"

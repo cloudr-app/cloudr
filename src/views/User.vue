@@ -31,7 +31,7 @@ import UserInfo from "@/components/UserInfo.vue"
 import Spinner from "@/components/Spinner.vue"
 
 import player from "@/player"
-import { MusicSource, Track, MediaImage } from "@/player/musicSource"
+import { MusicSource, Track, MediaImage, ID } from "@/player/musicSource"
 import { toCloudrID, PlatformAccessor } from "@/utils"
 import { useStore } from "@/store/store"
 import { RouteParams, useRoute } from "vue-router"
@@ -61,19 +61,19 @@ export default defineComponent({
       // likesCount: 0,
       // playlistCount: 0,
       // trackCount: 0,
-      id: 0,
+      id: "",
       username: "loading",
     })
     const userTracks = ref<Track[]>([])
     const userNext = ref()
 
-    const loadUserInfo = async (plat: MusicSource, id: number) => {
+    const loadUserInfo = async (plat: MusicSource, id: ID) => {
       const info = await plat.user?.(id)
       if (!info) return
       userInfo.value = info
     }
 
-    const loadUserTracks = async (plat: MusicSource, id: number) => {
+    const loadUserTracks = async (plat: MusicSource, id: ID) => {
       const tracks = await plat.userTracks?.(id)
 
       if (tracks) userTracks.value = tracks.tracks
@@ -84,8 +84,8 @@ export default defineComponent({
       const { platform, id } = _params
       const plat = player(platform)
 
-      await loadUserInfo(plat, +id)
-      await loadUserTracks(plat, +id)
+      await loadUserInfo(plat, id)
+      await loadUserTracks(plat, id)
 
       const main = document.querySelector("main")
       if (main) main.scrollTop = 0
@@ -97,7 +97,7 @@ export default defineComponent({
       dispatch("playTrack", toCloudrID(track.platform, track.id))
       commit("setQueuePrev", userTracks.value.slice(0, index))
       commit("setQueue", userTracks.value.slice(index))
-      commit("setPlayingList", toCloudrID(platform, +id, "playlist"))
+      commit("setPlayingList", toCloudrID(platform, id, "playlist"))
     }
 
     const loadNext = async () => {

@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     component: require("@/views/Playlist.vue").default,
   },
   {
-    path: `/:platform(${platform})/(likes|${heartEmoji.join("|")})/:id`,
+    path: `/:platform(${platform})/:_(likes|${heartEmoji.join("|")})/:id`,
     name: "Likes",
     component: require("@/views/Playlist.vue").default,
   },

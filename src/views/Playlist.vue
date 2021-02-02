@@ -59,19 +59,19 @@ export default defineComponent({
 
     const playlistInfo = ref({
       artwork: [] as MediaImage[],
-      id: 0,
+      id: "",
       title: "loading",
       user: {
         username: "loading",
-        id: 0,
+        id: "",
       },
     })
     const playlistTracks = ref<Track[]>([])
     const playlistNext = ref()
 
-    const likes = computed(() => route.name === "likes")
+    const likes = computed(() => route.name === "Likes")
 
-    const loadPlaylistInfo = async (plat: MusicSource, id: number) => {
+    const loadPlaylistInfo = async (plat: MusicSource, id: string) => {
       if (likes.value && plat.user) {
         const user = await plat.user(id)
 
@@ -84,7 +84,7 @@ export default defineComponent({
       } else playlistInfo.value = await plat.playlistInfo(id)
     }
 
-    const loadPlaylistTracks = async (plat: MusicSource, id: number) => {
+    const loadPlaylistTracks = async (plat: MusicSource, id: string) => {
       let tracks
 
       if (likes.value && plat.likes) tracks = await plat.likes(id)
@@ -98,8 +98,8 @@ export default defineComponent({
       const { platform, id } = _params
       const plat = player(platform)
 
-      await loadPlaylistInfo(plat, +id)
-      await loadPlaylistTracks(plat, +id)
+      await loadPlaylistInfo(plat, id)
+      await loadPlaylistTracks(plat, id)
 
       const main = document.querySelector("main")
       if (main) main.scrollTop = 0
@@ -116,7 +116,7 @@ export default defineComponent({
       playlistNext.value = next
 
       const { platform, id } = params
-      if (state.playingList === toCloudrID(platform, +id))
+      if (state.playingList === toCloudrID(platform, id))
         commit("setQueue", [...state.queue, ...tracks])
     }
 
@@ -126,7 +126,7 @@ export default defineComponent({
       dispatch("playTrack", toCloudrID(track.platform, track.id))
       commit("setQueuePrev", playlistTracks.value.slice(0, index))
       commit("setQueue", playlistTracks.value.slice(index))
-      commit("setPlayingList", toCloudrID(platform, +id, "playlist"))
+      commit("setPlayingList", toCloudrID(platform, id, "playlist"))
     }
 
     loadPlaylist(params)

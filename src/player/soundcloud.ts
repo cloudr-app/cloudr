@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
+import { ID, MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
 import { defaultImage, imageType, imageTypes, kyCache } from "@/utils"
 
 const ky = kyCache("soundcloud")
@@ -43,7 +43,7 @@ const transformUser = (s: SoundcloudUser): User => ({
   username: s.username,
   followerCount: s.followers_count,
   followsCount: s.followings_count,
-  id: s.id,
+  id: String(s.id),
   description: s.description || "",
   trackCount: s.track_count,
   playlistCount: s.playlist_count,
@@ -67,7 +67,7 @@ interface SoundcloudTrack {
 const transformTrack = (t: SoundcloudTrack): Track => ({
   platform: "soundcloud",
   duration: t.duration,
-  id: t.id,
+  id: String(t.id),
   createdAt: new Date(t.created_at),
   title: t.title,
   description: t.description,
@@ -93,7 +93,7 @@ const transformPlaylistInfo = (p: SoundcloudPlaylist): Playlist => ({
   artwork: soundcloudImage(p.artwork_url || p.tracks[0]?.artwork_url),
   description: p.description,
   duration: p.duration,
-  id: p.id,
+  id: String(p.id),
   lastModified: new Date(p.last_modified),
   platform: "soundcloud",
   title: p.title,
@@ -138,7 +138,7 @@ const paginateNext = (
   }
 }
 
-const userPlaylists = async (id: number) => {
+const userPlaylists = async (id: ID) => {
   const data = (await ky
     .get(`${baseApi2}/users/${id}/playlists_without_albums`, {
       searchParams: {
@@ -177,7 +177,7 @@ const soundcloud: MusicSource = {
       if (user) {
         return {
           name: "Likes",
-          params: { id: user.id, "0": "likes", platform },
+          params: { id: user.id, _: "likes", platform },
         }
       }
     } else if (path.length === 3 && path[1] === "sets") {
@@ -187,7 +187,7 @@ const soundcloud: MusicSource = {
       if (playlist && user) {
         return {
           name: "Playlist",
-          params: { id: playlist.id, "0": "playlist", platform },
+          params: { id: playlist.id, _: "playlist", platform },
         }
       }
     }
@@ -196,9 +196,9 @@ const soundcloud: MusicSource = {
     const resolved = await apiResolve(url.toString())
 
     if (resolved.kind === "playlist")
-      return { name: "Playlist", params: { id: resolved.id, "0": "playlist", platform } }
+      return { name: "Playlist", params: { id: resolved.id, _: "playlist", platform } }
     if (resolved.kind === "user")
-      return { name: "User", params: { id: resolved.id, "0": "user", platform } }
+      return { name: "User", params: { id: resolved.id, _: "user", platform } }
 
     return resolved
   },

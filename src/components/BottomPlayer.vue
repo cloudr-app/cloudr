@@ -9,14 +9,14 @@
         </div>
         <div class="spacer"></div>
         <div class="controls">
-          <div class="skip-previous" @click="$store.dispatch('prevTrack')">
+          <div class="skip-previous" @click="prevTrack">
             <svg-icon icon="skip_previous" />
           </div>
           <div class="play-pause" @click="playPause">
-            <svg-icon v-if="$store.state.player.playing" icon="pause" />
+            <svg-icon v-if="playing" icon="pause" />
             <svg-icon v-else icon="play_arrow" />
           </div>
-          <div class="skip-next" @click="$store.dispatch('nextTrack')">
+          <div class="skip-next" @click="nextTrack">
             <svg-icon icon="skip_next" />
           </div>
         </div>
@@ -45,19 +45,23 @@ import { useStore } from "@/store/store"
 export default defineComponent({
   components: { Slider },
   setup() {
-    const { state, commit } = useStore()
+    const { state, commit, dispatch } = useStore()
 
-    const playPause = () => commit("setPlayer", ["playing", !state.player.playing])
+    const playing = computed(() => state.player.playing)
+    const playPause = () => commit("setPlayer", ["playing", !playing.value])
     const sliderVal = (pos: number) => commit("setPlayer", ["setPosition", pos])
 
     return {
       formatTime,
       playPause,
       sliderVal,
-      progress: state.player.progress,
-      duration: state.player.duration,
-      title: state.currentTrack.title,
-      artist: state.currentTrack.artist,
+      playing,
+      prevTrack: () => dispatch("prevTrack"),
+      nextTrack: () => dispatch("nextTrack"),
+      progress: computed(() => state.player.progress),
+      duration: computed(() => state.player.duration),
+      title: computed(() => state.currentTrack.title),
+      artist: computed(() => state.currentTrack.artist),
       // TODO move as factory function into utils
       imgSrc: computed(() => {
         const images = state.currentTrack.artwork
