@@ -1,6 +1,10 @@
 <template>
   <div class="switch">
-    <div class="mdc-switch" ref="mdcSwitchRef" :class="{ 'mdc-switch--checked': modelValue }">
+    <div
+      class="mdc-switch"
+      ref="mdcSwitchRef"
+      :class="{ 'mdc-switch--checked': modelValue }"
+    >
       <div class="mdc-switch__track"></div>
       <div class="mdc-switch__thumb-underlay">
         <div class="mdc-switch__thumb"></div>

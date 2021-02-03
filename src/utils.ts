@@ -75,11 +75,7 @@ type CloudrID = string
  * @example toCloudrID("soundcloud", 16514846) // "sc:16514846"
  * @example toCloudrID("soundcloud", 16514846, "user") // "u:sc:16514846"
  */
-export const toCloudrID = (
-  platform: PlatformAccessor,
-  id: ID,
-  type: Type = "track"
-) => {
+export const toCloudrID = (platform: PlatformAccessor, id: ID, type: Type = "track") => {
   const _type = typesLong[type] || type
   // @ts-expect-error
   const _platform = platformsLong[platform] || platform
@@ -105,6 +101,7 @@ export const fromCloudrID = (cloudrID: CloudrID) => {
 }
 
 /**
+ * Slim localStorage wrapper.
  * include a value to write, exclude it to read a localStorage value.
  * stringifies and parses every input.
  * @param key

@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ID, MusicSource, Playlist, PlaylistTracks, Track, User } from "@/player/musicSource"
+import {
+  ID,
+  MusicSource,
+  Playlist,
+  PlaylistTracks,
+  Track,
+  User,
+} from "@/player/musicSource"
 import { defaultImage, imageType, imageTypes, kyCache } from "@/utils"
 
 const ky = kyCache("soundcloud")
