@@ -4,23 +4,7 @@ import { ls, updateDeep } from "@/utils"
 import { ActionArg } from "./store"
 
 // ! only nest this one-deep
-export interface Preferences {
-  // theme: "dark" | "light" | "custom" // todo import menu
-  // fontSize: number
-  defaultVolume: number
-  theme: {
-    darkTheme: boolean
-    monochromeTheme: boolean
-    roundBorders: boolean
-  }
-  network: {
-    metadataCacheFirst: boolean
-  }
-  // soundcloud: {
-  //   platformEnabled: boolean
-  // }
-}
-const defaultPreferences: Preferences = {
+const defaultPreferences = {
   // theme: "dark",
   // fontSize: 1,
   defaultVolume: 1,
@@ -31,11 +15,14 @@ const defaultPreferences: Preferences = {
   },
   network: {
     metadataCacheFirst: true,
+    lazyLoadImages: true,
   },
   // soundcloud: {
   //   platformEnabled: true,
   // },
 }
+
+export type Preferences = typeof defaultPreferences
 
 type ValPrefSub = [SettingsValue, string, string?]
 

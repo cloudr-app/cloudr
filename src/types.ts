@@ -28,14 +28,11 @@ export interface PlayingTrackInfo {
 
 export type SettingsValue = number | string | boolean
 
+type Obj = { [key: string]: any }
 export interface TextString {
   [key: string]: {
     name: string
     translateValue?(...v: any): string
-    desc?:
-      | string
-      | {
-          [key: string]: string
-        }
+    desc?: string | Obj
   }
 }

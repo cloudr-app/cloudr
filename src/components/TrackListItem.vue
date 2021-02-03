@@ -8,7 +8,7 @@
   >
     <div class="main" v-if="!hide">
       <div class="artwork">
-        <img :src="imgSrc" alt="track artwork" />
+        <cloudr-image :src="imgSrc" alt="track artwork" />
       </div>
       <div class="info">
         <div class="title">{{ trackInfo.title }}</div>
@@ -28,12 +28,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, toRefs, PropType, watch } from "vue"
+import CloudrImage from "@/components/functional/CloudrImage"
 
-import { toCloudrID, getImageLargerThan } from "@/utils"
+import { toCloudrID, srcset } from "@/utils"
 import { Track } from "@/player/musicSource"
 import { useStore } from "@/store/store"
 
 export default defineComponent({
+  components: { CloudrImage },
   props: {
     trackInfo: {
       type: Object as PropType<Track>,
@@ -62,12 +64,7 @@ export default defineComponent({
       hide,
       height,
       isPlaying,
-      imgSrc: computed(() => {
-        const images = trackInfo.value.artwork
-        if (!images.length) return
-
-        return getImageLargerThan(images, 40).src
-      }),
+      imgSrc: computed(() => srcset(trackInfo.value.artwork, 40)),
     }
   },
 })

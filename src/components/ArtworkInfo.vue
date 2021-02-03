@@ -1,6 +1,6 @@
 <template>
   <div class="artwork" :class="{ expanded }" @click="expand" ref="artwork">
-    <img :src="imgSrc" alt="artwork not found" draggable="false" />
+    <cloudr-image :src="imgSrc" alt="artwork not found" />
     <div class="overlay">
       <div class="info">
         <div class="title">{{ title }}</div>
@@ -12,11 +12,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, toRefs, PropType } from "vue"
+import CloudrImage from "@/components/functional/CloudrImage"
 
-import { getImageLargerThan } from "@/utils"
+import { srcset } from "@/utils"
 import { MediaImage } from "@/player/musicSource"
 
 export default defineComponent({
+  components: { CloudrImage },
   props: {
     artwork: {
       required: true,
@@ -53,11 +55,7 @@ export default defineComponent({
     return {
       expand,
       expanded,
-      imgSrc: computed(() => {
-        if (!artwork.value.length) return "/artwork-placeholder.svg"
-
-        return getImageLargerThan(artwork.value, 500).src
-      }),
+      imgSrc: computed(() => srcset(artwork.value, 500)),
     }
   },
 })

@@ -8,6 +8,13 @@ export const pref: TextString = {
       false: "Always get fresh metadata (slower)",
     },
   },
+  lazyLoadImages: {
+    name: "Lazy-Load images",
+    desc: {
+      true: "Load images when they scroll into view",
+      false: "Pre-load images even when they aren't visible yet",
+    },
+  },
   platformEnabled: {
     name: "Enable platform",
     desc: {

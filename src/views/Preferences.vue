@@ -1,7 +1,11 @@
 <template>
   <div class="preferences">
     <template v-for="(val, preference) in preferences">
-      <div v-if="isObject(val)" :key="preference + 'isObject'" class="category">
+      <div
+        v-if="isObject(val) && typeof val !== 'number'"
+        :key="preference + 'isObject'"
+        class="category"
+      >
         <span>{{ preference }}</span>
         <preference
           v-for="(subVal, subPreference) in val"

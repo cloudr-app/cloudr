@@ -1,7 +1,7 @@
 <template>
   <div class="user-info">
     <div class="avatar" @click="expand" :class="{ expanded }">
-      <img :src="imgSrc" alt="avatar not found" draggable="false" />
+      <cloudr-image :src="imgSrc" alt="avatar not found" draggable="false" />
     </div>
     <div class="info">
       <div class="name">{{ name }}</div>
@@ -18,11 +18,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType, computed, toRefs } from "vue"
+import CloudrImage from "@/components/functional/CloudrImage"
 
-import { getImageLargerThan } from "@/utils"
+import { srcset } from "@/utils"
 import { MediaImage } from "@/player/musicSource"
 
 export default defineComponent({
+  components: { CloudrImage },
   props: {
     name: {
       type: String,
@@ -61,12 +63,7 @@ export default defineComponent({
       descriptionExpanded,
       expanded,
       expand,
-      imgSrc: computed(() => {
-        const images = avatar.value
-        if (!images?.length) return "/artwork-placeholder.svg"
-
-        return getImageLargerThan(images, 500).src
-      }),
+      imgSrc: computed(() => srcset(avatar.value, 500)),
     }
   },
 })

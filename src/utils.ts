@@ -184,6 +184,22 @@ export const defaultImage: MediaImage = {
   type: "image/svg+xml",
 }
 
+export interface SrcSet {
+  src: string
+  srcset: string
+  sizes: string
+}
+
+export const srcset = (images: MediaImage[], defaultSize: number): SrcSet => {
+  images = images.length ? images : [defaultImage]
+
+  return {
+    src: getImageLargerThan(images, defaultSize).src,
+    srcset: images.map(image => `${image.src} ${getWidth(image.sizes)}w`).join(),
+    sizes: `${defaultSize}px`,
+  }
+}
+
 export const isObject = (item: any) => {
   return item && typeof item === "object" && !Array.isArray(item)
 }

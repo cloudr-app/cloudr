@@ -1,6 +1,6 @@
 <template>
   <div class="player">
-    <img :src="imgSrc" alt="track art" class="artwork" />
+    <cloudr-image :src="imgSrc" alt="track art" class="artwork" />
     <div class="right">
       <div class="upper">
         <div class="track-info">
@@ -36,14 +36,15 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue"
+import CloudrImage from "@/components/functional/CloudrImage"
 
-import { formatTime, getImageLargerThan } from "@/utils"
+import { formatTime, srcset } from "@/utils"
 
 import Slider from "@/components/Slider.vue"
 import { useStore } from "@/store/store"
 
 export default defineComponent({
-  components: { Slider },
+  components: { Slider, CloudrImage },
   setup() {
     const { state, commit, dispatch } = useStore()
 
@@ -62,13 +63,7 @@ export default defineComponent({
       duration: computed(() => state.player.duration),
       title: computed(() => state.currentTrack.title),
       artist: computed(() => state.currentTrack.artist),
-      // TODO move as factory function into utils
-      imgSrc: computed(() => {
-        const images = state.currentTrack.artwork
-        if (!images.length) return
-
-        return getImageLargerThan(images, 55).src
-      }),
+      imgSrc: computed(() => srcset(state.currentTrack.artwork, 55)),
     }
   },
 })

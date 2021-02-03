@@ -32,7 +32,7 @@ import TrackListItem from "@/components/TrackListItem.vue"
 import InfiniteScroll from "@/components/functional/InfiniteScroll"
 import Spinner from "@/components/Spinner.vue"
 
-import { getImageLargerThan, toCloudrID, PlatformAccessor } from "@/utils"
+import { toCloudrID, PlatformAccessor } from "@/utils"
 
 import player from "@/player"
 import { MediaImage, Track, MusicSource } from "@/player/musicSource"
@@ -137,12 +137,6 @@ export default defineComponent({
       playlistNext,
       loadNext,
       playTrack,
-      imgSrc: computed(() => {
-        const images = playlistInfo.value.artwork as MediaImage[]
-        if (!images?.length) return "/artwork-placeholder.svg"
-
-        return getImageLargerThan(images, 500).src
-      }),
     }
   },
 })

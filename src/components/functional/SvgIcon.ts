@@ -3,6 +3,7 @@ import { defineComponent, h } from "vue"
 // TODO: forward click event
 
 export default defineComponent({
+  name: "svg-icon",
   render() {
     return h(
       "svg",
