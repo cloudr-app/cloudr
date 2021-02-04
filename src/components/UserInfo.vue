@@ -72,6 +72,7 @@ export default defineComponent({
 <style lang="sass" scoped>
 .user-info
   width: calc(100% - 20px)
+  max-width: 50vh
 
   .avatar
     margin-bottom: 0.5em

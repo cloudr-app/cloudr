@@ -1,7 +1,7 @@
 name: notify
 on: push
 jobs:
-  telegram:
+  notify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master

@@ -11,7 +11,7 @@
       <infinite-scroll :list="playlistTracks" root="main" @end="loadNext()">
         <track-list-item
           v-for="(track, index) in playlistTracks"
-          :key="track.platform + track.id"
+          :key="toCloudrID(track.platform, track.id)"
           :track-info="track"
           @play-track="playTrack(track, index)"
         />
@@ -132,6 +132,7 @@ export default defineComponent({
     loadPlaylist(params)
 
     return {
+      toCloudrID,
       playlistInfo,
       playlistTracks,
       playlistNext,

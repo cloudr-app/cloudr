@@ -55,33 +55,30 @@ const darkMonoTheme = {
 
 export default defineComponent({
   name: "global-styles",
-  render() {
-    const { style } = this
-    return h(
-      "div",
-      {
-        class: "styles",
-        style,
-      },
-      this.$slots.default?.()
-    )
-  },
-  setup() {
+  setup(_, { slots }) {
     const { state } = useStore()
 
-    return {
-      style: computed(() => {
-        const preferences = state.preferences
-        let ret = {}
+    const style = computed(() => {
+      const preferences = state.preferences
+      let ret = {}
 
-        if (!preferences.theme.roundBorders) ret = { ...ret, ...squareBorders }
-        if (preferences.theme.monochromeTheme) {
-          if (preferences.theme.darkTheme) ret = { ...ret, ...darkMonoTheme }
-          else ret = { ...ret, ...lightMonoTheme }
-        } else if (!preferences.theme.darkTheme) ret = { ...ret, ...lightTheme }
+      if (!preferences.theme.roundBorders) ret = { ...ret, ...squareBorders }
+      if (preferences.theme.monochromeTheme) {
+        if (preferences.theme.darkTheme) ret = { ...ret, ...darkMonoTheme }
+        else ret = { ...ret, ...lightMonoTheme }
+      } else if (!preferences.theme.darkTheme) ret = { ...ret, ...lightTheme }
 
-        return ret
-      }),
-    }
+      return ret
+    })
+
+    return () =>
+      h(
+        "div",
+        {
+          class: "styles",
+          style: style.value,
+        },
+        slots.default?.()
+      )
   },
 })

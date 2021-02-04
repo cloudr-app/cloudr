@@ -41,12 +41,15 @@ export default defineComponent({
       type: Object as PropType<Track>,
       required: true,
     },
+    hide: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
-    const hide = ref(false)
     const height = ref(0)
     const main = ref<HTMLElement | null>(null)
-    const { trackInfo } = toRefs(props)
+    const { trackInfo, hide } = toRefs(props)
     const { state } = useStore()
 
     const isPlaying = computed(() => {
@@ -55,15 +58,15 @@ export default defineComponent({
     })
 
     watch(hide, () => {
-      if (!main.value) return
+      if (!main.value) throw new Error("template ref not available at mount")
       if (hide.value) height.value = main.value.scrollHeight
       else height.value = 0
     })
 
     return {
-      hide,
       height,
       isPlaying,
+      main,
       imgSrc: computed(() => srcset(trackInfo.value.artwork, 40)),
     }
   },

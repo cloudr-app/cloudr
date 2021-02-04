@@ -5,20 +5,43 @@
       body,
       html {
         background: #222436;
+        color: #c8c8cd;
+        margin: 0;
+        font-family: sans-serif;
+        height: 100%;
+        width: 100%;
+        position: relative;
+      }
+      noscript {
+        margin: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 85%;
+        text-align: center;
+      }
+      a {
+        color: #c8c8cd;
       }
     </style>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>cloudr</title>
   </head>
   <body>
     <noscript>
-      <strong
-        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly
-        without JavaScript enabled. Please enable it to continue.</strong
-      >
+      <strong>
+        I'm sorry but cloudr doesn't work without JavaScript.
+        <br />
+        Please enable it or
+        <a href="https://google.com/chrome" target="_blank">
+          download a compatible browser
+        </a>
+        to continue.
+      </strong>
     </noscript>
     <div id="app"></div>
   </body>

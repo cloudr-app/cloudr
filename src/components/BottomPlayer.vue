@@ -83,8 +83,7 @@ export default defineComponent({
     transition: var(--transition-medium) var(--ease)
 
   &.bottom-player-enter-from, &.bottom-player-leave-to
-    height: 0
-    padding: 0 var(--margins)
+    transform: translateY(100%)
 
   img.artwork
     width: calc(var(--bottom-player-height) - var(--margins) * 2)
