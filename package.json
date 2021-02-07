@@ -9,7 +9,7 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "commit": "cz -S",
-    "functions": "rimraf netlify/functions && tsc -P tsconfig.functions.json"
+    "functions": "rimraf netlify/functions && netlify-lambda build lambda"
   },
   "dependencies": {
     "@material/checkbox": "^9.0.0",
@@ -30,6 +30,9 @@
     "ytdl-core": "^4.4.5"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.12.13",
+    "@babel/preset-typescript": "^7.12.13",
+    "@types/aws-lambda": "^8.10.71",
     "@types/jest": "^24.0.19",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
@@ -52,6 +55,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0-beta.4",
     "lint-staged": "^9.5.0",
+    "netlify-lambda": "^2.0.3",
     "prettier": "^1.19.1",
     "rimraf": "^2.7.1",
     "sass": "^1.32.6",

@@ -2,7 +2,7 @@ import { Handler } from "./types"
 
 import ytdl from "ytdl-core"
 
-const handler: Handler = async event => {
+export const handler: Handler = async event => {
   const { queryStringParameters: query } = event
 
   if (!ytdl.validateID(query.id))
@@ -35,5 +35,3 @@ const handler: Handler = async event => {
     }
   }
 }
-
-exports.handler = handler
