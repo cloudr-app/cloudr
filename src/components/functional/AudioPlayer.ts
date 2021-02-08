@@ -27,6 +27,7 @@ window.nextEl = nextEl
 for (const el of [playingEl, nextEl]) {
   el.preload = "auto"
   el.autoplay = true
+  el.crossOrigin = "anonymous"
 }
 
 // TODO this doesn't need to be a vue componenet
@@ -128,6 +129,7 @@ export default defineComponent({
     const initAudioEl = () => {
       playingEl.onplay = () => commit("setPlayer", ["playing", true])
       playingEl.onpause = () => {
+        // hack: only pause it if the track hasn't ended
         if (state.player.progress < 0.999) commit("setPlayer", ["playing", false])
       }
       playingEl.onended = onended

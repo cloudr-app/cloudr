@@ -2,8 +2,19 @@ import { Handler } from "./types"
 
 import ytdl from "ytdl-core"
 
+const origin = "https://cloudr.app"
 export const handler: Handler = async event => {
   const { queryStringParameters: query } = event
+  const headers = {
+    "access-control-allow-origin": origin,
+  }
+
+  const reqOrigin = event.headers?.origin || ""
+  if (reqOrigin.toLowerCase() !== origin)
+    return {
+      headers,
+      statusCode: 401,
+    }
 
   if (!ytdl.validateID(query.id))
     return {
