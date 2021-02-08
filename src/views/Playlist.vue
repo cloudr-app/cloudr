@@ -98,7 +98,7 @@ export default defineComponent({
       const { platform, id } = _params
       const plat = player(platform)
 
-      await loadPlaylistInfo(plat, id)
+      loadPlaylistInfo(plat, id)
       await loadPlaylistTracks(plat, id)
 
       const main = document.querySelector("main")

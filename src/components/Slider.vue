@@ -164,7 +164,7 @@ export default defineComponent({
   --margins: 10px
   --margin-amt: 0
   --height: 5px
-  width: calc(100% - var(--margins) * var(--margin-amt))
+  // width: calc(100% - var(--margins) * var(--margin-amt))
   flex-grow: 1
   display: flex
   align-items: center

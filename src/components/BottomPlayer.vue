@@ -73,7 +73,7 @@ export default defineComponent({
 .player
   --margins: 10px
   background: var(--bg-dark)
-  width: 100%
+  width: calc(100% - var(--margins) * 2)
   height: calc(var(--bottom-player-height) - var(--margins) * 2)
   display: flex
   padding: var(--margins)
@@ -84,6 +84,7 @@ export default defineComponent({
 
   &.bottom-player-enter-from, &.bottom-player-leave-to
     transform: translateY(100%)
+    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0)
 
   img.artwork
     width: calc(var(--bottom-player-height) - var(--margins) * 2)
@@ -98,6 +99,7 @@ export default defineComponent({
 
     .upper
       display: flex
+      flex-grow: 1
 
       .track-info
         margin-top: 4px
@@ -129,7 +131,6 @@ export default defineComponent({
         height: var(--playpause-size)
         display: flex
         align-items: center
-        margin-right: calc(var(--margins) * 2)
 
         > div
           height: var(--controls-size)

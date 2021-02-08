@@ -84,7 +84,7 @@ export default defineComponent({
       const { platform, id } = _params
       const plat = player(platform)
 
-      await loadUserInfo(plat, id)
+      loadUserInfo(plat, id)
       await loadUserTracks(plat, id)
 
       const main = document.querySelector("main")
